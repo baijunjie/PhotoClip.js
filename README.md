@@ -2,9 +2,11 @@
 一款支持手势的裁图插件插件
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
+
 本插件基于 [jquery.transit.js](https://github.com/rstacruz/jquery.transit)(demo中已经集成在jquery.js文件中) 和 [iscroll-zoom.js](https://github.com/cubiq/iscroll)(由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复) 以及 [hammer.js](https://github.com/hammerjs/hammer.js) 插件
 
 在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
+
 在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
 
 使用方法及参数配置简介：
