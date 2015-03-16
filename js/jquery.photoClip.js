@@ -422,7 +422,7 @@ function photoClip(container, option) {
 		ctx.drawImage($img[0], 0, 0);
 		ctx.restore();
 
-		var dataURL = canvas.toDataURL();
+		var dataURL = canvas.toDataURL("image/jpeg");
 		$view.css("background-image", "url("+ dataURL +")");
 		clipFinish.call($img[0], dataURL);
 	}
