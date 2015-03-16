@@ -53,6 +53,9 @@ $("#clipArea").photoClip({
 	},
 	loadComplete: function() {
 		window.loadEnd();
+	},
+	clipFinish: function(dataURL) {
+		console.log(dataURL);
 	}
 });
 </script>
