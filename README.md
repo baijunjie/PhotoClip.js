@@ -24,7 +24,7 @@ $("#clipArea").photoClip({
 	loadStart: function() {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
 	loadComplete: function() {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
 	loadError: function() {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
-	clipFinish: function() {}, // 裁剪完成的回调函数。会将裁剪出的图像数据DataURL作为参数传入
+	clipFinish: function() {}, // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
 });
 </script>
 ```

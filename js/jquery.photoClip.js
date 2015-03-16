@@ -13,7 +13,7 @@
  * @option_param loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
  * @option_param loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
  * @option_param loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
- * @option_param clipFinish 裁剪完成的回调函数。会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param clipFinish 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
  */
 
 (function() {
@@ -148,10 +148,15 @@ function photoClip(container, option) {
 
 		$rotateLayer.append(this);
 
-		imgWidth = this.naturalWidth;
-		imgHeight = this.naturalHeight;
+		hideAction.call(this, $img, function() {
+			imgWidth = this.naturalWidth;
+			imgHeight = this.naturalHeight;
+		});
 
-		resetScroll();
+		hideAction($moveLayer, function() {
+			resetScroll();
+		});
+
 
 		loadComplete.call(this, this.src);
 	}
@@ -419,19 +424,26 @@ function photoClip(container, option) {
 
 		var dataURL = canvas.toDataURL();
 		$view.css("background-image", "url("+ dataURL +")");
-		clipFinish(dataURL);
+		clipFinish.call($img[0], dataURL);
 	}
 
 
 	function resize() {
-		containerWidth = $container.width();
-		containerHeight = $container.height();
+		hideAction($container, function() {
+			containerWidth = $container.width();
+			containerHeight = $container.height();
+		});
 	}
 	function loaclToLoacl($layerOne, $layerTwo, x, y) { // 计算$layerTwo上的x、y坐标在$layerOne上的坐标
 		x = x || 0;
 		y = y || 0;
-		var layerOneOffset = $layerOne.offset();
-		var layerTwoOffset = $layerTwo.offset();
+		var layerOneOffset, layerTwoOffset;
+		hideAction($layerOne, function() {
+			layerOneOffset = $layerOne.offset();
+		});
+		hideAction($layerTwo, function() {
+			layerTwoOffset = $layerTwo.offset();
+		});
 		return {
 			x: layerTwoOffset.left - layerOneOffset.left + x,
 			y: layerTwoOffset.top - layerOneOffset.top + y
@@ -440,11 +452,29 @@ function photoClip(container, option) {
 	function globalToLoacl($layer, x, y) { // 计算相对于窗口的x、y坐标在$layer上的坐标
 		x = x || 0;
 		y = y || 0;
-		var layerOffset = $layer.offset();
+		var layerOffset;
+		hideAction($layer, function() {
+			layerOffset = $layer.offset();
+		});
 		return {
 			x: x + $win.scrollLeft() - layerOffset.left,
 			y: y + $win.scrollTop() - layerOffset.top
 		};
+	}
+	function hideAction(jq, func) {
+		var $hide = $();
+		$.each(jq, function(i, n){
+			var $n = $(n);
+			var $hidden = $n.parents().andSelf().filter(":hidden");
+			var $none;
+			for (var i = 0; i < $hidden.length; i++) {
+				if (!$n.is(":hidden")) break;
+				$none = $hidden.eq(i);
+				if ($none.css("display") == "none") $hide = $hide.add($none.show());
+			}
+		});
+		if (typeof(func) == "function") func.call(this);
+		$hide.hide();
 	}
 	function calculateOrigin(curAngle, point) {
 		var scale = myScroll.scale;
