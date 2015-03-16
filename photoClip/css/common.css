@@ -1,0 +1,1513 @@
+@charset "UTF-8";
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+body,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+form,
+input {
+  margin: 0;
+}
+table {
+  border-collapse: collapse;
+}
+td,
+th {
+  padding: 0;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+li {
+  list-style: none;
+}
+i,
+em {
+  font-style: normal;
+}
+a {
+  outline: none;
+  background: transparent;
+}
+a img {
+  border: 0;
+}
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend {
+  border: 0;
+  padding: 0;
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+textarea {
+  resize: none;
+}
+body:not(.normal) textarea:not(.normal) {
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2\9;
+  padding: 0 .5em;
+  margin: 0;
+  vertical-align: middle;
+  color: #555555;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-color: #cccccc;
+  border-radius: 0.25em;
+  background: #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -moz-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  height: auto;
+  line-height: 1.5;
+  padding: .5em;
+}
+body:not(.normal) textarea:not(.normal):-moz-placeholder {
+  color: #999999;
+}
+body:not(.normal) textarea:not(.normal)::-moz-placeholder {
+  color: #999999;
+  opacity: 1;
+}
+body:not(.normal) textarea:not(.normal):-ms-input-placeholder {
+  color: #999999;
+}
+body:not(.normal) textarea:not(.normal)::-webkit-input-placeholder {
+  color: #999999;
+}
+body:not(.normal) textarea:not(.normal):focus {
+  outline: 0;
+}
+body:not(.normal) textarea:not(.normal)[disabled],
+body:not(.normal) textarea:not(.normal)[readonly] {
+  cursor: not-allowed !important;
+}
+body:not(.normal) textarea:not(.normal):focus {
+  border-color: #428bca;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(66, 139, 202, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(66, 139, 202, 0.6);
+}
+body:not(.normal) textarea:not(.normal)[disabled],
+body:not(.normal) textarea:not(.normal)[readonly] {
+  border-color: #cccccc !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  background: #eeeeee !important;
+}
+body:not(.normal) textarea:not(.normal).red {
+  border-color: #cccccc;
+  border-radius: 0.25em;
+  background: #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -moz-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+body:not(.normal) textarea:not(.normal).red:focus {
+  border-color: #d9534f;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(217, 83, 79, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(217, 83, 79, 0.6);
+}
+body:not(.normal) textarea:not(.normal).red[disabled],
+body:not(.normal) textarea:not(.normal).red[readonly] {
+  border-color: #cccccc !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  background: #eeeeee !important;
+}
+body:not(.normal) textarea:not(.normal).transparent {
+  border-color: transparent;
+  border-radius: 0;
+  background: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body:not(.normal) textarea:not(.normal).transparent:focus {
+  border-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+body:not(.normal) textarea:not(.normal).transparent[disabled],
+body:not(.normal) textarea:not(.normal).transparent[readonly] {
+  border-color: transparent !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+body:not(.normal) textarea:not(.normal):not(.transparent):focus {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+body:not(.normal) select:not(.normal),
+body:not(.normal) input[type="text"]:not(.normal),
+body:not(.normal) input[type="password"]:not(.normal),
+body:not(.normal) input[type="datetime"]:not(.normal),
+body:not(.normal) input[type="datetime-local"]:not(.normal),
+body:not(.normal) input[type="date"]:not(.normal),
+body:not(.normal) input[type="month"]:not(.normal),
+body:not(.normal) input[type="time"]:not(.normal),
+body:not(.normal) input[type="week"]:not(.normal),
+body:not(.normal) input[type="number"]:not(.normal),
+body:not(.normal) input[type="email"]:not(.normal),
+body:not(.normal) input[type="url"]:not(.normal),
+body:not(.normal) input[type="search"]:not(.normal),
+body:not(.normal) input[type="tel"]:not(.normal),
+body:not(.normal) input[type="color"]:not(.normal) {
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2\9;
+  padding: 0 .5em;
+  margin: 0;
+  vertical-align: middle;
+  color: #555555;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-color: #cccccc;
+  border-radius: 0.25em;
+  background: #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -moz-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+body:not(.normal) select:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="text"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="password"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="datetime"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="datetime-local"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="date"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="month"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="time"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="week"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="number"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="email"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="url"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="search"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="tel"]:not(.normal):-moz-placeholder,
+body:not(.normal) input[type="color"]:not(.normal):-moz-placeholder {
+  color: #999999;
+}
+body:not(.normal) select:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="text"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="password"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="datetime"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="datetime-local"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="date"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="month"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="time"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="week"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="number"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="email"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="url"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="search"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="tel"]:not(.normal)::-moz-placeholder,
+body:not(.normal) input[type="color"]:not(.normal)::-moz-placeholder {
+  color: #999999;
+  opacity: 1;
+}
+body:not(.normal) select:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="text"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="password"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="datetime"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="datetime-local"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="date"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="month"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="time"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="week"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="number"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="email"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="url"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="search"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="tel"]:not(.normal):-ms-input-placeholder,
+body:not(.normal) input[type="color"]:not(.normal):-ms-input-placeholder {
+  color: #999999;
+}
+body:not(.normal) select:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="text"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="password"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="datetime"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="datetime-local"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="date"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="month"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="time"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="week"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="number"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="email"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="url"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="search"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="tel"]:not(.normal)::-webkit-input-placeholder,
+body:not(.normal) input[type="color"]:not(.normal)::-webkit-input-placeholder {
+  color: #999999;
+}
+body:not(.normal) select:not(.normal):focus,
+body:not(.normal) input[type="text"]:not(.normal):focus,
+body:not(.normal) input[type="password"]:not(.normal):focus,
+body:not(.normal) input[type="datetime"]:not(.normal):focus,
+body:not(.normal) input[type="datetime-local"]:not(.normal):focus,
+body:not(.normal) input[type="date"]:not(.normal):focus,
+body:not(.normal) input[type="month"]:not(.normal):focus,
+body:not(.normal) input[type="time"]:not(.normal):focus,
+body:not(.normal) input[type="week"]:not(.normal):focus,
+body:not(.normal) input[type="number"]:not(.normal):focus,
+body:not(.normal) input[type="email"]:not(.normal):focus,
+body:not(.normal) input[type="url"]:not(.normal):focus,
+body:not(.normal) input[type="search"]:not(.normal):focus,
+body:not(.normal) input[type="tel"]:not(.normal):focus,
+body:not(.normal) input[type="color"]:not(.normal):focus {
+  outline: 0;
+}
+body:not(.normal) select:not(.normal)[disabled],
+body:not(.normal) input[type="text"]:not(.normal)[disabled],
+body:not(.normal) input[type="password"]:not(.normal)[disabled],
+body:not(.normal) input[type="datetime"]:not(.normal)[disabled],
+body:not(.normal) input[type="datetime-local"]:not(.normal)[disabled],
+body:not(.normal) input[type="date"]:not(.normal)[disabled],
+body:not(.normal) input[type="month"]:not(.normal)[disabled],
+body:not(.normal) input[type="time"]:not(.normal)[disabled],
+body:not(.normal) input[type="week"]:not(.normal)[disabled],
+body:not(.normal) input[type="number"]:not(.normal)[disabled],
+body:not(.normal) input[type="email"]:not(.normal)[disabled],
+body:not(.normal) input[type="url"]:not(.normal)[disabled],
+body:not(.normal) input[type="search"]:not(.normal)[disabled],
+body:not(.normal) input[type="tel"]:not(.normal)[disabled],
+body:not(.normal) input[type="color"]:not(.normal)[disabled],
+body:not(.normal) select:not(.normal)[readonly],
+body:not(.normal) input[type="text"]:not(.normal)[readonly],
+body:not(.normal) input[type="password"]:not(.normal)[readonly],
+body:not(.normal) input[type="datetime"]:not(.normal)[readonly],
+body:not(.normal) input[type="datetime-local"]:not(.normal)[readonly],
+body:not(.normal) input[type="date"]:not(.normal)[readonly],
+body:not(.normal) input[type="month"]:not(.normal)[readonly],
+body:not(.normal) input[type="time"]:not(.normal)[readonly],
+body:not(.normal) input[type="week"]:not(.normal)[readonly],
+body:not(.normal) input[type="number"]:not(.normal)[readonly],
+body:not(.normal) input[type="email"]:not(.normal)[readonly],
+body:not(.normal) input[type="url"]:not(.normal)[readonly],
+body:not(.normal) input[type="search"]:not(.normal)[readonly],
+body:not(.normal) input[type="tel"]:not(.normal)[readonly],
+body:not(.normal) input[type="color"]:not(.normal)[readonly] {
+  cursor: not-allowed !important;
+}
+body:not(.normal) select:not(.normal):focus,
+body:not(.normal) input[type="text"]:not(.normal):focus,
+body:not(.normal) input[type="password"]:not(.normal):focus,
+body:not(.normal) input[type="datetime"]:not(.normal):focus,
+body:not(.normal) input[type="datetime-local"]:not(.normal):focus,
+body:not(.normal) input[type="date"]:not(.normal):focus,
+body:not(.normal) input[type="month"]:not(.normal):focus,
+body:not(.normal) input[type="time"]:not(.normal):focus,
+body:not(.normal) input[type="week"]:not(.normal):focus,
+body:not(.normal) input[type="number"]:not(.normal):focus,
+body:not(.normal) input[type="email"]:not(.normal):focus,
+body:not(.normal) input[type="url"]:not(.normal):focus,
+body:not(.normal) input[type="search"]:not(.normal):focus,
+body:not(.normal) input[type="tel"]:not(.normal):focus,
+body:not(.normal) input[type="color"]:not(.normal):focus {
+  border-color: #428bca;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(66, 139, 202, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(66, 139, 202, 0.6);
+}
+body:not(.normal) select:not(.normal)[disabled],
+body:not(.normal) input[type="text"]:not(.normal)[disabled],
+body:not(.normal) input[type="password"]:not(.normal)[disabled],
+body:not(.normal) input[type="datetime"]:not(.normal)[disabled],
+body:not(.normal) input[type="datetime-local"]:not(.normal)[disabled],
+body:not(.normal) input[type="date"]:not(.normal)[disabled],
+body:not(.normal) input[type="month"]:not(.normal)[disabled],
+body:not(.normal) input[type="time"]:not(.normal)[disabled],
+body:not(.normal) input[type="week"]:not(.normal)[disabled],
+body:not(.normal) input[type="number"]:not(.normal)[disabled],
+body:not(.normal) input[type="email"]:not(.normal)[disabled],
+body:not(.normal) input[type="url"]:not(.normal)[disabled],
+body:not(.normal) input[type="search"]:not(.normal)[disabled],
+body:not(.normal) input[type="tel"]:not(.normal)[disabled],
+body:not(.normal) input[type="color"]:not(.normal)[disabled],
+body:not(.normal) select:not(.normal)[readonly],
+body:not(.normal) input[type="text"]:not(.normal)[readonly],
+body:not(.normal) input[type="password"]:not(.normal)[readonly],
+body:not(.normal) input[type="datetime"]:not(.normal)[readonly],
+body:not(.normal) input[type="datetime-local"]:not(.normal)[readonly],
+body:not(.normal) input[type="date"]:not(.normal)[readonly],
+body:not(.normal) input[type="month"]:not(.normal)[readonly],
+body:not(.normal) input[type="time"]:not(.normal)[readonly],
+body:not(.normal) input[type="week"]:not(.normal)[readonly],
+body:not(.normal) input[type="number"]:not(.normal)[readonly],
+body:not(.normal) input[type="email"]:not(.normal)[readonly],
+body:not(.normal) input[type="url"]:not(.normal)[readonly],
+body:not(.normal) input[type="search"]:not(.normal)[readonly],
+body:not(.normal) input[type="tel"]:not(.normal)[readonly],
+body:not(.normal) input[type="color"]:not(.normal)[readonly] {
+  border-color: #cccccc !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  background: #eeeeee !important;
+}
+body:not(.normal) select:not(.normal).red,
+body:not(.normal) input[type="text"]:not(.normal).red,
+body:not(.normal) input[type="password"]:not(.normal).red,
+body:not(.normal) input[type="datetime"]:not(.normal).red,
+body:not(.normal) input[type="datetime-local"]:not(.normal).red,
+body:not(.normal) input[type="date"]:not(.normal).red,
+body:not(.normal) input[type="month"]:not(.normal).red,
+body:not(.normal) input[type="time"]:not(.normal).red,
+body:not(.normal) input[type="week"]:not(.normal).red,
+body:not(.normal) input[type="number"]:not(.normal).red,
+body:not(.normal) input[type="email"]:not(.normal).red,
+body:not(.normal) input[type="url"]:not(.normal).red,
+body:not(.normal) input[type="search"]:not(.normal).red,
+body:not(.normal) input[type="tel"]:not(.normal).red,
+body:not(.normal) input[type="color"]:not(.normal).red {
+  border-color: #cccccc;
+  border-radius: 0.25em;
+  background: #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -moz-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+body:not(.normal) select:not(.normal).red:focus,
+body:not(.normal) input[type="text"]:not(.normal).red:focus,
+body:not(.normal) input[type="password"]:not(.normal).red:focus,
+body:not(.normal) input[type="datetime"]:not(.normal).red:focus,
+body:not(.normal) input[type="datetime-local"]:not(.normal).red:focus,
+body:not(.normal) input[type="date"]:not(.normal).red:focus,
+body:not(.normal) input[type="month"]:not(.normal).red:focus,
+body:not(.normal) input[type="time"]:not(.normal).red:focus,
+body:not(.normal) input[type="week"]:not(.normal).red:focus,
+body:not(.normal) input[type="number"]:not(.normal).red:focus,
+body:not(.normal) input[type="email"]:not(.normal).red:focus,
+body:not(.normal) input[type="url"]:not(.normal).red:focus,
+body:not(.normal) input[type="search"]:not(.normal).red:focus,
+body:not(.normal) input[type="tel"]:not(.normal).red:focus,
+body:not(.normal) input[type="color"]:not(.normal).red:focus {
+  border-color: #d9534f;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(217, 83, 79, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 8px rgba(217, 83, 79, 0.6);
+}
+body:not(.normal) select:not(.normal).red[disabled],
+body:not(.normal) input[type="text"]:not(.normal).red[disabled],
+body:not(.normal) input[type="password"]:not(.normal).red[disabled],
+body:not(.normal) input[type="datetime"]:not(.normal).red[disabled],
+body:not(.normal) input[type="datetime-local"]:not(.normal).red[disabled],
+body:not(.normal) input[type="date"]:not(.normal).red[disabled],
+body:not(.normal) input[type="month"]:not(.normal).red[disabled],
+body:not(.normal) input[type="time"]:not(.normal).red[disabled],
+body:not(.normal) input[type="week"]:not(.normal).red[disabled],
+body:not(.normal) input[type="number"]:not(.normal).red[disabled],
+body:not(.normal) input[type="email"]:not(.normal).red[disabled],
+body:not(.normal) input[type="url"]:not(.normal).red[disabled],
+body:not(.normal) input[type="search"]:not(.normal).red[disabled],
+body:not(.normal) input[type="tel"]:not(.normal).red[disabled],
+body:not(.normal) input[type="color"]:not(.normal).red[disabled],
+body:not(.normal) select:not(.normal).red[readonly],
+body:not(.normal) input[type="text"]:not(.normal).red[readonly],
+body:not(.normal) input[type="password"]:not(.normal).red[readonly],
+body:not(.normal) input[type="datetime"]:not(.normal).red[readonly],
+body:not(.normal) input[type="datetime-local"]:not(.normal).red[readonly],
+body:not(.normal) input[type="date"]:not(.normal).red[readonly],
+body:not(.normal) input[type="month"]:not(.normal).red[readonly],
+body:not(.normal) input[type="time"]:not(.normal).red[readonly],
+body:not(.normal) input[type="week"]:not(.normal).red[readonly],
+body:not(.normal) input[type="number"]:not(.normal).red[readonly],
+body:not(.normal) input[type="email"]:not(.normal).red[readonly],
+body:not(.normal) input[type="url"]:not(.normal).red[readonly],
+body:not(.normal) input[type="search"]:not(.normal).red[readonly],
+body:not(.normal) input[type="tel"]:not(.normal).red[readonly],
+body:not(.normal) input[type="color"]:not(.normal).red[readonly] {
+  border-color: #cccccc !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+  background: #eeeeee !important;
+}
+body:not(.normal) select:not(.normal).transparent,
+body:not(.normal) input[type="text"]:not(.normal).transparent,
+body:not(.normal) input[type="password"]:not(.normal).transparent,
+body:not(.normal) input[type="datetime"]:not(.normal).transparent,
+body:not(.normal) input[type="datetime-local"]:not(.normal).transparent,
+body:not(.normal) input[type="date"]:not(.normal).transparent,
+body:not(.normal) input[type="month"]:not(.normal).transparent,
+body:not(.normal) input[type="time"]:not(.normal).transparent,
+body:not(.normal) input[type="week"]:not(.normal).transparent,
+body:not(.normal) input[type="number"]:not(.normal).transparent,
+body:not(.normal) input[type="email"]:not(.normal).transparent,
+body:not(.normal) input[type="url"]:not(.normal).transparent,
+body:not(.normal) input[type="search"]:not(.normal).transparent,
+body:not(.normal) input[type="tel"]:not(.normal).transparent,
+body:not(.normal) input[type="color"]:not(.normal).transparent {
+  border-color: transparent;
+  border-radius: 0;
+  background: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body:not(.normal) select:not(.normal).transparent:focus,
+body:not(.normal) input[type="text"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="password"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="datetime"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="datetime-local"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="date"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="month"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="time"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="week"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="number"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="email"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="url"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="search"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="tel"]:not(.normal).transparent:focus,
+body:not(.normal) input[type="color"]:not(.normal).transparent:focus {
+  border-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+body:not(.normal) select:not(.normal).transparent[disabled],
+body:not(.normal) input[type="text"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="password"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="datetime"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="datetime-local"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="date"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="month"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="time"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="week"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="number"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="email"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="url"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="search"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="tel"]:not(.normal).transparent[disabled],
+body:not(.normal) input[type="color"]:not(.normal).transparent[disabled],
+body:not(.normal) select:not(.normal).transparent[readonly],
+body:not(.normal) input[type="text"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="password"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="datetime"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="datetime-local"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="date"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="month"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="time"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="week"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="number"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="email"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="url"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="search"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="tel"]:not(.normal).transparent[readonly],
+body:not(.normal) input[type="color"]:not(.normal).transparent[readonly] {
+  border-color: transparent !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+body:not(.normal) .button:not(.normal),
+body:not(.normal) button:not(.normal),
+body:not(.normal) input[type="button"]:not(.normal),
+body:not(.normal) input[type="submit"]:not(.normal),
+body:not(.normal) input[type="reset"]:not(.normal) {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2;
+  padding: 0 1em;
+  margin: 0;
+  border: 0;
+  background: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-touch-callout: none;
+  color: #000000;
+  text-shadow: 0 -1px 1px #ffffff;
+  border-color: #b3b3b3;
+  background: #f2f2f2;
+  -webkit-transition: all 0.15s;
+  -moz-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  transition: all 0.15s;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.25em;
+}
+body:not(.normal) .button:not(.normal)[disabled],
+body:not(.normal) button:not(.normal)[disabled],
+body:not(.normal) input[type="button"]:not(.normal)[disabled],
+body:not(.normal) input[type="submit"]:not(.normal)[disabled],
+body:not(.normal) input[type="reset"]:not(.normal)[disabled],
+body:not(.normal) .button:not(.normal).disabled,
+body:not(.normal) button:not(.normal).disabled,
+body:not(.normal) input[type="button"]:not(.normal).disabled,
+body:not(.normal) input[type="submit"]:not(.normal).disabled,
+body:not(.normal) input[type="reset"]:not(.normal).disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+body:not(.normal) .button:not(.normal)::-moz-focus-inner,
+body:not(.normal) button:not(.normal)::-moz-focus-inner,
+body:not(.normal) input[type="button"]:not(.normal)::-moz-focus-inner,
+body:not(.normal) input[type="submit"]:not(.normal)::-moz-focus-inner,
+body:not(.normal) input[type="reset"]:not(.normal)::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+body:not(.normal) .button:not(.normal)[disabled],
+body:not(.normal) button:not(.normal)[disabled],
+body:not(.normal) input[type="button"]:not(.normal)[disabled],
+body:not(.normal) input[type="submit"]:not(.normal)[disabled],
+body:not(.normal) input[type="reset"]:not(.normal)[disabled],
+body:not(.normal) .button:not(.normal).disabled,
+body:not(.normal) button:not(.normal).disabled,
+body:not(.normal) input[type="button"]:not(.normal).disabled,
+body:not(.normal) input[type="submit"]:not(.normal).disabled,
+body:not(.normal) input[type="reset"]:not(.normal).disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal):hover,
+body:not(.normal) button:not(.normal):hover,
+body:not(.normal) input[type="button"]:not(.normal):hover,
+body:not(.normal) input[type="submit"]:not(.normal):hover,
+body:not(.normal) input[type="reset"]:not(.normal):hover {
+  border-color: #bfbfbf;
+  background: #ffffff;
+}
+body:not(.normal) .button:not(.normal):active,
+body:not(.normal) button:not(.normal):active,
+body:not(.normal) input[type="button"]:not(.normal):active,
+body:not(.normal) input[type="submit"]:not(.normal):active,
+body:not(.normal) input[type="reset"]:not(.normal):active,
+body:not(.normal) .button:not(.normal).active,
+body:not(.normal) button:not(.normal).active,
+body:not(.normal) input[type="button"]:not(.normal).active,
+body:not(.normal) input[type="submit"]:not(.normal).active,
+body:not(.normal) input[type="reset"]:not(.normal).active {
+  color: #a6a6a6;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #f2f2f2;
+}
+body:not(.normal) .button:not(.normal).blue,
+body:not(.normal) button:not(.normal).blue,
+body:not(.normal) input[type="button"]:not(.normal).blue,
+body:not(.normal) input[type="submit"]:not(.normal).blue,
+body:not(.normal) input[type="reset"]:not(.normal).blue {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(25, 60, 90, 0.4);
+  border-color: #357ebd;
+  background: #428bca;
+}
+body:not(.normal) .button:not(.normal).blue[disabled],
+body:not(.normal) button:not(.normal).blue[disabled],
+body:not(.normal) input[type="button"]:not(.normal).blue[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).blue[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).blue[disabled],
+body:not(.normal) .button:not(.normal).blue.disabled,
+body:not(.normal) button:not(.normal).blue.disabled,
+body:not(.normal) input[type="button"]:not(.normal).blue.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).blue.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).blue.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).blue:hover,
+body:not(.normal) button:not(.normal).blue:hover,
+body:not(.normal) input[type="button"]:not(.normal).blue:hover,
+body:not(.normal) input[type="submit"]:not(.normal).blue:hover,
+body:not(.normal) input[type="reset"]:not(.normal).blue:hover {
+  border-color: #428bca;
+  background: #5697d0;
+}
+body:not(.normal) .button:not(.normal).blue:active,
+body:not(.normal) button:not(.normal).blue:active,
+body:not(.normal) input[type="button"]:not(.normal).blue:active,
+body:not(.normal) input[type="submit"]:not(.normal).blue:active,
+body:not(.normal) input[type="reset"]:not(.normal).blue:active,
+body:not(.normal) .button:not(.normal).blue.active,
+body:not(.normal) button:not(.normal).blue.active,
+body:not(.normal) input[type="button"]:not(.normal).blue.active,
+body:not(.normal) input[type="submit"]:not(.normal).blue.active,
+body:not(.normal) input[type="reset"]:not(.normal).blue.active {
+  color: #193c5a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #5a89b2;
+}
+body:not(.normal) .button:not(.normal).green,
+body:not(.normal) button:not(.normal).green,
+body:not(.normal) input[type="button"]:not(.normal).green,
+body:not(.normal) input[type="submit"]:not(.normal).green,
+body:not(.normal) input[type="reset"]:not(.normal).green {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(37, 86, 37, 0.4);
+  border-color: #4cae4c;
+  background: #5cb85c;
+}
+body:not(.normal) .button:not(.normal).green[disabled],
+body:not(.normal) button:not(.normal).green[disabled],
+body:not(.normal) input[type="button"]:not(.normal).green[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).green[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).green[disabled],
+body:not(.normal) .button:not(.normal).green.disabled,
+body:not(.normal) button:not(.normal).green.disabled,
+body:not(.normal) input[type="button"]:not(.normal).green.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).green.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).green.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).green:hover,
+body:not(.normal) button:not(.normal).green:hover,
+body:not(.normal) input[type="button"]:not(.normal).green:hover,
+body:not(.normal) input[type="submit"]:not(.normal).green:hover,
+body:not(.normal) input[type="reset"]:not(.normal).green:hover {
+  border-color: #5cb85c;
+  background: #6ec06e;
+}
+body:not(.normal) .button:not(.normal).green:active,
+body:not(.normal) button:not(.normal).green:active,
+body:not(.normal) input[type="button"]:not(.normal).green:active,
+body:not(.normal) input[type="submit"]:not(.normal).green:active,
+body:not(.normal) input[type="reset"]:not(.normal).green:active,
+body:not(.normal) .button:not(.normal).green.active,
+body:not(.normal) button:not(.normal).green.active,
+body:not(.normal) input[type="button"]:not(.normal).green.active,
+body:not(.normal) input[type="submit"]:not(.normal).green.active,
+body:not(.normal) input[type="reset"]:not(.normal).green.active {
+  color: #255625;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #73a173;
+}
+body:not(.normal) .button:not(.normal).yellow,
+body:not(.normal) button:not(.normal).yellow,
+body:not(.normal) input[type="button"]:not(.normal).yellow,
+body:not(.normal) input[type="submit"]:not(.normal).yellow,
+body:not(.normal) input[type="reset"]:not(.normal).yellow {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(152, 95, 13, 0.4);
+  border-color: #eea236;
+  background: #f0ad4e;
+}
+body:not(.normal) .button:not(.normal).yellow[disabled],
+body:not(.normal) button:not(.normal).yellow[disabled],
+body:not(.normal) input[type="button"]:not(.normal).yellow[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).yellow[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).yellow[disabled],
+body:not(.normal) .button:not(.normal).yellow.disabled,
+body:not(.normal) button:not(.normal).yellow.disabled,
+body:not(.normal) input[type="button"]:not(.normal).yellow.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).yellow.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).yellow.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).yellow:hover,
+body:not(.normal) button:not(.normal).yellow:hover,
+body:not(.normal) input[type="button"]:not(.normal).yellow:hover,
+body:not(.normal) input[type="submit"]:not(.normal).yellow:hover,
+body:not(.normal) input[type="reset"]:not(.normal).yellow:hover {
+  border-color: #f0ad4e;
+  background: #f2b866;
+}
+body:not(.normal) .button:not(.normal).yellow:active,
+body:not(.normal) button:not(.normal).yellow:active,
+body:not(.normal) input[type="button"]:not(.normal).yellow:active,
+body:not(.normal) input[type="submit"]:not(.normal).yellow:active,
+body:not(.normal) input[type="reset"]:not(.normal).yellow:active,
+body:not(.normal) .button:not(.normal).yellow.active,
+body:not(.normal) button:not(.normal).yellow.active,
+body:not(.normal) input[type="button"]:not(.normal).yellow.active,
+body:not(.normal) input[type="submit"]:not(.normal).yellow.active,
+body:not(.normal) input[type="reset"]:not(.normal).yellow.active {
+  color: #985f0d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #ddaa61;
+}
+body:not(.normal) .button:not(.normal).red,
+body:not(.normal) button:not(.normal).red,
+body:not(.normal) input[type="button"]:not(.normal).red,
+body:not(.normal) input[type="submit"]:not(.normal).red,
+body:not(.normal) input[type="reset"]:not(.normal).red {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(118, 28, 25, 0.4);
+  border-color: #d43f3a;
+  background: #d9534f;
+}
+body:not(.normal) .button:not(.normal).red[disabled],
+body:not(.normal) button:not(.normal).red[disabled],
+body:not(.normal) input[type="button"]:not(.normal).red[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).red[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).red[disabled],
+body:not(.normal) .button:not(.normal).red.disabled,
+body:not(.normal) button:not(.normal).red.disabled,
+body:not(.normal) input[type="button"]:not(.normal).red.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).red.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).red.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).red:hover,
+body:not(.normal) button:not(.normal).red:hover,
+body:not(.normal) input[type="button"]:not(.normal).red:hover,
+body:not(.normal) input[type="submit"]:not(.normal).red:hover,
+body:not(.normal) input[type="reset"]:not(.normal).red:hover {
+  border-color: #d9534f;
+  background: #de6764;
+}
+body:not(.normal) .button:not(.normal).red:active,
+body:not(.normal) button:not(.normal).red:active,
+body:not(.normal) input[type="button"]:not(.normal).red:active,
+body:not(.normal) input[type="submit"]:not(.normal).red:active,
+body:not(.normal) input[type="reset"]:not(.normal).red:active,
+body:not(.normal) .button:not(.normal).red.active,
+body:not(.normal) button:not(.normal).red.active,
+body:not(.normal) input[type="button"]:not(.normal).red.active,
+body:not(.normal) input[type="submit"]:not(.normal).red.active,
+body:not(.normal) input[type="reset"]:not(.normal).red.active {
+  color: #761c19;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #c46764;
+}
+body:not(.normal) .button:not(.normal).sky,
+body:not(.normal) button:not(.normal).sky,
+body:not(.normal) input[type="button"]:not(.normal).sky,
+body:not(.normal) input[type="submit"]:not(.normal).sky,
+body:not(.normal) input[type="reset"]:not(.normal).sky {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(27, 109, 133, 0.4);
+  border-color: #46b8da;
+  background: #5bc0de;
+}
+body:not(.normal) .button:not(.normal).sky[disabled],
+body:not(.normal) button:not(.normal).sky[disabled],
+body:not(.normal) input[type="button"]:not(.normal).sky[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).sky[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).sky[disabled],
+body:not(.normal) .button:not(.normal).sky.disabled,
+body:not(.normal) button:not(.normal).sky.disabled,
+body:not(.normal) input[type="button"]:not(.normal).sky.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).sky.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).sky.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).sky:hover,
+body:not(.normal) button:not(.normal).sky:hover,
+body:not(.normal) input[type="button"]:not(.normal).sky:hover,
+body:not(.normal) input[type="submit"]:not(.normal).sky:hover,
+body:not(.normal) input[type="reset"]:not(.normal).sky:hover {
+  border-color: #5bc0de;
+  background: #70c8e2;
+}
+body:not(.normal) .button:not(.normal).sky:active,
+body:not(.normal) button:not(.normal).sky:active,
+body:not(.normal) input[type="button"]:not(.normal).sky:active,
+body:not(.normal) input[type="submit"]:not(.normal).sky:active,
+body:not(.normal) input[type="reset"]:not(.normal).sky:active,
+body:not(.normal) .button:not(.normal).sky.active,
+body:not(.normal) button:not(.normal).sky.active,
+body:not(.normal) input[type="button"]:not(.normal).sky.active,
+body:not(.normal) input[type="submit"]:not(.normal).sky.active,
+body:not(.normal) input[type="reset"]:not(.normal).sky.active {
+  color: #1b6d85;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #6fb5ca;
+}
+body:not(.normal) .button:not(.normal).gray,
+body:not(.normal) button:not(.normal).gray,
+body:not(.normal) input[type="button"]:not(.normal).gray,
+body:not(.normal) input[type="submit"]:not(.normal).gray,
+body:not(.normal) input[type="reset"]:not(.normal).gray {
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4);
+  border-color: #aeaeae;
+  background: #bbbbbb;
+}
+body:not(.normal) .button:not(.normal).gray[disabled],
+body:not(.normal) button:not(.normal).gray[disabled],
+body:not(.normal) input[type="button"]:not(.normal).gray[disabled],
+body:not(.normal) input[type="submit"]:not(.normal).gray[disabled],
+body:not(.normal) input[type="reset"]:not(.normal).gray[disabled],
+body:not(.normal) .button:not(.normal).gray.disabled,
+body:not(.normal) button:not(.normal).gray.disabled,
+body:not(.normal) input[type="button"]:not(.normal).gray.disabled,
+body:not(.normal) input[type="submit"]:not(.normal).gray.disabled,
+body:not(.normal) input[type="reset"]:not(.normal).gray.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+body:not(.normal) .button:not(.normal).gray:hover,
+body:not(.normal) button:not(.normal).gray:hover,
+body:not(.normal) input[type="button"]:not(.normal).gray:hover,
+body:not(.normal) input[type="submit"]:not(.normal).gray:hover,
+body:not(.normal) input[type="reset"]:not(.normal).gray:hover {
+  border-color: #bbbbbb;
+  background: #c8c8c8;
+}
+body:not(.normal) .button:not(.normal).gray:active,
+body:not(.normal) button:not(.normal).gray:active,
+body:not(.normal) input[type="button"]:not(.normal).gray:active,
+body:not(.normal) input[type="submit"]:not(.normal).gray:active,
+body:not(.normal) input[type="reset"]:not(.normal).gray:active,
+body:not(.normal) .button:not(.normal).gray.active,
+body:not(.normal) button:not(.normal).gray.active,
+body:not(.normal) input[type="button"]:not(.normal).gray.active,
+body:not(.normal) input[type="submit"]:not(.normal).gray.active,
+body:not(.normal) input[type="reset"]:not(.normal).gray.active {
+  color: #6e6e6e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #bbbbbb;
+}
+.hgb {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  vertical-align: middle;
+}
+.hgb > :focus {
+  position: relative;
+  z-index: 1;
+}
+.hgb > :nth-child(1n) {
+  float: left !important;
+  border-radius: 0 !important;
+}
+.hgb > :first-child ~ * {
+  margin-left: -1px !important;
+}
+.hgb > :first-child {
+  border-top-left-radius: 0.25em !important;
+  border-bottom-left-radius: 0.25em !important;
+}
+.hgb > :last-child {
+  border-top-right-radius: 0.25em !important;
+  border-bottom-right-radius: 0.25em !important;
+}
+.vgb {
+  vertical-align: middle;
+}
+.vgb > :focus {
+  position: relative;
+  z-index: 1;
+}
+.vgb > :nth-child(1n) {
+  display: block !important;
+  border-radius: 0 !important;
+}
+.vgb > :first-child ~ * {
+  margin-top: -1px !important;
+}
+.vgb > :first-child {
+  border-top-left-radius: 0.25em !important;
+  border-top-right-radius: 0.25em !important;
+}
+.vgb > :last-child {
+  border-bottom-left-radius: 0.25em !important;
+  border-bottom-right-radius: 0.25em !important;
+}
+.hide {
+  visibility: hidden !important;
+}
+.none {
+  display: none !important;
+}
+body {
+  position: relative;
+  width: 100%;
+  font-family: Microsoft YaHei, Helvetica, Arial, Verdana, sans-serif;
+  font-size: 16px;
+  background-color: #ffffff;
+}
+body:before {
+  content: "";
+  display: table;
+}
+a {
+  color: #0055aa;
+  text-decoration: none;
+}
+a:hover {
+  color: #1188ff;
+  text-decoration: underline;
+}
+body.modalBlur > :not(.noblur) {
+  -webkit-filter: blur(4px);
+}
+#dialogBox {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+}
+#dialogBox.noevent {
+  pointer-events: none;
+}
+#dialogBox .mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+#dialogBox .container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  white-space: nowrap;
+  text-align: center;
+  overflow: auto;
+}
+#dialogBox .container > :nth-child(1n) {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  vertical-align: middle;
+  white-space: normal;
+}
+#dialogBox .container:after {
+  content: "";
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  width: 0;
+  height: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+}
+#dialogBox .container .box {
+  position: relative;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+#dialogBox .container .box.alert,
+#dialogBox .container .box.confirm {
+  width: 280px;
+  background-color: #ffffff;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+#dialogBox .container .box.alert .close,
+#dialogBox .container .box.confirm .close {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background: #000000;
+  cursor: pointer;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  right: -15px;
+  top: -15px;
+}
+#dialogBox .container .box.alert .close:before,
+#dialogBox .container .box.confirm .close:before,
+#dialogBox .container .box.alert .close:after,
+#dialogBox .container .box.confirm .close:after {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 4px;
+  font-size: 0;
+  background: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -7px;
+  margin-top: -2px;
+}
+#dialogBox .container .box.alert .close:before,
+#dialogBox .container .box.confirm .close:before {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#dialogBox .container .box.alert .close:after,
+#dialogBox .container .box.confirm .close:after {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+#dialogBox .container .box.alert .header,
+#dialogBox .container .box.confirm .header {
+  padding: 8px 0;
+  margin: 0 8px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+}
+#dialogBox .container .box.alert .msg,
+#dialogBox .container .box.confirm .msg {
+  margin: 16px;
+  line-height: 1.6;
+  color: #666666;
+  font-size: 16px;
+  text-align: left;
+  word-break: break-all;
+  white-space: normal;
+}
+#dialogBox .container .box.alert .footer,
+#dialogBox .container .box.confirm .footer {
+  margin: 8px;
+}
+#dialogBox .container .box.alert .btn {
+  width: 100%;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  font-size: 18px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2;
+  padding: 0 1em;
+  margin: 0;
+  border: 0;
+  background: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-touch-callout: none;
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(37, 86, 37, 0.4);
+  border-color: #4cae4c;
+  background: #5cb85c;
+  -webkit-transition: all 0.15s;
+  -moz-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  transition: all 0.15s;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.25em;
+  font-weight: bold;
+}
+#dialogBox .container .box.alert .btn[disabled],
+#dialogBox .container .box.alert .btn.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+#dialogBox .container .box.alert .btn::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+#dialogBox .container .box.alert .btn[disabled],
+#dialogBox .container .box.alert .btn.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+#dialogBox .container .box.alert .btn:hover {
+  border-color: #5cb85c;
+  background: #6ec06e;
+}
+#dialogBox .container .box.alert .btn:active,
+#dialogBox .container .box.alert .btn.active {
+  color: #255625;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #73a173;
+}
+#dialogBox .container .box.confirm .footer {
+  *zoom: 1;
+}
+#dialogBox .container .box.confirm .footer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#dialogBox .container .box.confirm .footer > :first-child {
+  float: left;
+}
+#dialogBox .container .box.confirm .footer > :nth-child(2) {
+  float: right;
+}
+#dialogBox .container .box.confirm .footer .btn {
+  width: 48%;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  font-size: 18px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2;
+  padding: 0 1em;
+  margin: 0;
+  border: 0;
+  background: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-touch-callout: none;
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(37, 86, 37, 0.4);
+  border-color: #4cae4c;
+  background: #5cb85c;
+  -webkit-transition: all 0.15s;
+  -moz-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  transition: all 0.15s;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.25em;
+  font-weight: bold;
+}
+#dialogBox .container .box.confirm .footer .btn[disabled],
+#dialogBox .container .box.confirm .footer .btn.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+#dialogBox .container .box.confirm .footer .btn::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+#dialogBox .container .box.confirm .footer .btn[disabled],
+#dialogBox .container .box.confirm .footer .btn.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+#dialogBox .container .box.confirm .footer .btn:hover {
+  border-color: #5cb85c;
+  background: #6ec06e;
+}
+#dialogBox .container .box.confirm .footer .btn:active,
+#dialogBox .container .box.confirm .footer .btn.active {
+  color: #255625;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #73a173;
+}
+#dialogBox .container .box.confirm .footer .btn2 {
+  width: 48%;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  font-size: 18px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 2em;
+  line-height: 2;
+  padding: 0 1em;
+  margin: 0;
+  border: 0;
+  background: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-touch-callout: none;
+  color: #ffffff;
+  text-shadow: 0 -1px 1px rgba(118, 28, 25, 0.4);
+  border-color: #d43f3a;
+  background: #d9534f;
+  -webkit-transition: all 0.15s;
+  -moz-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  transition: all 0.15s;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.25em;
+  font-weight: bold;
+}
+#dialogBox .container .box.confirm .footer .btn2[disabled],
+#dialogBox .container .box.confirm .footer .btn2.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+#dialogBox .container .box.confirm .footer .btn2::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+#dialogBox .container .box.confirm .footer .btn2[disabled],
+#dialogBox .container .box.confirm .footer .btn2.disabled {
+  color: white !important;
+  text-shadow: 0 -1px 1px rgba(110, 110, 110, 0.4) !important;
+  border-color: #bbbbbb !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  background: #bbbbbb !important;
+}
+#dialogBox .container .box.confirm .footer .btn2:hover {
+  border-color: #d9534f;
+  background: #de6764;
+}
+#dialogBox .container .box.confirm .footer .btn2:active,
+#dialogBox .container .box.confirm .footer .btn2.active {
+  color: #761c19;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  background: #c46764;
+}
+#dialogBox .container .box.loading,
+#dialogBox .container .box.complete,
+#dialogBox .container .box.failure {
+  width: 100px;
+  padding: 16px 8px;
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+#dialogBox .container .box.loading .msg,
+#dialogBox .container .box.complete .msg,
+#dialogBox .container .box.failure .msg {
+  margin-top: 8px;
+  line-height: 1.6;
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  word-break: break-all;
+  white-space: normal;
+}
+#dialogBox .container .box.loading .icon {
+  position: relative;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border-top: 4.5px solid rgba(255, 255, 255, 0.2);
+  border-right: 4.5px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 4.5px solid rgba(255, 255, 255, 0.2);
+  border-left: 4.5px solid #ffffff;
+  -webkit-animation: loading 1s linear infinite;
+  -moz-animation: loading 1s linear infinite;
+  -o-animation: loading 1s linear infinite;
+  animation: loading 1s linear infinite;
+  margin: 0 auto;
+}
+@-webkit-keyframes loading {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes loading {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-o-keyframes loading {
+  from {
+    -o-transform: rotate(0deg);
+  }
+  to {
+    -o-transform: rotate(360deg);
+  }
+}
+@keyframes loading {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+#dialogBox .container .box.complete .icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+}
+#dialogBox .container .box.complete .icon:before {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 70%;
+  margin-left: 25%;
+  border-right: solid 3px #ffffff;
+  border-bottom: solid 3px #ffffff;
+  border-bottom-right-radius: 3px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#dialogBox .container .box.failure .icon {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+}
+#dialogBox .container .box.failure .icon:before,
+#dialogBox .container .box.failure .icon:after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 4px;
+  font-size: 0;
+  background: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -15px;
+  margin-top: -2px;
+}
+#dialogBox .container .box.failure .icon:before {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#dialogBox .container .box.failure .icon:after {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}

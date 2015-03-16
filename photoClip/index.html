@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN" id="index">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>图片裁剪</title>
+<link rel="stylesheet" href="css/common.css" />
+<style>
+body {
+	margin: 0;
+	text-align: center;
+}
+#img-container {
+	margin: 20px;
+	height: 300px;
+}
+#file,
+#clipBtn {
+	margin: 20px;
+}
+#view {
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+}
+</style>
+</head>
+<body ontouchstart="">
+<div id="clipArea"></div>
+<input type="file" id="file">
+<button id="clipBtn">截取</button>
+<div id="view"></div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.alert.min.js"></script>
+<script src="js/iscroll-zoom.min.js"></script>
+<script src="js/hammer.min.js"></script>
+<script src="js/jquery.photoClip.min.js"></script>
+<script>
+//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+$("#clipArea").photoClip({
+	width: 200,
+	height: 200,
+	file: "#file",
+	view: "#view",
+	ok: "#clipBtn",
+	loadStart: function() {
+		window.loadStart("照片读取中");
+	},
+	loadComplete: function() {
+		window.loadEnd();
+	}
+});
+</script>
+
+</body>
+</html>

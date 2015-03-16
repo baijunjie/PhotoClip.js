@@ -1,0 +1,433 @@
+@charset "UTF-8";
+
+/////////////////////////////////// 自定义布局工具 ///////////////////////////////////
+
+// 图片文本两栏自适应
+.img-txt(@img_width, @img_height, @padding_left: 14px) {
+	>:first-child {
+		float: left;
+		.sz(@img_width, @img_height);
+	}
+	>:not(:first-child) {
+		display: block;
+		width: auto;
+		padding-left: @padding_left;
+		margin-left: @img_width;
+	}
+}
+// 文本图片两栏自适应
+.txt-img(@img_width, @img_height, @padding_right: 14px) {
+	>:first-child {
+		float: right;
+		.sz(@img_width, @img_height);
+	}
+	>:not(:first-child) {
+		display: block;
+		width: auto;
+		padding-right: @padding_right;
+		margin-right: @img_width;
+	}
+}
+
+
+
+// 左栏定宽，右栏自适应（高度100%时，两栏不可以有上下内边距和边框）
+// @h_offset 参数表示左右内边距+边框的值
+.col2(@width, @h_offset: 0) when not (@width = abs) {
+	>:first-child {
+		float: left;
+		.setWidth(@width);
+		height: 100%;
+	}
+	>:nth-child(2) {
+		display: block;
+		.sz(auto, 100%);
+		margin-left: @width + @h_offset;
+	}
+}
+// 如果某一栏需要设置上下内边距，且必须高度自适应，可以使用绝对定位的方法
+.col2(abs, @width, @h_offset: 0) {
+	>:first-child {
+		.fit(0 auto 0 0);
+		.setWidth(@width);
+	}
+	>:nth-child(2) {
+		.fit(0 0 0 @width + @h_offset);
+	}
+}
+// 右栏定宽，左栏自适应
+// 如果不使用绝对定位的方法，那么由于固定栏为浮动元素，因此右栏在文档树中必须位于左栏前面
+.col2-r(@width, @h_offset: 0) when not (@width = abs) {
+	>:first-child {
+		float: right;
+		.setWidth(@width);
+		height: 100%;
+	}
+	>:nth-child(2) {
+		display: block;
+		.sz(auto, 100%);
+		margin-right: @width + @h_offset;
+	}
+}
+// 如果某一栏需要设置上下内边距，且必须高度自适应，可以使用绝对定位的方法
+.col2-r(abs, @width, @h_offset: 0) {
+	>:first-child {
+		.fit(0 @width + @h_offset 0 0);
+	}
+	>:nth-child(2) {
+		.fit(0 0 0 auto);
+		.setWidth(@width);
+	}
+}
+
+
+
+// 三栏自适应
+// 如果不使用绝对定位的方法，那么由于固定栏为浮动元素，因此左右两栏在文档树中必须位于中间栏前面
+.col3(@left_width, @right_width, @left_h_offset: 0, @right_h_offset: 0) when not (@left_width = abs) {
+	>:first-child {
+		float: left;
+		.setWidth(@left_width);
+		height: 100%;
+	}
+	>:nth-child(2) {
+		float: right;
+		.setWidth(@right_width);
+		height: 100%;
+	}
+	>:nth-child(3) {
+		display: block;
+		.sz(auto, 100%);
+		margin-left: @left_width + @left_h_offset;
+		margin-right: @right_width + @right_h_offset;
+	}
+}
+// 如果某一栏需要设置上下内边距，且必须高度自适应，可以使用绝对定位的方法
+.col3(abs, @left_width, @right_width, @left_h_offset: 0, @right_h_offset: 0) {
+	>:first-child {
+		.fit(0 auto 0 0);
+		.setWidth(@left_width);
+	}
+	>:nth-child(2) {
+		.fit(0 @right_width + @right_h_offset 0 @left_width + @left_h_offset);
+	}
+	>:nth-child(3) {
+		.fit(0 0 0 auto);
+		.setWidth(@right_width);
+	}
+}
+
+
+
+// 垂直列表（IE6-7下计算结果会有误差）
+.list(@height, @item_height, @row_count: floor(unit(@height / @item_height))) when not(@height = jy) {
+	.fix;
+	@spacing: (@height - (@item_height * @row_count)) / (@row_count + 1);
+	@half_spacing: @spacing / 2;
+	height: @height;
+	>:nth-child(1n) { margin-top: @spacing; }
+}
+.list(jy, @height, @item_height, @row_count: floor(unit(@height / @item_height))) {
+	.fix;
+	@spacing: (@height - (@item_height * @row_count)) / (@row_count - 1);
+	@half_spacing: @spacing / 2;
+	height: @height + @spacing;
+	margin-top: -@spacing;
+	>:nth-child(1n) { margin-top: @spacing; }
+}
+
+
+
+// 浮动列表（虽然为IE6做了hack，但是由于IE6会将所有小数值转化为整数，因此表现结果会有误差）
+.float-list(@width, @item_width, @column_count: floor(unit(@width / @item_width))) when not(@width = jy) {
+	.cf;
+	@spacing: (@width - (@item_width * @column_count)) / (@column_count + 1);
+	@half_spacing: @spacing / 2;
+	width: @width;
+	>:nth-child(1n) {
+		float: left;
+		margin-left: @spacing;
+		_margin-left: @half_spacing;
+		_margin-right: @half_spacing;
+	}
+}
+.float-list(jy, @width, @item_width, @column_count: floor(unit(@width / @item_width))) {
+	.cf;
+	@spacing: (@width - (@item_width * @column_count)) / (@column_count - 1);
+	width: @width;
+	>:nth-child(1n) {
+		float: left;
+		margin-right: @spacing;
+	}
+	>:nth-child(@{column_count}n) { margin-right: 0; }
+}
+
+
+
+
+// 导航
+.nav-style(@link_color, @line_height, @height) when (iscolor(@link_color)) {
+	>:nth-child(1n) {
+		color: @link_color;
+		height: @height;
+		line-height: @line_height;
+		float: left;
+		text-align: center;
+	}
+}
+.nav-style(@link_color, @line_height, @height) when not (iscolor(@link_color)) {
+	>:nth-child(1n) {
+		color: inherit;
+		height: @height;
+		line-height: @line_height;
+		float: left;
+		text-align: center;
+	}
+}
+.nav-init(@border_color, @link_color, @width, @item, @line_height, @height) when (@item=auto) and (iscolor(@border_color)) {
+	.nav-style(@link_color, @line_height, @height);
+	.inbl;
+	width: @width;
+	>:nth-child(1n) {
+		padding: 0 1em; //如果有边框，那么表示子元素中<a>链接为行内元素，则padding加在<a>链接的容器上
+		width: @item;
+		white-space: nowrap;
+	}
+}
+.nav-init(@border_color, @link_color, @width, @item, @line_height, @height) when (@item=auto) and not (iscolor(@border_color)) {
+	.nav-style(@link_color, @line_height, @height);
+	.inbl;
+	width: @width;
+	>:nth-child(1n) {
+		width: @item;
+		white-space: nowrap;
+	}
+	>:nth-child(1n) > a,
+	>a { padding: 0 1em; } //如果没有边框，那么表示子元素中<a>链接为块元素，则padding加在<a>链接的上
+}
+.nav-init(@border_color, @link_color, @width, @item, @line_height, @height) when (ispixel(@item)), (isem(@item)), (ispercentage(@item)) {
+	.nav-style(@link_color, @line_height, @height);
+	.inbl;
+	width: @width;
+	>:nth-child(1n) { width: @item; .of3p; }
+}
+.nav-init(@border_color, @link_color, @width, @item, @line_height, @height) when (isnumber(@item)) and not(ispixel(@item)) and not(isem(@item)) and not(ispercentage(@item)) {
+	.nav-style(@link_color, @line_height, @height);
+	display: block;
+	width: @width;
+	.clear;
+	>:nth-child(1n) {
+		.of3p;
+		width: 100% / @item;
+	}
+}
+.nav(@border_color: #666, @link_color: #666, @width: auto, @item: auto, @line_height: 100%, @height: auto) when (iscolor(@border_color)) {
+	.nav-init(@border_color, @link_color, @width, @item, @line_height, @height);
+	>:nth-child(1n) {
+		border-left: 1px solid @border_color;
+		margin-left: -1px;
+		&:first-child {
+			border-left-style: none;
+			margin-left: 0;
+		}
+	}
+	>:nth-child(1n) > a,
+	>a { .acl(@link_color); }
+}
+.nav(@border_color, @link_color, @width: auto, @item: auto, @line_height: 100%, @height: auto) when not (iscolor(@border_color)) {
+	.nav-init(@border_color, @link_color, @width, @item, @line_height, @height);
+	>:nth-child(1n) > a,
+	>a {
+		display: block;
+		_display: inline-block; //IE6下块元素宽度自动时会撑大宽度同样是自动的非块父元素（也包括浮动或者绝对定位的块元素），因此这里需要hack
+		height: 100%;
+		.acl(@link_color, none);
+	}
+}
+
+
+
+// 广告（IE6下显示不正确，如果需要兼容IE6，请用GIF动态图片替换）
+// html 格式如下：
+// <div class="ad">
+// 	<object data="ad/flash.swf" width="100%" type="application/x-shockwave-flash">
+// 		<param name="src" value="ad/flash.swf">
+// 		<param name="wmode" value="opaque">
+// 		<param name="quality" value="high">
+// 	</object>
+// 	<a href="###"></a>
+// </div>
+.ad(fl, @width, @height) {
+	display: block;
+	.sz(@width, @height);
+	margin: 3px auto;
+	position: relative;
+
+	>:nth-child(1n) {
+		position: absolute;
+		top: 0;
+		left: 0;
+		.sz(100%);
+		z-index: 0;
+	}
+	a {
+		display: block;
+		z-index: 1;
+		*background: #fff;
+		*filter: alpha(opacity=0);
+	}
+}
+.ad(@width, @height) {
+	display: block;
+	.sz(@width, @height);
+	margin: 3px auto;
+	img { .sz(100%); }
+}
+
+
+
+// 滚动横幅
+.banner(@width, @height) {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	.sz(@width, @height);
+
+	>:first-child {
+		display: block;
+		margin: 0;
+		position: absolute;
+		left: 0;
+		top: 0;
+		.sz(1000%, 100%);
+		.nosel;
+
+		>:nth-child(1n) {
+			float: left;
+			.sz(10%, 100%);
+
+			>a {
+				display: block;
+				.sz(auto, 100%);
+			}
+
+			>img,
+			a>img { .sz(100%); }
+		}
+	}
+}
+// 高度自适应
+// 这里第三个参数传入的宽度的百分比值
+.banner(@width, @height, @widthPercentage) {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	.sz(@widthPercentage, 0);
+	padding-top: @widthPercentage * @height / @width;
+
+	>:first-child {
+		display: block;
+		margin: 0;
+		position: absolute;
+		left: 0;
+		top: 0;
+		.sz(1000%, 100%);
+		.nosel;
+
+		>:nth-child(1n) {
+			position: relative;
+			float: left;
+			.sz(10%, 100%);
+
+			>a {
+				position: relative;
+				display: block;
+				.sz(auto, 100%);
+			}
+
+			>img,
+			a>img {
+				position: absolute; // 如果采用高度随宽度自适应的布局方式，那么Android下<img>如果需要用百分比来设置高度，则必须为绝对定位
+				.sz(100%);
+			}
+		}
+	}
+}
+// 高度自动
+.banner(@width: 100%) {
+	display: block;
+	overflow: hidden;
+	.sz(@width, auto);
+
+	>:first-child {
+		display: block;
+		margin: 0;
+		.sz(1000%, auto);
+		.nosel;
+
+		>:nth-child(1n) {
+			float: left;
+			.sz(10%, auto);
+
+			>a {
+				display: block;
+				.sz(auto, auto);
+			}
+
+			>img,
+			a>img {
+				.sz(100%, auto);
+			}
+		}
+	}
+}
+
+
+
+// 六宫格布局（两排三列）
+.grid6-init(@width, @height) {
+	position: relative;
+	>:nth-child(1n) {
+		position: absolute;
+		width: @width;
+		height: @height;
+	}
+	>:nth-child(1) { left: 0; top: 0; }
+	>:nth-child(2) { .hc(top, 0); }
+	>:nth-child(3) { right: 0; top: 0; }
+	>:nth-child(4) { left: 0; bottom: 0; }
+	>:nth-child(5) { .hc(bottom, 0); }
+	>:nth-child(6) { right: 0; bottom: 0; }
+	img { position: absolute; } // 如果采用高度随宽度自适应的布局方式，那么Android下<img>如果需要用百分比来设置高度，则必须为绝对定位
+}
+.grid6(@size) {
+	.grid6-init(@size, @size);
+}
+.grid6(@width, @height) {
+	.grid6-init(@width, @height);
+}
+// 九宫格布局
+.grid9-init(@width, @height) {
+	position: relative;
+	>:nth-child(1n) {
+		position: absolute;
+		width: @width;
+		height: @height;
+	}
+	>:nth-child(1) { left: 0; top: 0; }
+	>:nth-child(2) { .hc(top, 0); }
+	>:nth-child(3) { right: 0; top: 0; }
+	>:nth-child(4) { .vc(left, 0); }
+	>:nth-child(5) { .hvc; }
+	>:nth-child(6) { .vc(right, 0); }
+	>:nth-child(7) { left: 0; bottom: 0; }
+	>:nth-child(8) { .hc(bottom, 0); }
+	>:nth-child(9) { right: 0; bottom: 0; }
+	img { position: absolute; } // 如果采用高度随宽度自适应的布局方式，那么Android下<img>如果需要用百分比来设置高度，则必须为绝对定位
+}
+.grid9(@size: 33%) {
+	.grid9-init(@size, @size);
+}
+.grid9(@width, @height) {
+	.grid9-init(@width, @height);
+}

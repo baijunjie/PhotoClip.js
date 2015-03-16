@@ -1,0 +1,298 @@
+@charset "UTF-8";
+
+/////////////////////////////////// 自定义animation动画工具 ///////////////////////////////////
+
+// loading 加载中动画
+.loading(@animation_name, @color: #666, @size: 30px) {
+	position: relative;
+	width: @size*.7;
+	height: @size*.7;
+	border-radius: 50%;
+	border-top: @size*.15 solid fade(@color, 20%);
+	border-right: @size*.15 solid fade(@color, 20%);
+	border-bottom: @size*.15 solid fade(@color, 20%);
+	border-left: @size*.15 solid @color;
+	.rotation-animation(@animation_name, 1s);
+}
+.loading2(@animation_name, @color: #666, @size: 30px) {
+
+	@padding: @size*.4;
+	@wh: @size*.2;
+	@xy1: @size*.24;
+	@xy2: @size*.36;
+	@diffuse1: @size*.02;
+	@diffuse2: @size*.1;
+
+	width: @wh;
+	height: @wh;
+	padding: @padding;
+
+	&:after {
+		content: "";
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		position: relative;
+		.animation(@animation_name 1.4s linear infinite);
+	}
+	@-webkit-keyframes @animation_name { .keyframes("-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes; }
+	@-o-keyframes @animation_name { .keyframes; }
+	@keyframes @animation_name { .keyframes; }
+
+	.keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		0%,100% {
+			@{prefix}box-shadow: 0 -@xy2 0 @diffuse1 @color,
+			@xy1 -@xy1 0 0 @color,
+			@xy2 0 0 -@diffuse2 @color,
+			@xy1 @xy1 0 -@diffuse2 @color,
+			0 @xy2 0 -@diffuse2 @color,
+			-@xy1 @xy1 0 -@diffuse2 @color,
+			-@xy2 0 0 -@diffuse2 @color,
+			-@xy1 -@xy1 0 0 @color;
+		}
+		12.5% {
+			@{prefix}box-shadow: 0 -@xy2 0 0 @color,
+			@xy1 -@xy1 0 @diffuse1 @color,
+			@xy2 0 0 0 @color,
+			@xy1 @xy1 0 -@diffuse2 @color,
+			0 @xy2 0 -@diffuse2 @color,
+			-@xy1 @xy1 0 -@diffuse2 @color,
+			-@xy2 0 0 -@diffuse2 @color,
+			-@xy1 -@xy1 0 -@diffuse2 @color;
+		}
+		25% {
+			@{prefix}box-shadow: 0 -@xy2 0 -@diffuse2 @color,
+			@xy1 -@xy1 0 0 @color,
+			@xy2 0 0 @diffuse1 @color,
+			@xy1 @xy1 0 0 @color,
+			0 @xy2 0 -@diffuse2 @color,
+			-@xy1 @xy1 0 -@diffuse2 @color,
+			-@xy2 0 0 -@diffuse2 @color,
+			-@xy1 -@xy1 0 -@diffuse2 @color;
+		}
+		37.5% {
+			@{prefix}box-shadow: 0 -@xy2 0 -@diffuse2 @color,
+			@xy1 -@xy1 0 -@diffuse2 @color,
+			@xy2 0 0 0 @color,
+			@xy1 @xy1 0 @diffuse1 @color,
+			0 @xy2 0 0 @color,
+			-@xy1 @xy1 0 -@diffuse2 @color,
+			-@xy2 0 0 -@diffuse2 @color,
+			-@xy1 -@xy1 0 -@diffuse2 @color;
+		}
+		50% {
+			@{prefix}box-shadow: 0 -@xy2 0 -@diffuse2 @color,
+			@xy1 -@xy1 0 -@diffuse2 @color,
+			@xy2 0 0 -@diffuse2 @color,
+			@xy1 @xy1 0 0 @color,
+			0 @xy2 0 @diffuse1 @color,
+			-@xy1 @xy1 0 0 @color,
+			-@xy2 0 0 -@diffuse2 @color,
+			-@xy1 -@xy1 0 -@diffuse2 @color;
+		}
+		62.5% {
+			@{prefix}box-shadow: 0 -@xy2 0 -@diffuse2 @color,
+			@xy1 -@xy1 0 -@diffuse2 @color,
+			@xy2 0 0 -@diffuse2 @color,
+			@xy1 @xy1 0 -@diffuse2 @color,
+			0 @xy2 0 0 @color,
+			-@xy1 @xy1 0 @diffuse1 @color,
+			-@xy2 0 0 0 @color,
+			-@xy1 -@xy1 0 -@diffuse2 @color;
+		}
+		75% {
+			@{prefix}box-shadow: 0 -@xy2 0 -@diffuse2 @color,
+			@xy1 -@xy1 0 -@diffuse2 @color,
+			@xy2 0 0 -@diffuse2 @color,
+			@xy1 @xy1 0 -@diffuse2 @color,
+			0 @xy2 0 -@diffuse2 @color,
+			-@xy1 @xy1 0 0 @color,
+			-@xy2 0 0 @diffuse1 @color,
+			-@xy1 -@xy1 0 0 @color;
+		}
+		87.5% {
+			@{prefix}box-shadow: 0 -@xy2 0 0 @color,
+			@xy1 -@xy1 0 -@diffuse2 @color,
+			@xy2 0 0 -@diffuse2 @color,
+			@xy1 @xy1 0 -@diffuse2 @color,
+			0 @xy2 0 -@diffuse2 @color,
+			-@xy1 @xy1 0 0 @color,
+			-@xy2 0 0 0 @color,
+			-@xy1 -@xy1 0 @diffuse1 @color;
+		}
+	}
+}
+
+
+
+// 旋转
+.rotation-animation(@animation_name, @duration: 1s, @isCCW: false) {
+	.animation(@animation_name @duration linear infinite);
+
+	@-webkit-keyframes @animation_name { .keyframes(@isCCW, "-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes(@isCCW, "-moz-"); }
+	@-o-keyframes @animation_name { .keyframes(@isCCW, "-o-"); }
+	@keyframes @animation_name { .keyframes(@isCCW); }
+
+	.keyframes(@isCCW, @prefixStr: "") when (@isCCW = false) {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: rotate(0deg);   }
+		to   { @{prefix}transform: rotate(360deg); }
+	}
+	.keyframes(@isCCW, @prefixStr: "") when (@isCCW = true) {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: rotate(0deg);    }
+		to   { @{prefix}transform: rotate(-360deg); }
+	}
+}
+
+
+// 两点间来回移动
+.move-animation(@animation_name, @duration: 3s, @start: 0 0, @end: 50px 0, @easing: ease-in-out) {
+	.animation(@animation_name @duration @easing infinite alternate);
+
+	@-webkit-keyframes @animation_name { .keyframes("-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes("-moz-"); }
+	@-o-keyframes @animation_name { .keyframes("-o-"); }
+	@keyframes @animation_name { .keyframes; }
+
+	.keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: translate(extract(@start, 1), extract(@start, 2)); }
+		to   { @{prefix}transform: translate(extract(@end, 1),   extract(@end, 2)  ); }
+	}
+}
+
+
+// 四个点之间漂浮
+.float-animation(@animation_name, @duration: 6s, @range: 10px, @isCCW: false) {
+	.animation(@animation_name @duration linear infinite);
+
+	@-webkit-keyframes @animation_name { .keyframes(@isCCW, "-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes(@isCCW, "-moz-"); }
+	@-o-keyframes @animation_name { .keyframes(@isCCW, "-o-"); }
+	@keyframes @animation_name { .keyframes(@isCCW); }
+
+	.keyframes(@isCCW, @prefixStr: "") when (@isCCW = false) {
+		@prefix: ~"@{prefixStr}";
+		0%   { @{prefix}transform: translate(-@range, 0); }
+		25%  { @{prefix}transform: translate(0, -@range); }
+		50%  { @{prefix}transform: translate(@range, 0);  }
+		75%  { @{prefix}transform: translate(0, @range);  }
+		100% { @{prefix}transform: translate(-@range, 0); }
+	}
+	.keyframes(@isCCW, @prefixStr: "") when (@isCCW = true) {
+		@prefix: ~"@{prefixStr}";
+		0%   { @{prefix}transform: translate(@range, 0);  }
+		25%  { @{prefix}transform: translate(0, -@range); }
+		50%  { @{prefix}transform: translate(-@range, 0); }
+		75%  { @{prefix}transform: translate(0, @range);  }
+		100% { @{prefix}transform: translate(@range, 0);  }
+	}
+}
+
+
+// 摆动
+.swing-animation(@animation_name, @duration: 3s, @start: -30deg, @end: 30deg) {
+	.animation(@animation_name @duration ease-in-out infinite alternate);
+
+	@-webkit-keyframes @animation_name { .keyframes("-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes("-moz-"); }
+	@-o-keyframes @animation_name { .keyframes("-o-"); }
+	@keyframes @animation_name { .keyframes; }
+
+	.keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: rotate(@start); }
+		to   { @{prefix}transform: rotate(@end);   }
+	}
+}
+
+
+// 箭头
+.arrow-animation(@animation_name, @duration: 1s, @start: 0, @end: -20px, @direction: v) {
+	.animation(@animation_name @duration infinite);
+
+	@-webkit-keyframes @animation_name { .keyframes(@direction, "-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes(@direction, "-moz-"); }
+	@-o-keyframes @animation_name { .keyframes(@direction, "-o-"); }
+	@keyframes @animation_name { .keyframes(@direction); }
+
+	.keyframes(@direction, @prefixStr: "") when (@direction = v) {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: translate(0, @start); .op(0); }
+		to   { @{prefix}transform: translate(0, @end);   .op(1); }
+	}
+	.keyframes(@direction, @prefixStr: "") when (@direction = h) {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: translate(@start, 0); .op(0); }
+		to   { @{prefix}transform: translate(@end,   0); .op(1); }
+	}
+}
+
+
+// 带投影的上下悬浮
+.suspension-animation(@obj_animation_name, @shadow_animation_name, @obj, @shadow, @duration: 1s, @obj_offset: 5px, @shadow_scale: 0.7) {
+	@{elem1} {
+		.animation(@obj_animation_name @duration infinite alternate);
+	}
+	@{elem2} {
+		.animation(@shadow_animation_name @duration infinite alternate);
+	}
+
+	@-webkit-keyframes @obj_animation_name { .obj-keyframes("-webkit-"); }
+	@-moz-keyframes @obj_animation_name { .obj-keyframes("-moz-"); }
+	@-o-keyframes @obj_animation_name { .obj-keyframes("-o-"); }
+	@keyframes @obj_animation_name { .obj-keyframes; }
+
+	@-webkit-keyframes @shadow_animation_name { .shadow-keyframes("-webkit-"); }
+	@-moz-keyframes @shadow_animation_name { .shadow-keyframes("-moz-"); }
+	@-o-keyframes @shadow_animation_name { .shadow-keyframes("-o-"); }
+	@keyframes @shadow_animation_name { .shadow-keyframes; }
+
+	.obj-keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: translate(0, -@obj_offset); }
+		to   { @{prefix}transform: translate(0, @obj_offset);  }
+	}
+
+	.shadow-keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		from { @{prefix}transform: scale(@shadow_scale); }
+		to   { @{prefix}transform: scale(1);             }
+	}
+}
+
+
+// 果冻
+.jelly-animation(@animation_name, @duration: 2s, @range: 1) {
+	.animation(@animation_name @duration infinite);
+
+	@-webkit-keyframes @animation_name { .keyframes("-webkit-"); }
+	@-moz-keyframes @animation_name { .keyframes("-moz-"); }
+	@-o-keyframes @animation_name { .keyframes("-o-"); }
+	@keyframes @animation_name { .keyframes; }
+
+	@step1: @range * .3;
+	@step2: @step1 * .3;
+	@step3: @step2 * .3;
+	@step4: @step3 * .3;
+
+	.keyframes(@prefixStr: "") {
+		@prefix: ~"@{prefixStr}";
+		0%   { @{prefix}transform: scale(1 + @step2, 1 + @step2); }
+		10%  { @{prefix}transform: scale(1         , 1 + @step1); }
+		20%  { @{prefix}transform: scale(1 + @step1, 1         ); }
+		30%  { @{prefix}transform: scale(1         , 1 + @step2); }
+		40%  { @{prefix}transform: scale(1 + @step2, 1         ); }
+		50%  { @{prefix}transform: scale(1         , 1 + @step3); }
+		60%  { @{prefix}transform: scale(1 + @step3, 1         ); }
+		70%  { @{prefix}transform: scale(1         , 1 + @step4); }
+		80%  { @{prefix}transform: scale(1 + @step4, 1         ); }
+		90%  { @{prefix}transform: scale(1         , 1         ); }
+		100% { @{prefix}transform: scale(1         , 1         ); }
+	}
+}

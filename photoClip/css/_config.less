@@ -1,0 +1,52 @@
+@charset "UTF-8";
+@import "tools/_tools.less";
+////////////////////////////////////// 字体及颜色样式配置 //////////////////////////////////////
+
+@ftDef: Helvetica, Arial, Verdana, sans-serif;  //页面默认备用字体
+@ft: Microsoft YaHei;  //页面默认首选字体（微软雅黑）
+@ft2: SimSun;  //常用字体2（宋体）
+@ft3: SimHei;  //常用字体3（黑体）
+@ft4: Arial;  //常用字体4
+@ft5: Impact;  //常用字体5
+@ftsz: 16px;  //页面默认字体大小
+@ftcl: #333;  //常用字体颜色（黑）
+@ftcl2: #666;  //常用字体颜色（深灰）
+@ftcl3: #999;  //常用字体颜色（灰）
+@ftcl4: #fff;  //常用字体颜色（白）
+@bdcl: #ddd;  //页面默认边框颜色（灰）
+@lkcl: #05a;  //页面默认链接颜色（蓝）
+@lkcl2: #fff;  //常用链接颜色（白）
+@bgcl: #fff;  //页面默认背景颜色（白）
+@bgcl2: #eee;  //页面背景颜色（暗白）
+@bgcl3: #e5e5e5;  //页面背景颜色（淡灰）
+
+// 安全色
+@gray:		#bbbbbb; //灰
+@blue:		#428bca; //蓝
+@green:		#5cb85c; //绿
+@yellow:	#f0ad4e; //黄
+@red:		#d9534f; //红
+@sky:		#5bc0de; //天蓝
+
+
+////////////////////////////////////// 表单元素样式配置 //////////////////////////////////////
+
+@defalut_btn_color: #fff;  //按钮颜色，默认白色
+.btn(@btn_color: @defalut_btn_color, @font_size: 16px, @radius: .25em) {
+	//.arc-btn(@btn_color, @font_size, @radius);  //立体弧面按钮
+	//.cube-btn(@btn_color, @font_size, @radius);  //立体按钮
+	.flat-btn(@btn_color, @font_size, @radius);  //扁平按钮
+	//.hollow-btn(@btn_color, @font_size, @radius);  //空心按钮
+}
+.btncl(@btn_color) {
+	//.arc-btn-color(@btn_color);  //立体弧面按钮颜色
+	//.cube-btn-color(@btn_color);  //立体按钮颜色
+	.flat-btn-color(@btn_color);  //扁平按钮颜色
+	//.hollow-btn-color(@btn_color);  //空心按钮颜色
+}
+
+
+////////////////////////////////////// 头部区域样式配置 //////////////////////////////////////
+
+@header_height: 100px;  //头部高度
+@header_bgColor: #fff;  //头部背景颜色
