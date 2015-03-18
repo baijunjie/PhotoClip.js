@@ -107,8 +107,6 @@ function photoClip(container, option) {
 			fileReader.readAsDataURL(this.files[0]); // 读取文件内容
 
 			loadStart.call(fileReader, this.files[0]);
-
-
 		}
 	});
 
