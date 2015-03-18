@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.0
+ * jQuery photoClip v1.2
  * 基于 jquery.transit.js 和 iscroll-zoom.js 以及 hammer.js 插件
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
@@ -107,7 +107,13 @@ function photoClip(container, option) {
 			fileReader.readAsDataURL(this.files[0]); // 读取文件内容
 
 			loadStart.call(fileReader, this.files[0]);
+
+
 		}
+	});
+
+	$file.click(function() {
+		this.value = "";
 	});
 
 
