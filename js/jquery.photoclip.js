@@ -1,19 +1,22 @@
 /**
  * jQuery photoClip v1.2
  * 基于 jquery.transit.js 和 iscroll-zoom.js 以及 hammer.js 插件
+ *
+ * @author 白俊杰 625603381@qq.com 2014/07/31
+ * https://github.com/baijunjie/jQuery-photoClip
+ *
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
- * @author 白俊杰 625603381@qq.com 2014/07/31
- * @option_param width 截取部分的宽度
- * @option_param height 截取部分的高度
- * @option_param file 上传图片的<input type="file">控件的选择器或者DOM对象
- * @option_param view 显示截取后图像的容器的选择器或者DOM对象
- * @option_param ok 确认截图按钮的选择器或者DOM对象
- * @option_param loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
- * @option_param loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
- * @option_param loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
- * @option_param clipFinish 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param {number} width 截取部分的宽度
+ * @option_param {number} height 截取部分的高度
+ * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
+ * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
+ * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
+ * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+ * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+ * @option_param {function} loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+ * @option_param {function} clipFinish 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
  */
 
 (function($) {
