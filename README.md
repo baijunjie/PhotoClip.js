@@ -20,6 +20,7 @@
 ```html
 <script src="js/jquery.min.js"></script>
 <script src="js/hammer.min.js"></script>
+<script src="js/iscroll-zoom.min.js"></script>
 <script src="js/jquery.photoClip.min.js"></script>
 <script>
 $("#clipArea").photoClip({
