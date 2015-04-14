@@ -1,6 +1,9 @@
 /**
  * jQuery photoClip v1.2
- * 基于 jquery.transit.js 和 iscroll-zoom.js 以及 hammer.js 插件
+ * 依赖插件
+ * - jquery.transit.js
+ * - iscroll-zoom.js
+ * - hammer.js
  *
  * @author 白俊杰 625603381@qq.com 2014/07/31
  * https://github.com/baijunjie/jQuery-photoClip
