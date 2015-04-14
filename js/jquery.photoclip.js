@@ -552,9 +552,9 @@ function photoClip(container, option) {
 		ctx.drawImage(sourceImgObj, 0, 0, drawWidth, drawHeight);
 		var newImageData = cvs.toDataURL(mimeType, quality || .8);
 		return newImageData;
-     }
-     function createImg(src) {
- 		if ($img &&　$img.length) {
+	}
+	function createImg(src) {
+		if ($img &&　$img.length) {
 			// 删除旧的图片以释放内存，防止IOS设备的webview崩溃
 			$img.remove();
 			delete $img[0];
@@ -565,7 +565,7 @@ function photoClip(container, option) {
 		});
 		$img.load(imgLoad);
 		$img.attr("src", src); // 设置图片base64值
-     }
+	}
 
 	function init() {
 		// 初始化容器
