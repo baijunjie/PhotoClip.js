@@ -5,9 +5,9 @@
 
 # 插件依赖
 
-[jquery.transit.js](https://github.com/rstacruz/jquery.transit)(demo中已经集成在jquery.js文件中)
-[iscroll-zoom.js](https://github.com/cubiq/iscroll)(由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复)
-[hammer.js](https://github.com/hammerjs/hammer.js) 插件
+[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件(demo中已经集成在jquery.js文件中)<br>
+[[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件(由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复)<br>
+[[hammer.js]](https://github.com/hammerjs/hammer.js) 插件
 
 # 操作说明
 
