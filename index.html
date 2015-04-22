@@ -47,10 +47,10 @@ $("#clipArea").photoClip({
 	view: "#view",
 	ok: "#clipBtn",
 	loadStart: function() {
-		window.loadStart("照片读取中");
+		console.log("照片读取中");
 	},
 	loadComplete: function() {
-		window.loadEnd();
+		console.log("照片读取完成");
 	},
 	clipFinish: function(dataURL) {
 		console.log(dataURL);
