@@ -29,6 +29,7 @@ $("#clipArea").photoClip({
 	file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
 	ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
+	strictSize: false, // 是否严格按照截取宽高裁剪。默认为false，表示截取宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取宽高输出
 	loadStart: function() {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
 	loadComplete: function() {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
 	loadError: function() {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
@@ -36,4 +37,5 @@ $("#clipArea").photoClip({
 });
 </script>
 ```
+
 
