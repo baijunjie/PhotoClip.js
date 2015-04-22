@@ -37,5 +37,3 @@ $("#clipArea").photoClip({
 });
 </script>
 ```
-
-
