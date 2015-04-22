@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.3
+ * jQuery photoClip v1.2
  * 依赖插件
  * - jquery.transit.js
  * - iscroll-zoom.js
@@ -16,7 +16,6 @@
  * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
  * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
  * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
- * @option_param {boolean} strictSize 是否严格按照截取宽高裁剪。默认为false，表示截取宽高仅用于约束比例。如果设置为true，则表示截取出的图像宽高严格按照截取宽高输出
  * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
  * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
  * @option_param {function} loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
@@ -24,7 +23,6 @@
  */
 
 (function($) {
-'use strict';
 
 $.fn.photoClip = function(option) {
 	if (!window.FileReader) {
@@ -38,7 +36,6 @@ $.fn.photoClip = function(option) {
 		file: "",
 		view: "",
 		ok: "",
-		strictSize: false,
 		loadStart: function() {},
 		loadComplete: function() {},
 		loadError: function() {},
@@ -59,7 +56,6 @@ function photoClip(container, option) {
 		file = option.file,
 		view = option.view,
 		ok = option.ok,
-		strictSize = option.strictSize,
 		loadStart = option.loadStart,
 		loadComplete = option.loadComplete,
 		loadError = option.loadError,
@@ -141,7 +137,7 @@ function photoClip(container, option) {
 	initEvent();
 	initClip();
 
-	var $ok = $(ok);
+	$ok = $(ok);
 	if ($ok.length) {
 		$ok.click(function() {
 			clipImg();
@@ -430,17 +426,9 @@ function photoClip(container, option) {
 		var ctx = canvas.getContext("2d");
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.save();
-
-		if (strictSize) {
-			ctx.scale(scale, scale);
-		} else {
-			canvas.width = clipWidth / scale;
-			canvas.height = clipHeight / scale;
-		}
-
+		ctx.scale(scale, scale);
 		ctx.translate(curX - local.x / scale, curY - local.y / scale);
 		ctx.rotate(curAngle * Math.PI / 180);
-
 		ctx.drawImage($img[0], 0, 0);
 		ctx.restore();
 
@@ -554,11 +542,11 @@ function photoClip(container, option) {
 
 		var cvs = document.createElement('canvas');
 		var ctx = cvs.getContext("2d");
-		if (angleOffset) {
+		if (angleOffset == 90) {
 			cvs.width = drawHeight;
 			cvs.height = drawWidth;
 			ctx.translate(drawHeight, 0);
-			ctx.rotate(angleOffset * Math.PI / 180);
+			ctx.rotate(Math.PI * 0.5);
 		} else {
 			cvs.width = drawWidth;
 			cvs.height = drawHeight;
