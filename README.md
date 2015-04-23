@@ -5,7 +5,7 @@
 
 ## 依赖插件
 
-[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件(demo中已经集成在jquery.js文件中)<br>
+[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件<br>
 [[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件(由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复)<br>
 [[hammer.js]](https://github.com/hammerjs/hammer.js) 插件
 
@@ -18,7 +18,8 @@
 ## 使用方法及参数配置简介
 
 ```html
-<script src="js/jquery.min.js"></script>
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/jquery.transit.min.js"></script>
 <script src="js/hammer.min.js"></script>
 <script src="js/iscroll-zoom.min.js"></script>
 <script src="js/jquery.photoClip.min.js"></script>
