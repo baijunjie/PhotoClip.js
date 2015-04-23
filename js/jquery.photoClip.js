@@ -540,7 +540,7 @@ function photoClip(container, option) {
 		// 因此这里需要缩放
 		var maxSide = Math.max(drawWidth, drawHeight);
 		if (maxSide > 1024) {
-			minSide = Math.min(drawWidth, drawHeight);
+			var minSide = Math.min(drawWidth, drawHeight);
 			minSide = minSide / maxSide * 1024;
 			maxSide = 1024;
 			if (drawWidth > drawHeight) {
