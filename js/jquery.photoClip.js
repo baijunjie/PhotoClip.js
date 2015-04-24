@@ -1,7 +1,6 @@
 /**
- * jQuery photoClip v1.3
+ * jQuery photoClip v1.4
  * 依赖插件
- * - jquery.transit.js
  * - iscroll-zoom.js
  * - hammer.js
  *
@@ -193,13 +192,9 @@ function photoClip(container, option) {
 
 		$rotateLayer.css({
 			"width": imgWidth,
-			"height": imgHeight,
-			"transform-origin": "0 0",
-			"transform": "translateZ(0px)",
-			"x": curX,
-			"y": curY,
-			"rotate": curAngle
+			"height": imgHeight
 		});
+		setTransform($rotateLayer, curX, curY, curAngle);
 
 		calculateScale(imgWidth, imgHeight);
 		myScroll.zoom(myScroll.options.zoomStart);
@@ -375,16 +370,10 @@ function photoClip(container, option) {
 		}
 		curX = curX.toFixed(2) - 0;
 		curY = curY.toFixed(2) - 0;
-		$rotateLayer.css({
-			"transform-origin": originX+"px "+originY+"px",
-			"x": curX,
-			"y": curY
-		});
+		setTransform($rotateLayer, curX, curY, curAngle, originX, originY);
 
 		// 开始旋转
-		$rotateLayer.transition({
-			"rotate": newAngle
-		}, 200, function() {
+		setTransition($rotateLayer, curX, curY, newAngle, 200, function() {
 			atRotation = false;
 			curAngle = newAngle % 360;
 			// 旋转完成后将参考点设回零位
@@ -394,12 +383,7 @@ function photoClip(container, option) {
 			curY += offsetY + parentOffsetY;
 			curX = curX.toFixed(2) - 0;
 			curY = curY.toFixed(2) - 0;
-			$rotateLayer.css({
-				"transform-origin": "0 0",
-				"x": curX,
-				"y": curY,
-				"rotate": curAngle
-			});
+			setTransform($rotateLayer, curX, curY, curAngle);
 			// 相应的父容器（移动层）要减去与旋转层之间的偏移量
 			// 这样看上去就好像图片没有移动
 			myScroll.scrollTo(
@@ -582,6 +566,27 @@ function photoClip(container, option) {
 		$img.attr("src", src); // 设置图片base64值
 	}
 
+	function setTransform($obj, x, y, angle, originX, originY) {
+		originX = originX || 0;
+		originY = originY || 0;
+		var style = {};
+		style[prefix + "transform"] = "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)";
+		style[prefix + "transform-origin"] = originX + "px " + originY + "px";
+		$obj.css(style);
+	}
+	function setTransition($obj, x, y, angle, dur, fn) {
+		// 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
+		// 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
+		// 这样就会导致之前设置的位移也被应用到动画中
+		$obj.css(prefix + "transform");
+		$obj.css(prefix + "transition", prefix + "transform " + dur + "ms");
+		$obj.one(transitionEnd, function() {
+			$obj.css(prefix + "transition", "");
+			fn.call(this);
+		});
+		$obj.css(prefix + "transform", "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)");
+	}
+
 	function init() {
 		// 初始化容器
 		$container = $(container).css({
@@ -680,5 +685,27 @@ function photoClip(container, option) {
 		}
 	}
 }
+
+var prefix = '',
+	transitionEnd;
+
+(function() {
+
+	var eventPrefix,
+		vendors = { Webkit: 'webkit', Moz: '', O: 'o' },
+    	testEl = document.documentElement,
+    	normalizeEvent = function(name) { return eventPrefix ? eventPrefix + name : name.toLowerCase() };
+
+	for (var i in vendors) {
+		if (testEl.style[i + 'TransitionProperty'] !== undefined) {
+			prefix = '-' + i.toLowerCase() + '-';
+			eventPrefix = vendors[i];
+			break;
+		}
+	}
+
+	transitionEnd = normalizeEvent('TransitionEnd');
+
+})();
 
 })(jQuery);

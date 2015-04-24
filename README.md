@@ -1,11 +1,11 @@
-﻿# jQuery-photoClip
+﻿# jQuery-photoClip v1.4
 一款支持手势的裁图插件插件
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
 
 ## 依赖插件
 
-[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件<br>
+<del>[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件</del> v1.4 中已经移除了对该插件的依赖<br>
 [[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件(由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复)<br>
 [[hammer.js]](https://github.com/hammerjs/hammer.js) 插件
 
@@ -19,7 +19,6 @@
 
 ```html
 <script src="js/jquery-2.1.3.min.js"></script>
-<script src="js/jquery.transit.min.js"></script>
 <script src="js/hammer.min.js"></script>
 <script src="js/iscroll-zoom.min.js"></script>
 <script src="js/jquery.photoClip.min.js"></script>
