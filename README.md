@@ -1,4 +1,4 @@
-﻿# jQuery-photoClip v1.4
+﻿# jQuery-photoClip v1.5
 一款支持手势的裁图插件插件
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
@@ -29,6 +29,7 @@ $("#clipArea").photoClip({
 	file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
 	ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
+	outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
 	strictSize: false, // 是否严格按照截取区域宽高裁剪。默认为false，表示截取区域宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取区域宽高输出
 	loadStart: function() {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
 	loadComplete: function() {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
@@ -37,3 +38,10 @@ $("#clipArea").photoClip({
 });
 </script>
 ```
+
+# Changelog
+## v1.5
+* 添加了outputType选项
+* 支持模块化
+## v1.4
+* 添加了strictSize选项

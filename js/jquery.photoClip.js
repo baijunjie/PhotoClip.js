@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.4
+ * jQuery photoClip v1.5
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -15,6 +15,7 @@
  * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
  * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
  * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
+ * @option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
  * @option_param {boolean} strictSize 是否严格按照截取区域宽高裁剪。默认为false，表示截取区域宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取区域宽高输出
  * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
  * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
@@ -22,7 +23,18 @@
  * @option_param {function} clipFinish 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
  */
 
-(function($) {
+(function(root, factory) {
+	"use strict";
+
+	if (typeof define === "function" && define.amd) {
+		define(["jquery"], factory);
+	} else if (typeof exports === "object") {
+		module.exports = factory(require("jquery"));
+	} else {
+		root.returnExports = factory(root.jQuery);
+	}
+
+}(this, function($) {
 'use strict';
 
 $.fn.photoClip = function(option) {
@@ -37,6 +49,7 @@ $.fn.photoClip = function(option) {
 		file: "",
 		view: "",
 		ok: "",
+		outputType: "jpg",
 		strictSize: false,
 		loadStart: function() {},
 		loadComplete: function() {},
@@ -58,11 +71,18 @@ function photoClip(container, option) {
 		file = option.file,
 		view = option.view,
 		ok = option.ok,
+		outputType = option.outputType || "image/jpeg",
 		strictSize = option.strictSize,
 		loadStart = option.loadStart,
 		loadComplete = option.loadComplete,
 		loadError = option.loadError,
 		clipFinish = option.clipFinish;
+
+	if (outputType === "jpg") {
+		outputType = "image/jpeg";
+	} else if (outputType === "png") {
+		outputType = "image/png";
+	}
 
 	var $file = $(file);
 	if (!$file.length) return;
@@ -101,7 +121,7 @@ function photoClip(container, option) {
 							angleOffset = 90;
 						}
 						// 将图片进行压缩
-						var newDataURL = compressImg(this, quality, angleOffset);
+						var newDataURL = compressImg(this, quality, angleOffset, outputType);
 						createImg(newDataURL);
 					});
 					$tempImg.attr("src", this.result);
@@ -428,7 +448,7 @@ function photoClip(container, option) {
 		ctx.drawImage($img[0], 0, 0);
 		ctx.restore();
 
-		var dataURL = canvas.toDataURL("image/jpeg");
+		var dataURL = canvas.toDataURL(outputType, 1);
 		$view.css("background-image", "url("+ dataURL +")");
 		clipFinish.call($img[0], dataURL);
 	}
@@ -513,10 +533,7 @@ function photoClip(container, option) {
 	function compressImg(sourceImgObj, quality, angleOffset, outputFormat){
 		quality = quality || .8;
 		angleOffset = angleOffset || 0;
-		var mimeType = "image/jpeg";
-		if (outputFormat != undefined && outputFormat == "png") {
-			mimeType = "image/png";
-		}
+		var mimeType = outputFormat || "image/jpeg";
 
 		var drawWidth = sourceImgObj.naturalWidth,
 			drawHeight = sourceImgObj.naturalHeight;
@@ -708,4 +725,4 @@ var prefix = '',
 
 })();
 
-})(jQuery);
+}));
