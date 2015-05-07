@@ -31,7 +31,7 @@
 	} else if (typeof exports === "object") {
 		module.exports = factory(require("jquery"));
 	} else {
-		root.returnExports = factory(root.jQuery);
+		factory(root.jQuery);
 	}
 
 }(this, function($) {
