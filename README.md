@@ -40,8 +40,10 @@ $("#clipArea").photoClip({
 ```
 
 # Changelog
+
 ## v1.5
 * 添加了outputType选项
 * 支持模块化
+
 ## v1.4
 * 添加了strictSize选项
