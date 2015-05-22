@@ -1172,9 +1172,9 @@ IScroll.prototype = {
 			that._execEvent('zoomEnd');
 		}, 400);
 
-		if ( 'deltaX' in e ) {
+		if ( 'deltaY' in e ) {
 			wheelDeltaY = -e.deltaY / Math.abs(e.deltaY);
-		} else if ('wheelDeltaX' in e) {
+		} else if ('wheelDeltaY' in e) {
 			wheelDeltaY = e.wheelDeltaY / Math.abs(e.wheelDeltaY);
 		} else if('wheelDelta' in e) {
 			wheelDeltaY = e.wheelDelta / Math.abs(e.wheelDelta);
