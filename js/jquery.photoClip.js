@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.5
+ * jQuery photoClip v1.5.1
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -725,4 +725,5 @@
 
 	})();
 
+	return $;
 }));
