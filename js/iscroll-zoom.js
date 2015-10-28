@@ -1132,8 +1132,8 @@ IScroll.prototype = {
 
 		var relScale = scale / this.scale;
 
-		x = x === undefined ? this.wrapperWidth / 2 : x;
-		y = y === undefined ? this.wrapperHeight / 2 : y;
+		x = x === undefined ? this.wrapperWidth / 2 - this.wrapperOffset.left : x;
+		y = y === undefined ? this.wrapperHeight / 2 - this.wrapperOffset.top : y;
 		time = time === undefined ? 300 : time;
 
 		x = x + this.wrapperOffset.left - this.x;
