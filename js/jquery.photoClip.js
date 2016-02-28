@@ -1,8 +1,9 @@
 /**
- * jQuery photoClip v1.5.1
+ * jQuery photoClip v1.6.0
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
+ * - lrz.all.bundle.js
  *
  * @author 白俊杰 625603381@qq.com 2014/07/31
  * https://github.com/baijunjie/jQuery-photoClip
@@ -15,7 +16,7 @@
  * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
  * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
  * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
- * @option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+ * //@option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
  * @option_param {boolean} strictSize 是否严格按照截取区域宽高裁剪。默认为false，表示截取区域宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取区域宽高输出
  * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
  * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
@@ -27,14 +28,14 @@
 	"use strict";
 
 	if (typeof define === "function" && define.amd) {
-		define(["jquery", "iscroll-zoom", "hammer"], factory);
+		define(["jquery", "iscroll-zoom", "hammer", "lrz"], factory);
 	} else if (typeof exports === "object") {
-		module.exports = factory(require("jquery"), require("iscroll-zoom"), require("hammer"));
+		module.exports = factory(require("jquery"), require("iscroll-zoom"), require("hammer"), require("lrz"));
 	} else {
-		factory(root.jQuery, root.IScroll, root.Hammer);
+		factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
 	}
 
-}(this, function($, IScroll, Hammer) {
+}(this, function($, IScroll, Hammer, lrz) {
 	"use strict";
 
 	$.fn.photoClip = function(option) {
@@ -49,7 +50,7 @@
 			file: "",
 			view: "",
 			ok: "",
-			outputType: "jpg",
+			//outputType: "jpg",
 			strictSize: false,
 			loadStart: function() {},
 			loadComplete: function() {},
@@ -71,18 +72,19 @@
 			file = option.file,
 			view = option.view,
 			ok = option.ok,
-			outputType = option.outputType || "image/jpeg",
+			//outputType = option.outputType || "image/jpeg",
+			outputType = "image/jpeg",
 			strictSize = option.strictSize,
 			loadStart = option.loadStart,
 			loadComplete = option.loadComplete,
 			loadError = option.loadError,
 			clipFinish = option.clipFinish;
 
-		if (outputType === "jpg") {
+		/*if (outputType === "jpg") {
 			outputType = "image/jpeg";
 		} else if (outputType === "png") {
 			outputType = "image/png";
-		}
+		}*/
 
 		var $file = $(file);
 		if (!$file.length) return;
@@ -94,7 +96,8 @@
 		$file.attr("accept", "image/*");
 		$file.change(function() {
 			if (!this.files.length) return;
-			if (!/image\/\w+/.test(this.files[0].type)) {
+			var files = this.files[0];
+			if (!/image\/\w+/.test(files.type)) {
 				alert("图片格式不正确，请选择正确格式的图片文件！");
 				return false;
 			} else {
@@ -103,39 +106,24 @@
 					console.log((e.loaded / e.total * 100).toFixed() + "%");
 				};
 				fileReader.onload = function(e) {
-					var kbs = e.total / 1024;
-					if (kbs > 1024) {
-						// 图片大于1M，需要压缩
-						var quality = 1024 / kbs;
-						var $tempImg = $("<img>").hide();
-						$tempImg.load(function() {
-							// IOS 设备中，如果的照片是竖屏拍摄的，虽然实际在网页中显示出的方向也是垂直，但图片数据依然是以横屏方向展示
-							var sourceWidth = this.naturalWidth; // 在没有加入文档前，jQuery无法获得正确宽高，但可以通过原生属性来读取
-							$tempImg.appendTo(document.body);
-							var realityHeight = this.naturalHeight;
-							$tempImg.remove();
-							delete $tempImg[0];
-							$tempImg = null;
-							var angleOffset = 0;
-							if (sourceWidth == realityHeight) {
-								angleOffset = 90;
-							}
-							// 将图片进行压缩
-							var newDataURL = compressImg(this, quality, angleOffset, outputType);
-							createImg(newDataURL);
-						});
-						$tempImg.attr("src", this.result);
-					} else {
-						createImg(this.result);
-					}
+					lrz(files)
+					.then(function (rst) {
+						// 处理成功会执行
+						createImg(rst.base64);
+					})
+					.catch(function (err) {
+						// 处理失败会执行
+						alert("图片处理失败");
+						loadError.call(this, err);
+					});
 				};
 				fileReader.onerror = function(e) {
 					alert("图片加载失败");
 					loadError.call(this, e);
 				};
-				fileReader.readAsDataURL(this.files[0]); // 读取文件内容
+				fileReader.readAsDataURL(files); // 读取文件内容
 
-				loadStart.call(fileReader, this.files[0]);
+				loadStart.call(fileReader, files);
 			}
 		});
 
@@ -530,45 +518,7 @@
 			myScroll.options.zoomMax = Math.max(1, myScroll.options.zoomMin);
 			myScroll.options.zoomStart = Math.min(myScroll.options.zoomMax, getScale(containerWidth, containerHeight, width, height));
 		}
-		function compressImg(sourceImgObj, quality, angleOffset, outputFormat){
-			quality = quality || .8;
-			angleOffset = angleOffset || 0;
-			var mimeType = outputFormat || "image/jpeg";
 
-			var drawWidth = sourceImgObj.naturalWidth,
-				drawHeight = sourceImgObj.naturalHeight;
-			// IOS 设备上 canvas 宽或高如果大于 1024，就有可能导致应用崩溃闪退
-			// 因此这里需要缩放
-			var maxSide = Math.max(drawWidth, drawHeight);
-			if (maxSide > 1024) {
-				var minSide = Math.min(drawWidth, drawHeight);
-				minSide = minSide / maxSide * 1024;
-				maxSide = 1024;
-				if (drawWidth > drawHeight) {
-					drawWidth = maxSide;
-					drawHeight = minSide;
-				} else {
-					drawWidth = minSide;
-					drawHeight = maxSide;
-				}
-			}
-
-			var cvs = document.createElement('canvas');
-			var ctx = cvs.getContext("2d");
-			if (angleOffset) {
-				cvs.width = drawHeight;
-				cvs.height = drawWidth;
-				ctx.translate(drawHeight, 0);
-				ctx.rotate(angleOffset * Math.PI / 180);
-			} else {
-				cvs.width = drawWidth;
-				cvs.height = drawHeight;
-			}
-
-			ctx.drawImage(sourceImgObj, 0, 0, drawWidth, drawHeight);
-			var newImageData = cvs.toDataURL(mimeType, quality || .8);
-			return newImageData;
-		}
 		function createImg(src) {
 			if ($img &&　$img.length) {
 				// 删除旧的图片以释放内存，防止IOS设备的webview崩溃
