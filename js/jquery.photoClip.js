@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.6.0
+ * jQuery photoClip v1.7.0
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -11,17 +11,16 @@
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
- * @option_param {number} width 截取区域的宽度
- * @option_param {number} height 截取区域的高度
+ * @option_param {array} size 截取框的宽和高组成的数组。默认值为[260,260]
+ * @option_param {array} outputSize 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+ * //@option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
  * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
  * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
  * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
- * //@option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
- * @option_param {boolean} strictSize 是否严格按照截取区域宽高裁剪。默认为false，表示截取区域宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取区域宽高输出
  * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
  * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
  * @option_param {function} loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
- * @option_param {function} clipFinish 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param {function} clipFinish 裁剪完成的回调函数。this指向原图片对象，会将裁剪出的图像数据DataURL作为参数传入
  */
 
 (function(root, factory) {
@@ -45,13 +44,12 @@
 		}
 
 		var defaultOption = {
-			width: 200,
-			height: 200,
+			size: [260, 260],
+			outputSize: [0, 0],
+			//outputType: "jpg",
 			file: "",
 			view: "",
 			ok: "",
-			//outputType: "jpg",
-			strictSize: false,
 			loadStart: function() {},
 			loadComplete: function() {},
 			loadError: function() {},
@@ -67,18 +65,30 @@
 	}
 
 	function photoClip(container, option) {
-		var clipWidth = option.width,
-			clipHeight = option.height,
+		var size = option.size,
+			outputSize = option.outputSize,
 			file = option.file,
 			view = option.view,
 			ok = option.ok,
 			//outputType = option.outputType || "image/jpeg",
 			outputType = "image/jpeg",
-			strictSize = option.strictSize,
 			loadStart = option.loadStart,
 			loadComplete = option.loadComplete,
 			loadError = option.loadError,
 			clipFinish = option.clipFinish;
+
+		if (!isArray(size)) {
+			size = [260, 260];
+		}
+
+		if (!isArray(outputSize)) {
+			outputSize = [0, 0];
+		}
+
+		var clipWidth = size[0] || 260,
+			clipHeight = size[1] || 260,
+			outputWidth = Math.max(outputSize[0], 0),
+			outputHeight = Math.max(outputSize[1], 0);
 
 		/*if (outputType === "jpg") {
 			outputType = "image/jpeg";
@@ -409,8 +419,6 @@
 
 		function initClip() {
 			canvas = document.createElement("canvas");
-			canvas.width = clipWidth;
-			canvas.height = clipHeight;
 		}
 		function clipImg() {
 			if (!imgLoaded) {
@@ -423,11 +431,13 @@
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.save();
 
-			if (strictSize) {
-				ctx.scale(scale, scale);
-			} else {
+			if (!outputWidth || !outputHeight) {
 				canvas.width = clipWidth / scale;
 				canvas.height = clipHeight / scale;
+			} else {
+				canvas.width = outputWidth;
+				canvas.height = outputHeight;
+				ctx.scale(outputWidth / clipWidth * scale, outputHeight / clipHeight * scale);
 			}
 
 			ctx.translate(curX - local.x / scale, curY - local.y / scale);
@@ -519,12 +529,16 @@
 			myScroll.options.zoomStart = Math.min(myScroll.options.zoomMax, getScale(containerWidth, containerHeight, width, height));
 		}
 
-		function createImg(src) {
+		function clearImg() {
 			if ($img &&　$img.length) {
 				// 删除旧的图片以释放内存，防止IOS设备的webview崩溃
 				$img.remove();
 				delete $img[0];
 			}
+		}
+
+		function createImg(src) {
+			clearImg();
 			$img = $("<img>").css({
 				"user-select": "none",
 				"pointer-events": "none"
@@ -552,6 +566,11 @@
 				fn.call(this);
 			});
 			$obj.css(prefix + "transform", "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)");
+		}
+
+		// 判断一个对象是否为数组
+		function isArray(obj) {
+			return Object.prototype.toString.call(obj) === "[object Array]";
 		}
 
 		function init() {

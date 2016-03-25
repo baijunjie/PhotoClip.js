@@ -26,13 +26,12 @@
 <script src="js/jquery.photoClip.min.js"></script>
 <script>
 $("#clipArea").photoClip({
-	width: 200, // 截取区域的宽度
-	height: 200, // 截取区域的高度
+	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
+	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+	//outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
 	file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
 	ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
-	//outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
-	strictSize: false, // 是否严格按照截取区域宽高裁剪。默认为false，表示截取区域宽高仅用于约束宽高比例。如果设置为true，则表示截取出的图像宽高严格按照截取区域宽高输出
 	loadStart: function(file) {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
 	loadComplete: function(src) {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
 	loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
@@ -42,6 +41,10 @@ $("#clipArea").photoClip({
 ```
 
 # Changelog
+
+## v1.7
+* 移除了width、height选项，使用size选项替代
+* 移除了strictSize选项，使用outputSize选项替代，用于指定输出图像的大小
 
 ## v1.6
 * 修复了ios设备中获取照片方向错误的bug
