@@ -19,13 +19,18 @@
 ## 使用方法及参数配置简介
 
 ```html
+<div id="clipArea"></div>
+<input type="file" id="file">
+<button id="clipBtn">截取</button>
+<div id="view"></div>
+
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/hammer.min.js"></script>
 <script src="js/iscroll-zoom.min.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
 <script src="js/jquery.photoClip.min.js"></script>
 <script>
-$("#clipArea").photoClip({
+var clipArea = new bjj.PhotoClip("#clipArea", {
 	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
 	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
 	//outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
@@ -40,7 +45,17 @@ $("#clipArea").photoClip({
 </script>
 ```
 
+## Destroy
+```js
+clipArea.destroy();
+```
+
+
 # Changelog
+
+## v1.8
+* 修改了创建方式
+* 添加了销毁方法 destroy()
 
 ## v1.7
 * 移除了width、height选项，使用size选项替代

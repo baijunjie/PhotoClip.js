@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.7.0
+ * jQuery photoClip v1.8.0
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -31,37 +31,36 @@
 	} else if (typeof exports === "object") {
 		module.exports = factory(require("jquery"), require("iscroll-zoom"), require("hammer"), require("lrz"));
 	} else {
-		factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
+		root.bjj = root.bjj || {};
+		root.bjj.PhotoClip = factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
 	}
 
 }(this, function($, IScroll, Hammer, lrz) {
 	"use strict";
 
-	$.fn.photoClip = function(option) {
+	var defaultOption = {
+		size: [260, 260],
+		outputSize: [0, 0],
+		//outputType: "jpg",
+		file: "",
+		view: "",
+		ok: "",
+		loadStart: function() {},
+		loadComplete: function() {},
+		loadError: function() {},
+		clipFinish: function() {}
+	}
+
+	function PhotoClip(container, option) {
 		if (!window.FileReader) {
 			alert("您的浏览器不支持 HTML5 的 FileReader API， 因此无法初始化图片裁剪插件，请更换最新的浏览器！");
 			return;
 		}
 
-		var defaultOption = {
-			size: [260, 260],
-			outputSize: [0, 0],
-			//outputType: "jpg",
-			file: "",
-			view: "",
-			ok: "",
-			loadStart: function() {},
-			loadComplete: function() {},
-			loadError: function() {},
-			clipFinish: function() {}
-		}
-		$.extend(defaultOption, option);
+		var opt = $.extend({}, defaultOption, option);
+		var returnValue = photoClip(container, opt);
 
-		this.each(function() {
-			photoClip(this, defaultOption);
-		});
-
-		return this;
+		this.destroy = returnValue.destroy;
 	}
 
 	function photoClip(container, option) {
@@ -104,7 +103,7 @@
 			imgLoaded; //图片是否已经加载完成
 
 		$file.attr("accept", "image/*");
-		$file.change(function() {
+		$file.on("change", function() {
 			if (!this.files.length) return;
 			var files = this.files[0];
 			if (!/image\/\w+/.test(files.type)) {
@@ -141,14 +140,13 @@
 			this.value = "";
 		});
 
-
-
 		var $container, // 容器，包含裁剪视图层和遮罩层
 			$clipView, // 裁剪视图层，包含移动层
 			$moveLayer, // 移动层，包含旋转层
 			$rotateLayer, // 旋转层
 			$view, // 最终截图后呈现的视图容器
 			canvas, // 图片裁剪用到的画布
+			hammerManager,
 			myScroll, // 图片的scroll对象，包含图片的位置与缩放信息
 			containerWidth,
 			containerHeight;
@@ -239,7 +237,7 @@
 			var is_mobile = !!navigator.userAgent.match(/mobile/i);
 
 			if (is_mobile) {
-				var hammerManager = new Hammer($moveLayer[0]);
+				hammerManager = new Hammer($moveLayer[0]);
 				hammerManager.add(new Hammer.Rotate());
 
 				var rotation, rotateDirection;
@@ -670,6 +668,40 @@
 				});
 			}
 		}
+
+		function destroy() {
+			$file.off("change");
+			$file = null;
+
+			if (hammerManager) {
+				hammerManager.off("rotatemove");
+				hammerManager.off("rotateend");
+				hammerManager = null;
+			} else {
+				$moveLayer.off("dblclick");
+			}
+
+			myScroll.destroy();
+			myScroll = null;
+
+			$container.empty();
+			$container = null;
+			$clipView = null;
+			$moveLayer = null;
+			$rotateLayer = null;
+
+			$view.css({
+				"background-color": "",
+				"background-repeat": "",
+				"background-position": "",
+				"background-size": ""
+			});
+			$view = null;
+		}
+
+		return {
+			destroy: destroy
+		};
 	}
 
 	var prefix = '',
@@ -694,5 +726,5 @@
 
 	})();
 
-	return $;
+	return PhotoClip;
 }));

@@ -41,7 +41,7 @@ body {
 <script src="js/jquery.photoClip.js"></script>
 <script>
 //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-$("#clipArea").photoClip({
+var clipArea = new bjj.PhotoClip("#clipArea", {
 	size: [260, 260],
 	outputSize: [640, 640],
 	file: "#file",
@@ -57,6 +57,7 @@ $("#clipArea").photoClip({
 		console.log(dataURL);
 	}
 });
+//clipArea.destroy();
 </script>
 
 </body>
