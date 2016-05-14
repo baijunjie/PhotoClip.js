@@ -676,7 +676,6 @@
 			if (hammerManager) {
 				hammerManager.off("rotatemove");
 				hammerManager.off("rotateend");
-				hammerManager.destroy();
 				hammerManager = null;
 			} else {
 				$moveLayer.off("dblclick");
