@@ -71,3 +71,6 @@ clipArea.destroy();
 
 ## v1.4
 * 添加了strictSize选项
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/baijunjie/jquery-photoclip/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
