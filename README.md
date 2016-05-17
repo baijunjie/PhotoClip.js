@@ -71,3 +71,7 @@ clipArea.destroy();
 
 ## v1.4
 * 添加了strictSize选项
+
+
+# 您的捐助是我最大的动力
+![image](https://github.com/baijunjie/jQuery-photoClip/blob/master/donations.jpg)
