@@ -33,8 +33,9 @@
 var clipArea = new bjj.PhotoClip("#clipArea", {
 	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
 	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
-	//outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+	outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
 	file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
+	source: "", // 需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用file控件获取。注意，该参数不支持跨域图片。
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
 	ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
 	loadStart: function(file) {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
@@ -52,6 +53,10 @@ clipArea.destroy();
 
 
 # Changelog
+
+## v1.9
+* 添加了source选项，支持通过url地址获取需要裁剪的源图片
+* 重新添加了outputType选项
 
 ## v1.8
 * 修改了创建方式

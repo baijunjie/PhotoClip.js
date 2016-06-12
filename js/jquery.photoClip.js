@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.8.0
+ * jQuery photoClip v1.9.0
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -13,8 +13,9 @@
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
  * @option_param {array} size 截取框的宽和高组成的数组。默认值为[260,260]
  * @option_param {array} outputSize 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
- * //@option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+ * @option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
  * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
+ * @option_param {string} source 需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用file控件获取。注意，该参数不支持跨域图片。
  * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
  * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
  * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
@@ -41,8 +42,9 @@
 	var defaultOption = {
 		size: [260, 260],
 		outputSize: [0, 0],
-		//outputType: "jpg",
+		outputType: "jpg",
 		file: "",
+		source: "",
 		view: "",
 		ok: "",
 		loadStart: function() {},
@@ -67,10 +69,10 @@
 		var size = option.size,
 			outputSize = option.outputSize,
 			file = option.file,
+			source = option.source,
 			view = option.view,
 			ok = option.ok,
-			//outputType = option.outputType || "image/jpeg",
-			outputType = "image/jpeg",
+			outputType = option.outputType || "image/jpeg",
 			loadStart = option.loadStart,
 			loadComplete = option.loadComplete,
 			loadError = option.loadError,
@@ -89,56 +91,60 @@
 			outputWidth = Math.max(outputSize[0], 0),
 			outputHeight = Math.max(outputSize[1], 0);
 
-		/*if (outputType === "jpg") {
+		if (outputType === "jpg") {
 			outputType = "image/jpeg";
 		} else if (outputType === "png") {
 			outputType = "image/png";
-		}*/
+		}
 
 		var $file = $(file);
-		if (!$file.length) return;
+		if ($file.length) {
+			$file.attr("accept", "image/*");
+			$file.on("change", function() {
+				if (!this.files.length) return;
+				var files = this.files[0];
+				if (!/image\/\w+/.test(files.type)) {
+					alert("图片格式不正确，请选择正确格式的图片文件！");
+					return false;
+				} else {
+					var fileReader = new FileReader();
+					fileReader.onprogress = function(e) {
+						console.log((e.loaded / e.total * 100).toFixed() + "%");
+					};
+					fileReader.onload = function(e) {
+						lrz(files)
+						.then(function (rst) {
+							// 处理成功会执行
+							createImg(rst.base64);
+						})
+						.catch(function (err) {
+							// 处理失败会执行
+							alert("图片处理失败");
+							loadError.call(this, err);
+						});
+					};
+					fileReader.onerror = function(e) {
+						alert("图片加载失败");
+						loadError.call(this, e);
+					};
+					fileReader.readAsDataURL(files); // 读取文件内容
+
+					loadStart.call(fileReader, files);
+				}
+			});
+
+			$file.click(function() {
+				this.value = "";
+			});
+		}
+
+		if (source) {
+			createImg(source);
+		}
 
 		var $img,
 			imgWidth, imgHeight, //图片当前的宽高
 			imgLoaded; //图片是否已经加载完成
-
-		$file.attr("accept", "image/*");
-		$file.on("change", function() {
-			if (!this.files.length) return;
-			var files = this.files[0];
-			if (!/image\/\w+/.test(files.type)) {
-				alert("图片格式不正确，请选择正确格式的图片文件！");
-				return false;
-			} else {
-				var fileReader = new FileReader();
-				fileReader.onprogress = function(e) {
-					console.log((e.loaded / e.total * 100).toFixed() + "%");
-				};
-				fileReader.onload = function(e) {
-					lrz(files)
-					.then(function (rst) {
-						// 处理成功会执行
-						createImg(rst.base64);
-					})
-					.catch(function (err) {
-						// 处理失败会执行
-						alert("图片处理失败");
-						loadError.call(this, err);
-					});
-				};
-				fileReader.onerror = function(e) {
-					alert("图片加载失败");
-					loadError.call(this, e);
-				};
-				fileReader.readAsDataURL(files); // 读取文件内容
-
-				loadStart.call(fileReader, files);
-			}
-		});
-
-		$file.click(function() {
-			this.value = "";
-		});
 
 		var $container, // 容器，包含裁剪视图层和遮罩层
 			$clipView, // 裁剪视图层，包含移动层
@@ -542,7 +548,7 @@
 				"pointer-events": "none"
 			});
 			$img.load(imgLoad);
-			$img.attr("src", src); // 设置图片base64值
+			$img.attr("src", src);
 		}
 
 		function setTransform($obj, x, y, angle, originX, originY) {
