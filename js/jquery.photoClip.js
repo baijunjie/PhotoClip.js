@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.9.0
+ * jQuery photoClip v1.9.1
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -493,7 +493,7 @@
 			var $hide = $();
 			$.each(jq, function(i, n){
 				var $n = $(n);
-				var $hidden = $n.parents().andSelf().filter(":hidden");
+				var $hidden = $n.parents().addBack().filter(":hidden");
 				var $none;
 				for (var i = 0; i < $hidden.length; i++) {
 					if (!$n.is(":hidden")) break;
@@ -547,7 +547,7 @@
 				"user-select": "none",
 				"pointer-events": "none"
 			});
-			$img.load(imgLoad);
+			$img.on('load', imgLoad);
 			$img.attr("src", src);
 		}
 
