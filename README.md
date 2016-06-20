@@ -54,6 +54,9 @@ clipArea.destroy();
 
 # Changelog
 
+## v1.9.1
+* 兼容 jQuery 3.0
+
 ## v1.9
 * 添加了source选项，支持通过url地址获取需要裁剪的源图片
 * 重新添加了outputType选项
