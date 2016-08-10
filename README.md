@@ -56,7 +56,7 @@ clipArea.destroy();
 # Changelog
 
 ## v1.10.0
-* 增加了 [[lrz.all.bundle.js]](https://github.com/think2011/localResizeIMG)[(文档)](https://github.com/think2011/localResizeIMG/wiki/2.-%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3) 插件的配置参数，如果加载完图片后出现卡顿或崩溃现象，可以尝试设置此参数。
+* 增加了 [[lrz.all.bundle.js]](https://github.com/think2011/localResizeIMG) 插件[（文档）](https://github.com/think2011/localResizeIMG/wiki/2.-%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3)的配置参数，如果加载完图片后出现卡顿或崩溃现象，可以尝试设置此参数。
 
 ## v1.9.1
 * 兼容 jQuery 3.0
