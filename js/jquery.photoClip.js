@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.9.1
+ * jQuery photoClip v1.10.0
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -11,17 +11,21 @@
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
- * @option_param {array} size 截取框的宽和高组成的数组。默认值为[260,260]
- * @option_param {array} outputSize 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
- * @option_param {string} outputType 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
- * @option_param {string} file 上传图片的<input type="file">控件的选择器或者DOM对象
- * @option_param {string} source 需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用file控件获取。注意，该参数不支持跨域图片。
- * @option_param {string} view 显示截取后图像的容器的选择器或者DOM对象
- * @option_param {string} ok 确认截图按钮的选择器或者DOM对象
- * @option_param {function} loadStart 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
- * @option_param {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
- * @option_param {function} loadError 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
- * @option_param {function} clipFinish 裁剪完成的回调函数。this指向原图片对象，会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param    {array}    size         截取框的宽和高组成的数组。默认值为[260,260]
+ * @option_param    {array}    outputSize   输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
+ * @option_param    {string}   outputType   指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+ * @option_param    {string}   file         上传图片的<input type="file">控件的选择器或者DOM对象
+ * @option_param    {string}   source       需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用file控件获取。注意，该参数不支持跨域图片。
+ * @option_param    {string}   view         显示截取后图像的容器的选择器或者DOM对象
+ * @option_param    {string}   ok           确认截图按钮的选择器或者DOM对象
+ * @option_param    {function} loadStart    开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
+ * @option_param    {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
+ * @option_param    {function} loadError    加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
+ * @option_param    {function} clipFinish   裁剪完成的回调函数。this指向原图片对象，会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param    {object}   lrzOption    lrz压缩插件的配置参数
+ * @lrzOption_param {Number}   width        图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
+ * @lrzOption_param {Number}   height       图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
+ * @lrzOption_param {Number}   quality      图片压缩质量，取值 0 - 1，默认为0.7。
  */
 
 (function(root, factory) {
@@ -50,7 +54,8 @@
 		loadStart: function() {},
 		loadComplete: function() {},
 		loadError: function() {},
-		clipFinish: function() {}
+		clipFinish: function() {},
+		lrzOption: {}
 	}
 
 	function PhotoClip(container, option) {
@@ -68,11 +73,12 @@
 	function photoClip(container, option) {
 		var size = option.size,
 			outputSize = option.outputSize,
+			lrzOption = option.lrzOption,
+			outputType = option.outputType || "image/jpeg",
 			file = option.file,
 			source = option.source,
 			view = option.view,
 			ok = option.ok,
-			outputType = option.outputType || "image/jpeg",
 			loadStart = option.loadStart,
 			loadComplete = option.loadComplete,
 			loadError = option.loadError,
@@ -112,7 +118,7 @@
 						console.log((e.loaded / e.total * 100).toFixed() + "%");
 					};
 					fileReader.onload = function(e) {
-						lrz(files)
+						lrz(files, lrzOption)
 						.then(function (rst) {
 							// 处理成功会执行
 							createImg(rst.base64);
@@ -192,7 +198,6 @@
 				resetScroll();
 			});
 
-
 			loadComplete.call(this, this.src);
 		}
 
@@ -207,6 +212,7 @@
 			}
 			myScroll = new IScroll($clipView[0], options);
 		}
+
 		function resetScroll() {
 			curX = 0;
 			curY = 0;
@@ -226,6 +232,7 @@
 				posY = (clipHeight - imgHeight * myScroll.options.zoomStart) * .5;
 			myScroll.scrollTo(posX, posY);
 		}
+
 		function refreshScroll(width, height) {
 			$moveLayer.css({
 				"width": width,
@@ -279,12 +286,15 @@
 				});
 			}
 		}
+
 		function rotateCW(point) {
 			rotateBy(90, point);
 		}
+
 		function rotateCCW(point) {
 			rotateBy(-90, point);
 		}
+
 		function rotateBy(angle, point) {
 			if (atRotation) return;
 			atRotation = true;
@@ -424,6 +434,7 @@
 		function initClip() {
 			canvas = document.createElement("canvas");
 		}
+
 		function clipImg() {
 			if (!imgLoaded) {
 				alert("亲，当前没有图片可以裁剪!");
@@ -455,13 +466,13 @@
 			clipFinish.call($img[0], dataURL);
 		}
 
-
 		function resize() {
 			hideAction($container, function() {
 				containerWidth = $container.width();
 				containerHeight = $container.height();
 			});
 		}
+
 		function loaclToLoacl($layerOne, $layerTwo, x, y) { // 计算$layerTwo上的x、y坐标在$layerOne上的坐标
 			x = x || 0;
 			y = y || 0;
@@ -477,6 +488,7 @@
 				y: layerTwoOffset.top - layerOneOffset.top + y
 			};
 		}
+
 		function globalToLoacl($layer, x, y) { // 计算相对于窗口的x、y坐标在$layer上的坐标
 			x = x || 0;
 			y = y || 0;
@@ -489,6 +501,7 @@
 				y: y + $win.scrollTop() - layerOffset.top
 			};
 		}
+
 		function hideAction(jq, func) {
 			var $hide = $();
 			$.each(jq, function(i, n){
@@ -504,6 +517,7 @@
 			if (typeof(func) == "function") func.call(this);
 			$hide.hide();
 		}
+
 		function calculateOrigin(curAngle, point) {
 			var scale = myScroll.scale;
 			var origin = {};
@@ -522,11 +536,13 @@
 			}
 			return origin;
 		}
+
 		function getScale(w1, h1, w2, h2) {
 			var sx = w1 / w2;
 			var sy = h1 / h2;
 			return sx > sy ? sx : sy;
 		}
+
 		function calculateScale(width, height) {
 			myScroll.options.zoomMin = getScale(clipWidth, clipHeight, width, height);
 			myScroll.options.zoomMax = Math.max(1, myScroll.options.zoomMin);
@@ -559,6 +575,7 @@
 			style[prefix + "transform-origin"] = originX + "px " + originY + "px";
 			$obj.css(style);
 		}
+
 		function setTransition($obj, x, y, angle, dur, fn) {
 			// 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
 			// 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染

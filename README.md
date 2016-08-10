@@ -42,6 +42,7 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	loadComplete: function(src) {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
 	loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
 	clipFinish: function(dataURL) {}, // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+	lrzOption: {} // lrz压缩插件的配置参数
 });
 </script>
 ```
@@ -53,6 +54,9 @@ clipArea.destroy();
 
 
 # Changelog
+
+## v1.10.0
+* 增加了 [[lrz.all.bundle.js]]https://github.com/think2011/localResizeIMG [（文档）](https://github.com/think2011/localResizeIMG/wiki/2.-%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3) 插件的配置参数，如果加载完图片后出现卡顿或崩溃现象，可以尝试设置此参数。
 
 ## v1.9.1
 * 兼容 jQuery 3.0
