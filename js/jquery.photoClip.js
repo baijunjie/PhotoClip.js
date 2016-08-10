@@ -461,7 +461,12 @@
 			ctx.drawImage($img[0], 0, 0);
 			ctx.restore();
 
-			var dataURL = canvas.toDataURL(outputType, 1);
+			try {
+				var dataURL = canvas.toDataURL(outputType, 1);
+			} catch(e) {
+				throw new Error("截图失败！当前图片源文件可能存在跨域问题，请确保图片与应用同源。如果您是在本地环境下执行本程序，请更换至服务器环境。");
+			}
+
 			$view.css("background-image", "url("+ dataURL +")");
 			clipFinish.call($img[0], dataURL);
 		}
