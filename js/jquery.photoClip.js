@@ -1,5 +1,5 @@
 /**
- * jQuery photoClip v1.10.0
+ * jQuery photoClip v1.10.1
  * 依赖插件
  * - iscroll-zoom.js
  * - hammer.js
@@ -11,11 +11,12 @@
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
- * @option_param    {array}    size         截取框的宽和高组成的数组。默认值为[260,260]
+ * @option_param    {array}    size         截取框宽和高组成的数组。默认值为[260,260]
+ * @option_param    {array}    adaptive     截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
  * @option_param    {array}    outputSize   输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
  * @option_param    {string}   outputType   指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
  * @option_param    {string}   file         上传图片的<input type="file">控件的选择器或者DOM对象
- * @option_param    {string}   source       需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用file控件获取。注意，该参数不支持跨域图片。
+ * @option_param    {string}   source       需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。注意，该参数不支持跨域图片。
  * @option_param    {string}   view         显示截取后图像的容器的选择器或者DOM对象
  * @option_param    {string}   ok           确认截图按钮的选择器或者DOM对象
  * @option_param    {function} loadStart    开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
@@ -45,6 +46,7 @@
 
 	var defaultOption = {
 		size: [260, 260],
+		adaptive: null,
 		outputSize: [0, 0],
 		outputType: "jpg",
 		file: "",
@@ -72,8 +74,8 @@
 
 	function photoClip(container, option) {
 		var size = option.size,
+			adaptive = option.adaptive,
 			outputSize = option.outputSize,
-			lrzOption = option.lrzOption,
 			outputType = option.outputType || "image/jpeg",
 			file = option.file,
 			source = option.source,
@@ -82,7 +84,8 @@
 			loadStart = option.loadStart,
 			loadComplete = option.loadComplete,
 			loadError = option.loadError,
-			clipFinish = option.clipFinish;
+			clipFinish = option.clipFinish,
+			lrzOption = option.lrzOption;
 
 		if (!isArray(size)) {
 			size = [260, 260];
@@ -95,7 +98,16 @@
 		var clipWidth = size[0] || 260,
 			clipHeight = size[1] || 260,
 			outputWidth = Math.max(outputSize[0], 0),
-			outputHeight = Math.max(outputSize[1], 0);
+			outputHeight = Math.max(outputSize[1], 0),
+			widthIsPercent, heightIsPercent, ratio;
+
+		if (isArray(adaptive)) {
+			if (adaptive[0]) widthIsPercent = isPercent(adaptive[0]) ? adaptive[0] : false;
+			if (adaptive[1]) heightIsPercent = isPercent(adaptive[1]) ? adaptive[1] : false;
+			if (widthIsPercent || heightIsPercent) {
+				ratio = clipWidth / clipHeight;
+			}
+		}
 
 		if (outputType === "jpg") {
 			outputType = "image/jpeg";
@@ -105,7 +117,7 @@
 
 		var $file = $(file);
 		if ($file.length) {
-			$file.attr("accept", "image/*");
+			$file.attr("accept", "image/jpeg, image/x-png, image/gif");
 			$file.on("change", function() {
 				if (!this.files.length) return;
 				var files = this.files[0];
@@ -157,6 +169,14 @@
 			$moveLayer, // 移动层，包含旋转层
 			$rotateLayer, // 旋转层
 			$view, // 最终截图后呈现的视图容器
+
+			$mask_left,
+			$mask_right,
+			$mask_top,
+			$mask_bottom,
+			$mask_area,
+			$clip_area,
+
 			canvas, // 图片裁剪用到的画布
 			hammerManager,
 			myScroll, // 图片的scroll对象，包含图片的位置与缩放信息
@@ -475,6 +495,49 @@
 			hideAction($container, function() {
 				containerWidth = $container.width();
 				containerHeight = $container.height();
+
+				if (widthIsPercent) {
+					clipWidth = containerWidth / 100 * parseFloat(widthIsPercent);
+					if (!heightIsPercent) {
+						clipHeight = clipWidth / ratio;
+					}
+				}
+				if (heightIsPercent) {
+					clipHeight = containerHeight / 100 * parseFloat(heightIsPercent);
+					if (!widthIsPercent) {
+						clipWidth = clipHeight * ratio;
+					}
+				}
+
+				$clipView.css({
+					"width": clipWidth,
+					"height": clipHeight,
+					"margin-left": -clipWidth/2,
+					"margin-top": -clipHeight/2
+				});
+				$mask_left.css({
+					"margin-right": clipWidth/2,
+					"margin-top": -clipHeight/2,
+					"margin-bottom": -clipHeight/2
+				});
+				$mask_right.css({
+					"margin-left": clipWidth/2,
+					"margin-top": -clipHeight/2,
+					"margin-bottom": -clipHeight/2
+				});
+				$mask_top.css({
+					"margin-bottom": clipHeight/2
+				});
+				$mask_bottom.css({
+					"margin-top": clipHeight/2
+				});
+				// 创建截取区域
+				$clip_area.css({
+					"width": clipWidth,
+					"height": clipHeight,
+					"margin-left": -clipWidth/2 - 1,
+					"margin-top": -clipHeight/2 - 1
+				});
 			});
 		}
 
@@ -599,6 +662,12 @@
 			return Object.prototype.toString.call(obj) === "[object Array]";
 		}
 
+		// 判断是否为百分比
+		function isPercent(value) {
+			var str = value + "";
+			return /%$/.test(str);
+		};
+
 		function init() {
 			// 初始化容器
 			$container = $(container).css({
@@ -611,11 +680,7 @@
 			$clipView = $("<div class='photo-clip-view'>").css({
 				"position": "absolute",
 				"left": "50%",
-				"top": "50%",
-				"width": clipWidth,
-				"height": clipHeight,
-				"margin-left": -clipWidth/2,
-				"margin-top": -clipHeight/2
+				"top": "50%"
 			}).appendTo($container);
 
 			$moveLayer = $("<div class='photo-clip-moveLayer'>").appendTo($clipView);
@@ -631,58 +696,45 @@
 				"height": "100%",
 				"pointer-events": "none"
 			}).appendTo($container);
-			var $mask_left = $("<div class='photo-clip-mask-left'>").css({
+			$mask_left = $("<div class='photo-clip-mask-left'>").css({
 				"position": "absolute",
 				"left": 0,
 				"right": "50%",
 				"top": "50%",
 				"bottom": "50%",
 				"width": "auto",
-				"height": clipHeight,
-				"margin-right": clipWidth/2,
-				"margin-top": -clipHeight/2,
-				"margin-bottom": -clipHeight/2,
 				"background-color": "rgba(0,0,0,.5)"
 			}).appendTo($mask);
-			var $mask_right = $("<div class='photo-clip-mask-right'>").css({
+			$mask_right = $("<div class='photo-clip-mask-right'>").css({
 				"position": "absolute",
 				"left": "50%",
 				"right": 0,
 				"top": "50%",
 				"bottom": "50%",
-				"margin-left": clipWidth/2,
-				"margin-top": -clipHeight/2,
-				"margin-bottom": -clipHeight/2,
 				"background-color": "rgba(0,0,0,.5)"
 			}).appendTo($mask);
-			var $mask_top = $("<div class='photo-clip-mask-top'>").css({
+			$mask_top = $("<div class='photo-clip-mask-top'>").css({
 				"position": "absolute",
 				"left": 0,
 				"right": 0,
 				"top": 0,
 				"bottom": "50%",
-				"margin-bottom": clipHeight/2,
 				"background-color": "rgba(0,0,0,.5)"
 			}).appendTo($mask);
-			var $mask_bottom = $("<div class='photo-clip-mask-bottom'>").css({
+			$mask_bottom = $("<div class='photo-clip-mask-bottom'>").css({
 				"position": "absolute",
 				"left": 0,
 				"right": 0,
 				"top": "50%",
 				"bottom": 0,
-				"margin-top": clipHeight/2,
 				"background-color": "rgba(0,0,0,.5)"
 			}).appendTo($mask);
 			// 创建截取区域
-			var $clip_area = $("<div class='photo-clip-area'>").css({
+			$clip_area = $("<div class='photo-clip-area'>").css({
 				"border": "1px dashed #ddd",
 				"position": "absolute",
 				"left": "50%",
-				"top": "50%",
-				"width": clipWidth,
-				"height": clipHeight,
-				"margin-left": -clipWidth/2 - 1,
-				"margin-top": -clipHeight/2 - 1
+				"top": "50%"
 			}).appendTo($mask);
 
 			// 初始化视图容器
