@@ -256,7 +256,10 @@
 			calculateScale(imgWidth, imgHeight);
 			myScroll.zoom(myScroll.options.zoomStart);
 			refreshScroll(imgWidth, imgHeight);
+			imgCenter();
+		}
 
+		function imgCenter() {
 			var posX = (clipWidth - imgWidth * myScroll.options.zoomStart) * .5,
 				posY = (clipHeight - imgHeight * myScroll.options.zoomStart) * .5;
 			myScroll.scrollTo(posX, posY);
@@ -728,49 +731,51 @@
 			hideAction($container, function() {
 				containerWidth = $container.width();
 				containerHeight = $container.height();
-
-				if (widthIsPercent) {
-					clipWidth = containerWidth / 100 * parseFloat(widthIsPercent);
-					if (!heightIsPercent) {
-						clipHeight = clipWidth / ratio;
-					}
-				}
-				if (heightIsPercent) {
-					clipHeight = containerHeight / 100 * parseFloat(heightIsPercent);
-					if (!widthIsPercent) {
-						clipWidth = clipHeight * ratio;
-					}
-				}
-
-				$clipView.css({
-					"width": clipWidth,
-					"height": clipHeight,
-					"margin-left": -clipWidth/2,
-					"margin-top": -clipHeight/2
-				});
-				$mask_left.css({
-					"margin-right": clipWidth/2,
-					"margin-top": -clipHeight/2,
-					"margin-bottom": -clipHeight/2
-				});
-				$mask_right.css({
-					"margin-left": clipWidth/2,
-					"margin-top": -clipHeight/2,
-					"margin-bottom": -clipHeight/2
-				});
-				$mask_top.css({
-					"margin-bottom": clipHeight/2
-				});
-				$mask_bottom.css({
-					"margin-top": clipHeight/2
-				});
-				$clip_area.css({
-					"width": clipWidth,
-					"height": clipHeight,
-					"margin-left": -clipWidth/2 - 1,
-					"margin-top": -clipHeight/2 - 1
-				});
 			});
+
+			if (widthIsPercent) {
+				clipWidth = containerWidth / 100 * parseFloat(widthIsPercent);
+				if (!heightIsPercent) {
+					clipHeight = clipWidth / ratio;
+				}
+			}
+			if (heightIsPercent) {
+				clipHeight = containerHeight / 100 * parseFloat(heightIsPercent);
+				if (!widthIsPercent) {
+					clipWidth = clipHeight * ratio;
+				}
+			}
+
+			$clipView.css({
+				"width": clipWidth,
+				"height": clipHeight,
+				"margin-left": -clipWidth/2,
+				"margin-top": -clipHeight/2
+			});
+			$mask_left.css({
+				"margin-right": clipWidth/2,
+				"margin-top": -clipHeight/2,
+				"margin-bottom": -clipHeight/2
+			});
+			$mask_right.css({
+				"margin-left": clipWidth/2,
+				"margin-top": -clipHeight/2,
+				"margin-bottom": -clipHeight/2
+			});
+			$mask_top.css({
+				"margin-bottom": clipHeight/2
+			});
+			$mask_bottom.css({
+				"margin-top": clipHeight/2
+			});
+			$clip_area.css({
+				"width": clipWidth,
+				"height": clipHeight,
+				"margin-left": -clipWidth/2 - 1,
+				"margin-top": -clipHeight/2 - 1
+			});
+
+			imgCenter();
 		}
 
 		function setImg(src) {
