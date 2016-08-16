@@ -1,5 +1,5 @@
 /**
- * PhotoClip v2.0.0
+ * PhotoClip v2.0.1
  * 依赖插件
  * - jquery.js
  * - iscroll-zoom.js
@@ -98,13 +98,13 @@
 
 		var originWidth = size[0] || 260,
 			originHeight = size[1] || 260,
-			clipWidth = originWidth,
-			clipHeight = originHeight,
 			outputWidth = Math.max(outputSize[0], 0),
 			outputHeight = Math.max(outputSize[1], 0),
 			widthIsPercent,
 			heightIsPercent,
-			ratio;
+			ratio,
+			clipWidth,
+			clipHeight;
 
 		if ($.isArray(adaptive)) {
 			if (adaptive[0]) widthIsPercent = isPercent(adaptive[0]) ? adaptive[0] : false;
@@ -170,7 +170,8 @@
 		}
 
 		var $img,
-			imgWidth, imgHeight, //图片当前的宽高
+			imgWidth, imgHeight, //图片原始的宽高
+			curImgWidth, curImgHeight, // 旋转层当前方向上图片的宽高
 			imgLoaded; //图片是否已经加载完成
 
 		var $container, // 容器，包含裁剪视图层和遮罩层
@@ -189,8 +190,7 @@
 			canvas, // 图片裁剪用到的画布
 			hammerManager,
 			myScroll, // 图片的scroll对象，包含图片的位置与缩放信息
-			containerWidth,
-			containerHeight;
+			containerWidth, containerHeight;
 
 		init();
 		initScroll();
@@ -246,6 +246,8 @@
 			curX = 0;
 			curY = 0;
 			curAngle = 0;
+			curImgWidth = imgWidth;
+			curImgHeight = imgHeight;
 
 			$rotateLayer.css({
 				"width": imgWidth,
@@ -253,19 +255,20 @@
 			});
 			setTransform($rotateLayer, curX, curY, curAngle);
 
-			calculateScale(imgWidth, imgHeight);
-			myScroll.zoom(myScroll.options.zoomStart);
 			refreshScroll(imgWidth, imgHeight);
-			imgCenter();
-		}
+			myScroll.zoom(myScroll.options.zoomStart);
 
-		function imgCenter() {
-			var posX = (clipWidth - imgWidth * myScroll.options.zoomStart) * .5,
-				posY = (clipHeight - imgHeight * myScroll.options.zoomStart) * .5;
+			var posX = (clipWidth - imgWidth * myScroll.scale) * .5,
+				posY = (clipHeight - imgHeight * myScroll.scale) * .5;
 			myScroll.scrollTo(posX, posY);
 		}
 
 		function refreshScroll(width, height) {
+			calculateScale(width, height);
+			if (myScroll.scale < myScroll.options.zoomMin) {
+				myScroll.zoom(myScroll.options.zoomMin);
+			}
+
 			$moveLayer.css({
 				"width": width,
 				"height": height
@@ -346,10 +349,7 @@
 				// 移动层当前的位置（即旋转层旋转前的位置），与旋转层以当前计算的参考点从当前角度旋转到新角度后的位置，之间的左上角偏移量
 				parentOffsetX = 0, parentOffsetY = 0,
 
-				newAngle = curAngle + angle,
-
-				curImgWidth, // 移动层的当前宽度
-				curImgHeight; // 移动层的当前高度
+				newAngle = curAngle + angle;
 
 
 			if (newAngle == 90 || newAngle == -270)
@@ -454,10 +454,6 @@
 					myScroll.x - parentOffsetX * myScroll.scale,
 					myScroll.y - parentOffsetY * myScroll.scale
 				);
-				calculateScale(curImgWidth, curImgHeight);
-				if (myScroll.scale < myScroll.options.zoomMin) {
-					myScroll.zoom(myScroll.options.zoomMin);
-				}
 
 				refreshScroll(curImgWidth, curImgHeight);
 			});
@@ -495,12 +491,11 @@
 
 			try {
 				var dataURL = canvas.toDataURL(outputType, 1);
+				$view.css("background-image", "url("+ dataURL +")");
+				clipFinish.call(self, dataURL);
 			} catch(e) {
 				throw new Error("截图失败！当前图片源文件可能存在跨域问题，请确保图片与应用同源。如果您是在本地环境下执行本程序，请更换至服务器环境。");
 			}
-
-			$view.css("background-image", "url("+ dataURL +")");
-			clipFinish.call(self, dataURL);
 		}
 
 		function resize() {
@@ -719,6 +714,9 @@
 		}
 
 		function setSize(width, height) {
+			var oldWidth = originWidth,
+				oldHeight = originHeight;
+
 			if (typeof width === "number") originWidth = width;
 			if (typeof height === "number") originHeight = height;
 			clipWidth = originWidth;
@@ -775,7 +773,12 @@
 				"margin-top": -clipHeight/2 - 1
 			});
 
-			imgCenter();
+			if (curImgWidth && curImgHeight) {
+				var offsetX = (clipWidth - oldWidth) / 2 * myScroll.scale,
+					offsetY = (clipHeight - oldHeight) / 2 * myScroll.scale;
+				myScroll.scrollBy(offsetX, offsetY);
+				refreshScroll(curImgWidth, curImgHeight);
+			}
 		}
 
 		function setImg(src) {

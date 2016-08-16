@@ -61,6 +61,9 @@ clipArea.destroy(); // 销毁
 
 # Changelog
 
+## v2.0.1
+* 修复了使用 setSize() 后，图片移动位置不正确的问题
+
 ## v2.0.0
 * 新增了实例方法 setSize(width, height)。作用是重新定义截取框的宽和高，如果设置了自适应，则等于重新定义宽高比例。
 * 新增了实例方法 setImg(src)。作用是根据url地址重新加载图片。
