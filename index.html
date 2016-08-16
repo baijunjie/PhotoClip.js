@@ -38,14 +38,14 @@ body {
 <script src="js/iscroll-zoom.js"></script>
 <script src="js/hammer.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
-<script src="js/jquery.photoClip.js"></script>
+<script src="js/PhotoClip.js"></script>
 <script>
 //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 var clipArea = new bjj.PhotoClip("#clipArea", {
 	size: [260, 260],
 	outputSize: [640, 640],
 	file: "#file",
-	source: "img/mm.jpg",
+	//img: "img/mm.jpg",
 	view: "#view",
 	ok: "#clipBtn",
 	loadStart: function() {
@@ -59,6 +59,7 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	}
 });
 //clipArea.destroy();
+clipArea.setImg("img/mm.jpg");
 </script>
 
 </body>

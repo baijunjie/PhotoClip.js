@@ -1,10 +1,11 @@
-﻿# jQuery-photoClip
+﻿# PPhotoClip
 一款支持手势的裁图插件插件
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
 
 ## 依赖插件
 
+[[jquery.js]](https://github.com/jquery/jquery) 插件 <br>
 <del>[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件</del> （v1.4 中已经移除了对该插件的依赖）<br>
 [[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件（由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复）<br>
 [[hammer.js]](https://github.com/hammerjs/hammer.js) 插件 <br>
@@ -39,22 +40,32 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	source: "", // 需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。注意，该参数不支持跨域图片。
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
 	ok: "#clipBtn", // 确认截图按钮的选择器或者DOM对象
-	loadStart: function(file) {}, // 开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
-	loadComplete: function(src) {}, // 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
-	loadError: function(event) {}, // 加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
-	clipFinish: function(dataURL) {}, // 裁剪完成的回调函数。this指向图片对象，会将裁剪出的图像数据DataURL作为参数传入
+	loadStart: function(file) {}, // 开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入（如果是使用 source 加载图片，则该参数为图片的 img 对象）
+	loadComplete: function(img) {}, // 加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 img 对象作为参数传入
+	loadError: function(event) {}, // 加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误事件的 event 对象作为参数传入
+	clipFinish: function(dataURL) {}, // 裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入
 	lrzOption: {} // lrz压缩插件的配置参数
 });
 </script>
 ```
 
-## Destroy
+## API
 ```js
-clipArea.destroy();
+clipArea.setSize(width, height); // 重新定义截取框的宽和高，如果设置了自适应，则等于重新定义宽高比例
+clipArea.setImg(src); // 重新读取裁剪图片
+clipArea.rotateCW(); // 顺时针旋转90度
+clipArea.rotateCCW; // 逆时针旋转90度
+clipArea.destroy(); // 销毁
 ```
 
 
 # Changelog
+
+## v2.0.0
+* 新增了实例方法 setSize(width, height)。作用是重新定义截取框的宽和高，如果设置了自适应，则等于重新定义宽高比例。
+* 新增了实例方法 setImg(src)。作用是根据url地址重新加载图片。
+* 新增了实例方法 rotateCW()。作用是使图片顺时针旋转90度。
+* 新增了实例方法 rotateCCW()。作用是使图片逆时针旋转90度。
 
 ## v1.10.1
 * 添加了 adaptive 选项，接受一个宽和高的百分比组成的数组。截取框将按照这个百分比来设置大小。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。

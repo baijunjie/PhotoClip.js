@@ -1,6 +1,7 @@
 /**
- * jQuery photoClip v1.10.1
+ * PhotoClip v2.0.0
  * 依赖插件
+ * - jquery.js
  * - iscroll-zoom.js
  * - hammer.js
  * - lrz.all.bundle.js
@@ -19,10 +20,10 @@
  * @option_param    {string}   source       需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。注意，该参数不支持跨域图片。
  * @option_param    {string}   view         显示截取后图像的容器的选择器或者DOM对象
  * @option_param    {string}   ok           确认截图按钮的选择器或者DOM对象
- * @option_param    {function} loadStart    开始加载的回调函数。this指向 fileReader 对象，并将正在加载的 file 对象作为参数传入
- * @option_param    {function} loadComplete 加载完成的回调函数。this指向图片对象，并将图片地址作为参数传入
- * @option_param    {function} loadError    加载失败的回调函数。this指向 fileReader 对象，并将错误事件的 event 对象作为参数传入
- * @option_param    {function} clipFinish   裁剪完成的回调函数。this指向原图片对象，会将裁剪出的图像数据DataURL作为参数传入
+ * @option_param    {function} loadStart    开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入（如果是使用 source 加载图片，则该参数为图片的 img 对象）
+ * @option_param    {function} loadComplete 加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 img 对象作为参数传入
+ * @option_param    {function} loadError    加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误事件的 event 对象作为参数传入
+ * @option_param    {function} clipFinish   裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入
  * @option_param    {object}   lrzOption    lrz压缩插件的配置参数
  * @lrzOption_param {Number}   width        图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
  * @lrzOption_param {Number}   height       图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
@@ -67,13 +68,13 @@
 		}
 
 		var opt = $.extend({}, defaultOption, option);
-		var returnValue = photoClip(container, opt);
-
-		this.destroy = returnValue.destroy;
+		photoClip.call(this, container, opt);
 	}
 
 	function photoClip(container, option) {
-		var size = option.size,
+		var self = this,
+
+			size = option.size,
 			adaptive = option.adaptive,
 			outputSize = option.outputSize,
 			outputType = option.outputType || "image/jpeg",
@@ -87,26 +88,27 @@
 			clipFinish = option.clipFinish,
 			lrzOption = option.lrzOption;
 
-		if (!isArray(size)) {
+		if (!$.isArray(size)) {
 			size = [260, 260];
 		}
 
-		if (!isArray(outputSize)) {
+		if (!$.isArray(outputSize)) {
 			outputSize = [0, 0];
 		}
 
-		var clipWidth = size[0] || 260,
-			clipHeight = size[1] || 260,
+		var originWidth = size[0] || 260,
+			originHeight = size[1] || 260,
+			clipWidth = originWidth,
+			clipHeight = originHeight,
 			outputWidth = Math.max(outputSize[0], 0),
 			outputHeight = Math.max(outputSize[1], 0),
-			widthIsPercent, heightIsPercent, ratio;
+			widthIsPercent,
+			heightIsPercent,
+			ratio;
 
-		if (isArray(adaptive)) {
+		if ($.isArray(adaptive)) {
 			if (adaptive[0]) widthIsPercent = isPercent(adaptive[0]) ? adaptive[0] : false;
 			if (adaptive[1]) heightIsPercent = isPercent(adaptive[1]) ? adaptive[1] : false;
-			if (widthIsPercent || heightIsPercent) {
-				ratio = clipWidth / clipHeight;
-			}
 		}
 
 		if (outputType === "jpg") {
@@ -115,6 +117,7 @@
 			outputType = "image/png";
 		}
 
+		var loading = false;
 		var $file = $(file);
 		if ($file.length) {
 			$file.attr("accept", "image/jpeg, image/x-png, image/gif");
@@ -125,6 +128,11 @@
 					alert("图片格式不正确，请选择正确格式的图片文件！");
 					return false;
 				} else {
+					if (!loading) {
+						loading = true;
+						loadStart.call(self, files);
+					}
+
 					var fileReader = new FileReader();
 					fileReader.onprogress = function(e) {
 						console.log((e.loaded / e.total * 100).toFixed() + "%");
@@ -134,20 +142,21 @@
 						.then(function (rst) {
 							// 处理成功会执行
 							createImg(rst.base64);
+							loading = false;
 						})
 						.catch(function (err) {
 							// 处理失败会执行
 							alert("图片处理失败");
-							loadError.call(this, err);
+							loadError.call(self, err);
+							loading = false;
 						});
 					};
 					fileReader.onerror = function(e) {
 						alert("图片加载失败");
-						loadError.call(this, e);
+						loadError.call(self, e);
+						loading = false;
 					};
 					fileReader.readAsDataURL(files); // 读取文件内容
-
-					loadStart.call(fileReader, files);
 				}
 			});
 
@@ -157,7 +166,7 @@
 		}
 
 		if (source) {
-			createImg(source);
+			setImg(source);
 		}
 
 		var $img,
@@ -209,16 +218,16 @@
 
 			$rotateLayer.append(this);
 
-			hideAction.call(this, $img, function() {
+			hideAction($img, function() {
 				imgWidth = this.naturalWidth;
 				imgHeight = this.naturalHeight;
-			});
+			}, this);
 
 			hideAction($moveLayer, function() {
 				resetScroll();
 			});
 
-			loadComplete.call(this, this.src);
+			loadComplete.call(self, this);
 		}
 
 		function initScroll() {
@@ -488,57 +497,11 @@
 			}
 
 			$view.css("background-image", "url("+ dataURL +")");
-			clipFinish.call($img[0], dataURL);
+			clipFinish.call(self, dataURL);
 		}
 
 		function resize() {
-			hideAction($container, function() {
-				containerWidth = $container.width();
-				containerHeight = $container.height();
-
-				if (widthIsPercent) {
-					clipWidth = containerWidth / 100 * parseFloat(widthIsPercent);
-					if (!heightIsPercent) {
-						clipHeight = clipWidth / ratio;
-					}
-				}
-				if (heightIsPercent) {
-					clipHeight = containerHeight / 100 * parseFloat(heightIsPercent);
-					if (!widthIsPercent) {
-						clipWidth = clipHeight * ratio;
-					}
-				}
-
-				$clipView.css({
-					"width": clipWidth,
-					"height": clipHeight,
-					"margin-left": -clipWidth/2,
-					"margin-top": -clipHeight/2
-				});
-				$mask_left.css({
-					"margin-right": clipWidth/2,
-					"margin-top": -clipHeight/2,
-					"margin-bottom": -clipHeight/2
-				});
-				$mask_right.css({
-					"margin-left": clipWidth/2,
-					"margin-top": -clipHeight/2,
-					"margin-bottom": -clipHeight/2
-				});
-				$mask_top.css({
-					"margin-bottom": clipHeight/2
-				});
-				$mask_bottom.css({
-					"margin-top": clipHeight/2
-				});
-				// 创建截取区域
-				$clip_area.css({
-					"width": clipWidth,
-					"height": clipHeight,
-					"margin-left": -clipWidth/2 - 1,
-					"margin-top": -clipHeight/2 - 1
-				});
-			});
+			setSize();
 		}
 
 		function loaclToLoacl($layerOne, $layerTwo, x, y) { // 计算$layerTwo上的x、y坐标在$layerOne上的坐标
@@ -570,19 +533,20 @@
 			};
 		}
 
-		function hideAction(jq, func) {
+		function hideAction(jq, func, target) {
 			var $hide = $();
 			$.each(jq, function(i, n){
-				var $n = $(n);
-				var $hidden = $n.parents().addBack().filter(":hidden");
-				var $none;
-				for (var i = 0; i < $hidden.length; i++) {
+				var $n = (n instanceof jQuery) ? n : $(n),
+					$hidden = $n.parents().addBack().filter(":hidden"),
+					$none,
+					i = $hidden.length;
+				while (i--) {
 					if (!$n.is(":hidden")) break;
 					$none = $hidden.eq(i);
-					if ($none.css("display") == "none") $hide = $hide.add($none.show());
+					if ($none.css("display") === "none") $hide = $hide.add($none.show());
 				}
 			});
-			if (typeof(func) == "function") func.call(this);
+			if (typeof(func) === "function") func.call(target || this);
 			$hide.hide();
 		}
 
@@ -620,6 +584,7 @@
 		function clearImg() {
 			if ($img &&　$img.length) {
 				// 删除旧的图片以释放内存，防止IOS设备的webview崩溃
+				$img.off();
 				$img.remove();
 				delete $img[0];
 			}
@@ -631,6 +596,12 @@
 				"user-select": "none",
 				"pointer-events": "none"
 			});
+
+			if (!loading) {
+				loading = true;
+				loadStart.call(self, $img[0]);
+			}
+
 			$img.on('load', imgLoad);
 			$img.attr("src", src);
 		}
@@ -655,11 +626,6 @@
 				fn.call(this);
 			});
 			$obj.css(prefix + "transform", "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)");
-		}
-
-		// 判断一个对象是否为数组
-		function isArray(obj) {
-			return Object.prototype.toString.call(obj) === "[object Array]";
 		}
 
 		// 判断是否为百分比
@@ -749,6 +715,68 @@
 			}
 		}
 
+		function setSize(width, height) {
+			if (typeof width === "number") originWidth = width;
+			if (typeof height === "number") originHeight = height;
+			clipWidth = originWidth;
+			clipHeight = originHeight;
+
+			if (widthIsPercent || heightIsPercent) {
+				ratio = originWidth / originHeight;
+			}
+
+			hideAction($container, function() {
+				containerWidth = $container.width();
+				containerHeight = $container.height();
+
+				if (widthIsPercent) {
+					clipWidth = containerWidth / 100 * parseFloat(widthIsPercent);
+					if (!heightIsPercent) {
+						clipHeight = clipWidth / ratio;
+					}
+				}
+				if (heightIsPercent) {
+					clipHeight = containerHeight / 100 * parseFloat(heightIsPercent);
+					if (!widthIsPercent) {
+						clipWidth = clipHeight * ratio;
+					}
+				}
+
+				$clipView.css({
+					"width": clipWidth,
+					"height": clipHeight,
+					"margin-left": -clipWidth/2,
+					"margin-top": -clipHeight/2
+				});
+				$mask_left.css({
+					"margin-right": clipWidth/2,
+					"margin-top": -clipHeight/2,
+					"margin-bottom": -clipHeight/2
+				});
+				$mask_right.css({
+					"margin-left": clipWidth/2,
+					"margin-top": -clipHeight/2,
+					"margin-bottom": -clipHeight/2
+				});
+				$mask_top.css({
+					"margin-bottom": clipHeight/2
+				});
+				$mask_bottom.css({
+					"margin-top": clipHeight/2
+				});
+				$clip_area.css({
+					"width": clipWidth,
+					"height": clipHeight,
+					"margin-left": -clipWidth/2 - 1,
+					"margin-top": -clipHeight/2 - 1
+				});
+			});
+		}
+
+		function setImg(src) {
+			createImg(src);
+		}
+
 		function destroy() {
 			$file.off("change");
 			$file = null;
@@ -780,9 +808,11 @@
 			$view = null;
 		}
 
-		return {
-			destroy: destroy
-		};
+		self.setSize = setSize;
+		self.setImg = setImg;
+		self.rotateCW = rotateCW;
+		self.rotateCCW = rotateCCW;
+		self.destroy = destroy;
 	}
 
 	var prefix = '',
