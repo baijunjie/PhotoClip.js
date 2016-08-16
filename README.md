@@ -54,7 +54,7 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 clipArea.setSize(width, height); // 重新定义截取框的宽和高，如果设置了自适应，则等于重新定义宽高比例
 clipArea.setImg(src); // 重新读取裁剪图片
 clipArea.rotateCW(); // 顺时针旋转90度
-clipArea.rotateCCW; // 逆时针旋转90度
+clipArea.rotateCCW(); // 逆时针旋转90度
 clipArea.destroy(); // 销毁
 ```
 
