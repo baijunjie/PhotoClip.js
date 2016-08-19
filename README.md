@@ -27,9 +27,9 @@
 
 <script src="js/jquery-3.0.0.min.js"></script>
 <script src="js/hammer.min.js"></script>
-<script src="js/iscroll-zoom.min.js"></script>
+<script src="js/iscroll-zoom.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
-<script src="js/jquery.photoClip.min.js"></script>
+<script src="js/PhotoClip.min.js"></script>
 <script>
 var clipArea = new bjj.PhotoClip("#clipArea", {
 	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
