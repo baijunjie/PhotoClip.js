@@ -36,6 +36,7 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	adaptive: null, // 截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
 	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
 	outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+	outputQuality: .8, // 输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 lrzOption.quality 是相乘关系）
 	file: "#file", // 上传图片的<input type="file">控件的选择器或者DOM对象
 	source: "", // 需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。注意，该参数不支持跨域图片。
 	view: "#view", // 显示截取后图像的容器的选择器或者DOM对象
@@ -44,7 +45,12 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	loadComplete: function(img) {}, // 加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 img 对象作为参数传入
 	loadError: function(event) {}, // 加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误事件的 event 对象作为参数传入
 	clipFinish: function(dataURL) {}, // 裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入
-	lrzOption: {} // lrz压缩插件的配置参数
+	lrzOption: { // lrz压缩插件的配置参数
+		width // 图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
+		height // 图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
+		quality // 图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 outputQuality 是相乘关系）
+ */
+	}
 });
 </script>
 ```
@@ -60,6 +66,9 @@ clipArea.destroy(); // 销毁
 
 
 # Changelog
+
+## v2.0.2
+* 添加了 outputQuality 选项，现在可以控制 canvas 截图的输出质量了。
 
 ## v2.0.1
 * 修复了使用 setSize() 后，图片移动位置不正确的问题
