@@ -46,10 +46,9 @@ var clipArea = new bjj.PhotoClip("#clipArea", {
 	loadError: function(event) {}, // 加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误事件的 event 对象作为参数传入
 	clipFinish: function(dataURL) {}, // 裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入
 	lrzOption: { // lrz压缩插件的配置参数
-		width // 图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
-		height // 图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
-		quality // 图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 outputQuality 是相乘关系）
- */
+		width: null, // 图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
+		height: null, // 图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
+		quality: .7, // 图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 outputQuality 是相乘关系）
 	}
 });
 </script>
