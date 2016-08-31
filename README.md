@@ -3,7 +3,7 @@
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
 
-[Changelog](https://github.com/baijunjie/PhotoClip.js/Changelog.md)
+[Changelog](https://github.com/baijunjie/PhotoClip.js/blob/master/Changelog.md)
 
 ## 依赖插件
 
@@ -88,4 +88,4 @@ require(['PhotoClip'], function(PhotoClip) {
 
 
 # 您的捐助是我最大的动力
-![image](https://github.com/baijunjie/PhotoClip.js/donations.jpg)
+![image](https://github.com/baijunjie/PhotoClip.js/blob/master/donations.jpg)
