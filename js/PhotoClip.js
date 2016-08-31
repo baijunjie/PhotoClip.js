@@ -1,5 +1,5 @@
 /**
- * PhotoClip v2.0.2
+ * PhotoClip v2.0.3
  * 依赖插件
  * - jquery.js
  * - iscroll-zoom.js
@@ -7,7 +7,7 @@
  * - lrz.all.bundle.js
  *
  * @author 白俊杰 625603381@qq.com 2014/07/31
- * https://github.com/baijunjie/PhotoClip.js/blob/master/js/PhotoClip.js
+ * https://github.com/baijunjie/PhotoClip.js
  *
  * @brief	支持手势的裁图插件
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
@@ -39,8 +39,7 @@
 	} else if (typeof exports === "object") {
 		module.exports = factory(require("jquery"), require("iscroll-zoom"), require("hammer"), require("lrz"));
 	} else {
-		root.bjj = root.bjj || {};
-		root.bjj.PhotoClip = factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
+		root.PhotoClip = factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
 	}
 
 }(this, function($, IScroll, Hammer, lrz) {
@@ -64,11 +63,6 @@
 	}
 
 	function PhotoClip(container, option) {
-		if (!window.FileReader) {
-			alert("您的浏览器不支持 HTML5 的 FileReader API， 因此无法初始化图片裁剪插件，请更换最新的浏览器！");
-			return;
-		}
-
 		var opt = $.extend({}, defaultOption, option);
 		photoClip.call(this, container, opt);
 	}
@@ -121,51 +115,59 @@
 		}
 
 		var loading = false;
-		var $file = $(file);
-		if ($file.length) {
-			$file.attr("accept", "image/jpeg, image/x-png, image/gif");
-			$file.on("change", function() {
-				if (!this.files.length) return;
-				var files = this.files[0];
-				if (!/image\/\w+/.test(files.type)) {
-					alert("图片格式不正确，请选择正确格式的图片文件！");
-					return false;
-				} else {
-					if (!loading) {
-						loading = true;
-						loadStart.call(self, files);
-					}
+		if (file) {
+			if (!window.FileReader) {
+				alert("您的浏览器不支持 HTML5 的 FileReader API，因此不能使用 file 控件上传图片！");
+			} else {
+				var $file = $(file);
+				if ($file.length) {
+					$file.attr("accept", "image/jpeg, image/x-png, image/gif");
 
-					var fileReader = new FileReader();
-					fileReader.onprogress = function(e) {
-						console.log((e.loaded / e.total * 100).toFixed() + "%");
-					};
-					fileReader.onload = function(e) {
-						lrz(files, lrzOption)
-						.then(function (rst) {
-							// 处理成功会执行
-							createImg(rst.base64);
-							loading = false;
-						})
-						.catch(function (err) {
-							// 处理失败会执行
-							alert("图片处理失败");
-							loadError.call(self, err);
-							loading = false;
-						});
-					};
-					fileReader.onerror = function(e) {
-						alert("图片加载失败");
-						loadError.call(self, e);
-						loading = false;
-					};
-					fileReader.readAsDataURL(files); // 读取文件内容
+					$file.on("change", function() {
+						if (!this.files.length) return;
+						var files = this.files[0];
+						if (!/image\/\w+/.test(files.type)) {
+							console.log("图片格式不正确，请选择正确格式的图片文件！");
+							loadError.call(self, "Image format error");
+							return false;
+						} else {
+							if (!loading) {
+								loading = true;
+								loadStart.call(self, files);
+							}
+
+							var fileReader = new FileReader();
+							fileReader.onprogress = function(e) {
+								console.log((e.loaded / e.total * 100).toFixed() + "%");
+							};
+							fileReader.onload = function(e) {
+								lrz(files, lrzOption)
+								.then(function (rst) {
+									// 处理成功会执行
+									createImg(rst.base64);
+									loading = false;
+								})
+								.catch(function (err) {
+									// 处理失败会执行
+									console.log("图片处理失败");
+									loadError.call(self, err);
+									loading = false;
+								});
+							};
+							fileReader.onerror = function(e) {
+								console.log("图片加载失败");
+								loadError.call(self, e);
+								loading = false;
+							};
+							fileReader.readAsDataURL(files); // 读取文件内容
+						}
+					});
+
+					$file.click(function() {
+						this.value = "";
+					});
 				}
-			});
-
-			$file.click(function() {
-				this.value = "";
-			});
+			}
 		}
 
 		if (source) {
@@ -468,7 +470,8 @@
 
 		function clipImg() {
 			if (!imgLoaded) {
-				alert("亲，当前没有图片可以裁剪!");
+				console.log("当前没有图片可以裁剪!");
+				clipFinish.call(self, null);
 				return;
 			}
 			var local = loaclToLoacl($moveLayer, $clipView);

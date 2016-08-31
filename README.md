@@ -3,6 +3,8 @@
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
 
+[Changelog](https://github.com/baijunjie/PhotoClip.js/Changelog.md)
+
 ## 依赖插件
 
 [[jquery.js]](https://github.com/jquery/jquery) 插件 <br>
@@ -29,9 +31,9 @@
 <script src="js/hammer.min.js"></script>
 <script src="js/iscroll-zoom.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
-<script src="js/PhotoClip.min.js"></script>
+<script src="js/PhotoClip.js"></script>
 <script>
-var clipArea = new bjj.PhotoClip("#clipArea", {
+var clipArea = new PhotoClip("#clipArea", {
 	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
 	adaptive: null, // 截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
 	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
@@ -63,54 +65,27 @@ clipArea.rotateCCW(); // 逆时针旋转90度
 clipArea.destroy(); // 销毁
 ```
 
+## AMD
+由于引入的开源插件较多，因此很多小伙伴感觉在移动端比较臃肿，这里推荐大家用模块化的方式管理插件，最终可以用打包工具进行整合。
+这里以 RequireJS 为例：
 
-# Changelog
+```js
+require.config({
+	paths: {
+		'jquery': 'js/jquery-3.0.0.min',
+		'hammer': 'js/hammer.min',
+		'iscroll-zoom': 'js/iscroll-zoom',
+		'lrz': 'js/lrz.all.bundle',
+		'PhotoClip': 'js/PhotoClip'
+	}
+});
 
-## v2.0.2
-* 添加了 outputQuality 选项，现在可以控制 canvas 截图的输出质量了。
+require(['PhotoClip'], function(PhotoClip) {
+	new PhotoClip("#clipArea", {...});
+});
+```
 
-## v2.0.1
-* 修复了使用 setSize() 后，图片移动位置不正确的问题
-
-## v2.0.0
-* 新增了实例方法 setSize(width, height)。作用是重新定义截取框的宽和高，如果设置了自适应，则等于重新定义宽高比例。
-* 新增了实例方法 setImg(src)。作用是根据url地址重新加载图片。
-* 新增了实例方法 rotateCW()。作用是使图片顺时针旋转90度。
-* 新增了实例方法 rotateCCW()。作用是使图片逆时针旋转90度。
-
-## v1.10.1
-* 添加了 adaptive 选项，接受一个宽和高的百分比组成的数组。截取框将按照这个百分比来设置大小。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
-* 修复了 chrome 下打开 file 控件过慢的问题。
-
-## v1.10.0
-* 增加了 [[lrz.all.bundle.js]](https://github.com/think2011/localResizeIMG) 插件[（文档）](https://github.com/think2011/localResizeIMG/wiki/2.-%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3)的配置参数，如果加载完图片后出现卡顿或崩溃现象，可以尝试设置此参数。
-
-## v1.9.1
-* 兼容 jQuery 3.0
-
-## v1.9
-* 添加了source选项，支持通过url地址获取需要裁剪的源图片
-* 重新添加了outputType选项
-
-## v1.8
-* 修改了创建方式
-* 添加了销毁方法 destroy()
-
-## v1.7
-* 移除了width、height选项，使用size选项替代
-* 移除了strictSize选项，使用outputSize选项替代，用于指定输出图像的大小
-
-## v1.6
-* 修复了ios设备中获取照片方向错误的bug
-* 由于依赖了localResizeIMG插件，outputType选项暂时移除
-
-## v1.5
-* 添加了outputType选项
-* 支持模块化
-
-## v1.4
-* 添加了strictSize选项
 
 
 # 您的捐助是我最大的动力
-![image](https://github.com/baijunjie/jQuery-photoClip/blob/master/donations.jpg)
+![image](https://github.com/baijunjie/PhotoClip.js/donations.jpg)
