@@ -77,6 +77,11 @@ require.config({
 		'iscroll-zoom': 'js/iscroll-zoom',
 		'lrz': 'js/lrz.all.bundle',
 		'PhotoClip': 'js/PhotoClip'
+	},
+	shim: {
+		'iscroll': {
+			exports: 'IScroll'
+		}
 	}
 });
 
