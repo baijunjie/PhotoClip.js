@@ -1,5 +1,5 @@
 /**
- * PhotoClip v2.0.3
+ * PhotoClip v2.0.4
  * 依赖插件
  * - jquery.js
  * - iscroll-zoom.js
@@ -15,7 +15,7 @@
  * @option_param    {array}    size          截取框宽和高组成的数组。默认值为[260,260]
  * @option_param    {array}    adaptive      截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
  * @option_param    {array}    outputSize    输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
- * @option_param    {string}   outputType    指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
+ * @option_param    {string}   outputType    指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'
  * @option_param    {string}   outputQuality 输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 lrzOption.quality 是相乘关系）
  * @option_param    {string}   file          上传图片的<input type="file">控件的选择器或者DOM对象
  * @option_param    {string}   source        需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。注意，该参数不支持跨域图片。
@@ -32,29 +32,31 @@
  */
 
 (function(root, factory) {
-	"use strict";
+	'use strict';
 
-	if (typeof define === "function" && define.amd) {
-		define(["jquery", "iscroll-zoom", "hammer", "lrz"], factory);
-	} else if (typeof exports === "object") {
-		module.exports = factory(require("jquery"), require("iscroll-zoom"), require("hammer"), require("lrz"));
+	if (typeof define === 'function' && define.amd) {
+		define(['jquery', 'iscroll-zoom', 'hammer', 'lrz'], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('jquery'), require('iscroll-zoom'), require('hammer'), require('lrz'));
 	} else {
 		root.PhotoClip = factory(root.jQuery, root.IScroll, root.Hammer, root.lrz);
 	}
 
 }(this, function($, IScroll, Hammer, lrz) {
-	"use strict";
+	'use strict';
+
+	var is_mobile = !!navigator.userAgent.match(/mobile/i);
 
 	var defaultOption = {
 		size: [260, 260],
 		adaptive: null,
 		outputSize: [0, 0],
-		outputType: "jpg",
+		outputType: 'jpg',
 		outputQuality: .8,
-		file: "",
-		source: "",
-		view: "",
-		ok: "",
+		file: '',
+		source: '',
+		view: '',
+		ok: '',
 		loadStart: function() {},
 		loadComplete: function() {},
 		loadError: function() {},
@@ -73,7 +75,7 @@
 			size = option.size,
 			adaptive = option.adaptive,
 			outputSize = option.outputSize,
-			outputType = option.outputType || "image/jpeg",
+			outputType = option.outputType || 'image/jpeg',
 			outputQuality = option.outputQuality,
 			file = option.file,
 			source = option.source,
@@ -108,27 +110,30 @@
 			if (adaptive[1]) heightIsPercent = isPercent(adaptive[1]) ? adaptive[1] : false;
 		}
 
-		if (outputType === "jpg") {
-			outputType = "image/jpeg";
-		} else if (outputType === "png") {
-			outputType = "image/png";
+		if (outputType === 'jpg') {
+			outputType = 'image/jpeg';
+		} else if (outputType === 'png') {
+			outputType = 'image/png';
 		}
 
 		var loading = false;
 		if (file) {
 			if (!window.FileReader) {
-				alert("您的浏览器不支持 HTML5 的 FileReader API，因此不能使用 file 控件上传图片！");
+				alert('您的浏览器不支持 HTML5 的 FileReader API，因此不能使用 file 控件上传图片！');
 			} else {
 				var $file = $(file);
 				if ($file.length) {
-					$file.attr("accept", "image/jpeg, image/x-png, image/gif");
 
-					$file.on("change", function() {
+					if (!is_mobile) {
+						$file.attr('accept', 'image/jpeg, image/x-png, image/gif');
+					}
+
+					$file.on('change', function() {
 						if (!this.files.length) return;
 						var files = this.files[0];
 						if (!/image\/\w+/.test(files.type)) {
-							console.log("图片格式不正确，请选择正确格式的图片文件！");
-							loadError.call(self, "Image format error");
+							console.log('图片格式不正确，请选择正确格式的图片文件！');
+							loadError.call(self, 'Image format error');
 							return false;
 						} else {
 							if (!loading) {
@@ -138,7 +143,7 @@
 
 							var fileReader = new FileReader();
 							fileReader.onprogress = function(e) {
-								console.log((e.loaded / e.total * 100).toFixed() + "%");
+								console.log((e.loaded / e.total * 100).toFixed() + '%');
 							};
 							fileReader.onload = function(e) {
 								lrz(files, lrzOption)
@@ -149,13 +154,13 @@
 								})
 								.catch(function (err) {
 									// 处理失败会执行
-									console.log("图片处理失败");
+									console.log('图片处理失败');
 									loadError.call(self, err);
 									loading = false;
 								});
 							};
 							fileReader.onerror = function(e) {
-								console.log("图片加载失败");
+								console.log('图片加载失败');
 								loadError.call(self, e);
 								loading = false;
 							};
@@ -164,7 +169,7 @@
 					});
 
 					$file.click(function() {
-						this.value = "";
+						this.value = '';
 					});
 				}
 			}
@@ -242,7 +247,7 @@
 				scrollY: true,
 				freeScroll: true,
 				mouseWheel: true,
-				wheelAction: "zoom"
+				wheelAction: 'zoom'
 			}
 			myScroll = new IScroll($clipView[0], options);
 		}
@@ -255,8 +260,8 @@
 			curImgHeight = imgHeight;
 
 			$rotateLayer.css({
-				"width": imgWidth,
-				"height": imgHeight
+				'width': imgWidth,
+				'height': imgHeight
 			});
 			setTransform($rotateLayer, curX, curY, curAngle);
 
@@ -275,8 +280,8 @@
 			}
 
 			$moveLayer.css({
-				"width": width,
-				"height": height
+				'width': width,
+				'height': height
 			});
 			// 在移动设备上，尤其是Android设备，当为一个元素重置了宽高时
 			// 该元素的offsetWidth/offsetHeight、clientWidth/clientHeight等属性并不会立即更新，导致相关的js程序出现错误
@@ -287,14 +292,12 @@
 		}
 
 		function initEvent() {
-			var is_mobile = !!navigator.userAgent.match(/mobile/i);
-
 			if (is_mobile) {
-				hammerManager = new Hammer($moveLayer[0]);
+				hammerManager = new Hammer.Manager($moveLayer[0]);
 				hammerManager.add(new Hammer.Rotate());
 
 				var rotation, rotateDirection;
-				hammerManager.on("rotatemove", function(e) {
+				hammerManager.on('rotatemove', function(e) {
 					if (atRotation) return;
 					rotation = e.rotation;
 					if (rotation > 180) {
@@ -304,7 +307,7 @@
 					}
 					rotateDirection = rotation > 0 ? 1 : rotation < 0 ? -1 : 0;
 				});
-				hammerManager.on("rotateend", function(e) {
+				hammerManager.on('rotateend', function(e) {
 					if (atRotation) return;
 
 					if (Math.abs(rotation) > 30) {
@@ -318,7 +321,7 @@
 					}
 				});
 			} else {
-				$moveLayer.on("dblclick", function(e) {
+				$moveLayer.on('dblclick', function(e) {
 					rotateCW({
 						x: e.clientX,
 						y: e.clientY
@@ -465,18 +468,18 @@
 		}
 
 		function initClip() {
-			canvas = document.createElement("canvas");
+			canvas = document.createElement('canvas');
 		}
 
 		function clipImg() {
 			if (!imgLoaded) {
-				console.log("当前没有图片可以裁剪!");
+				console.log('当前没有图片可以裁剪!');
 				clipFinish.call(self, null);
 				return;
 			}
 			var local = loaclToLoacl($moveLayer, $clipView);
 			var scale = myScroll.scale;
-			var ctx = canvas.getContext("2d");
+			var ctx = canvas.getContext('2d');
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.save();
 
@@ -497,10 +500,10 @@
 
 			try {
 				var dataURL = canvas.toDataURL(outputType, outputQuality);
-				$view.css("background-image", "url("+ dataURL +")");
+				$view.css('background-image', 'url('+ dataURL +')');
 				clipFinish.call(self, dataURL);
 			} catch(e) {
-				throw new Error("截图失败！当前图片源文件可能存在跨域问题，请确保图片与应用同源。如果您是在本地环境下执行本程序，请更换至服务器环境。");
+				throw new Error('截图失败！当前图片源文件可能存在跨域问题，请确保图片与应用同源。如果您是在本地环境下执行本程序，请更换至服务器环境。');
 			}
 		}
 
@@ -541,16 +544,16 @@
 			var $hide = $();
 			$.each(jq, function(i, n){
 				var $n = (n instanceof jQuery) ? n : $(n),
-					$hidden = $n.parents().addBack().filter(":hidden"),
+					$hidden = $n.parents().addBack().filter(':hidden'),
 					$none,
 					i = $hidden.length;
 				while (i--) {
-					if (!$n.is(":hidden")) break;
+					if (!$n.is(':hidden')) break;
 					$none = $hidden.eq(i);
-					if ($none.css("display") === "none") $hide = $hide.add($none.show());
+					if ($none.css('display') === 'none') $hide = $hide.add($none.show());
 				}
 			});
-			if (typeof(func) === "function") func.call(target || this);
+			if (typeof(func) === 'function') func.call(target || this);
 			$hide.hide();
 		}
 
@@ -596,9 +599,9 @@
 
 		function createImg(src) {
 			clearImg();
-			$img = $("<img>").css({
-				"user-select": "none",
-				"pointer-events": "none"
+			$img = $('<img>').css({
+				'user-select': 'none',
+				'pointer-events': 'none'
 			});
 
 			if (!loading) {
@@ -607,15 +610,15 @@
 			}
 
 			$img.on('load', imgLoad);
-			$img.attr("src", src);
+			$img.attr('src', src);
 		}
 
 		function setTransform($obj, x, y, angle, originX, originY) {
 			originX = originX || 0;
 			originY = originY || 0;
 			var style = {};
-			style[prefix + "transform"] = "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)";
-			style[prefix + "transform-origin"] = originX + "px " + originY + "px";
+			style[prefix + 'transform'] = 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)';
+			style[prefix + 'transform-origin'] = originX + 'px ' + originY + 'px';
 			$obj.css(style);
 		}
 
@@ -623,98 +626,98 @@
 			// 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
 			// 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
 			// 这样就会导致之前设置的位移也被应用到动画中
-			$obj.css(prefix + "transform");
-			$obj.css(prefix + "transition", prefix + "transform " + dur + "ms");
+			$obj.css(prefix + 'transform');
+			$obj.css(prefix + 'transition', prefix + 'transform ' + dur + 'ms');
 			$obj.one(transitionEnd, function() {
-				$obj.css(prefix + "transition", "");
+				$obj.css(prefix + 'transition', '');
 				fn.call(this);
 			});
-			$obj.css(prefix + "transform", "translateZ(0) translate(" + x + "px," + y + "px) rotate(" + angle + "deg)");
+			$obj.css(prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
 		}
 
 		// 判断是否为百分比
 		function isPercent(value) {
-			var str = value + "";
+			var str = value + '';
 			return /%$/.test(str);
 		};
 
 		function init() {
 			// 初始化容器
 			$container = $(container).css({
-				"user-select": "none",
-				"overflow": "hidden"
+				'user-select': 'none',
+				'overflow': 'hidden'
 			});
-			if ($container.css("position") == "static") $container.css("position", "relative");
+			if ($container.css('position') == 'static') $container.css('position', 'relative');
 
 			// 创建裁剪视图层
-			$clipView = $("<div class='photo-clip-view'>").css({
-				"position": "absolute",
-				"left": "50%",
-				"top": "50%"
+			$clipView = $('<div class="photo-clip-view">').css({
+				'position': 'absolute',
+				'left': '50%',
+				'top': '50%'
 			}).appendTo($container);
 
-			$moveLayer = $("<div class='photo-clip-moveLayer'>").appendTo($clipView);
+			$moveLayer = $('<div class="photo-clip-moveLayer">').appendTo($clipView);
 
-			$rotateLayer = $("<div class='photo-clip-rotateLayer'>").appendTo($moveLayer);
+			$rotateLayer = $('<div class="photo-clip-rotateLayer">').appendTo($moveLayer);
 
 			// 创建遮罩
-			var $mask = $("<div class='photo-clip-mask'>").css({
-				"position": "absolute",
-				"left": 0,
-				"top": 0,
-				"width": "100%",
-				"height": "100%",
-				"pointer-events": "none"
+			var $mask = $('<div class="photo-clip-mask">').css({
+				'position': 'absolute',
+				'left': 0,
+				'top': 0,
+				'width': '100%',
+				'height': '100%',
+				'pointer-events': 'none'
 			}).appendTo($container);
-			$mask_left = $("<div class='photo-clip-mask-left'>").css({
-				"position": "absolute",
-				"left": 0,
-				"right": "50%",
-				"top": "50%",
-				"bottom": "50%",
-				"width": "auto",
-				"background-color": "rgba(0,0,0,.5)"
+			$mask_left = $('<div class="photo-clip-mask-left">').css({
+				'position': 'absolute',
+				'left': 0,
+				'right': '50%',
+				'top': '50%',
+				'bottom': '50%',
+				'width': 'auto',
+				'background-color': 'rgba(0,0,0,.5)'
 			}).appendTo($mask);
-			$mask_right = $("<div class='photo-clip-mask-right'>").css({
-				"position": "absolute",
-				"left": "50%",
-				"right": 0,
-				"top": "50%",
-				"bottom": "50%",
-				"background-color": "rgba(0,0,0,.5)"
+			$mask_right = $('<div class="photo-clip-mask-right">').css({
+				'position': 'absolute',
+				'left': '50%',
+				'right': 0,
+				'top': '50%',
+				'bottom': '50%',
+				'background-color': 'rgba(0,0,0,.5)'
 			}).appendTo($mask);
-			$mask_top = $("<div class='photo-clip-mask-top'>").css({
-				"position": "absolute",
-				"left": 0,
-				"right": 0,
-				"top": 0,
-				"bottom": "50%",
-				"background-color": "rgba(0,0,0,.5)"
+			$mask_top = $('<div class="photo-clip-mask-top">').css({
+				'position': 'absolute',
+				'left': 0,
+				'right': 0,
+				'top': 0,
+				'bottom': '50%',
+				'background-color': 'rgba(0,0,0,.5)'
 			}).appendTo($mask);
-			$mask_bottom = $("<div class='photo-clip-mask-bottom'>").css({
-				"position": "absolute",
-				"left": 0,
-				"right": 0,
-				"top": "50%",
-				"bottom": 0,
-				"background-color": "rgba(0,0,0,.5)"
+			$mask_bottom = $('<div class="photo-clip-mask-bottom">').css({
+				'position': 'absolute',
+				'left': 0,
+				'right': 0,
+				'top': '50%',
+				'bottom': 0,
+				'background-color': 'rgba(0,0,0,.5)'
 			}).appendTo($mask);
 			// 创建截取区域
-			$clip_area = $("<div class='photo-clip-area'>").css({
-				"border": "1px dashed #ddd",
-				"position": "absolute",
-				"left": "50%",
-				"top": "50%"
+			$clip_area = $('<div class="photo-clip-area">').css({
+				'border': '1px dashed #ddd',
+				'position': 'absolute',
+				'left': '50%',
+				'top': '50%'
 			}).appendTo($mask);
 
 			// 初始化视图容器
 			$view = $(view);
 			if ($view.length) {
 				$view.css({
-					"background-color": "#666",
-					"background-repeat": "no-repeat",
-					"background-position": "center",
-					"background-size": "contain"
+					'background-color': '#666',
+					'background-repeat': 'no-repeat',
+					'background-position': 'center',
+					'background-size': 'contain'
 				});
 			}
 		}
@@ -723,8 +726,8 @@
 			var oldWidth = originWidth,
 				oldHeight = originHeight;
 
-			if (typeof width === "number") originWidth = width;
-			if (typeof height === "number") originHeight = height;
+			if (typeof width === 'number') originWidth = width;
+			if (typeof height === 'number') originHeight = height;
 			clipWidth = originWidth;
 			clipHeight = originHeight;
 
@@ -751,32 +754,32 @@
 			}
 
 			$clipView.css({
-				"width": clipWidth,
-				"height": clipHeight,
-				"margin-left": -clipWidth/2,
-				"margin-top": -clipHeight/2
+				'width': clipWidth,
+				'height': clipHeight,
+				'margin-left': -clipWidth/2,
+				'margin-top': -clipHeight/2
 			});
 			$mask_left.css({
-				"margin-right": clipWidth/2,
-				"margin-top": -clipHeight/2,
-				"margin-bottom": -clipHeight/2
+				'margin-right': clipWidth/2,
+				'margin-top': -clipHeight/2,
+				'margin-bottom': -clipHeight/2
 			});
 			$mask_right.css({
-				"margin-left": clipWidth/2,
-				"margin-top": -clipHeight/2,
-				"margin-bottom": -clipHeight/2
+				'margin-left': clipWidth/2,
+				'margin-top': -clipHeight/2,
+				'margin-bottom': -clipHeight/2
 			});
 			$mask_top.css({
-				"margin-bottom": clipHeight/2
+				'margin-bottom': clipHeight/2
 			});
 			$mask_bottom.css({
-				"margin-top": clipHeight/2
+				'margin-top': clipHeight/2
 			});
 			$clip_area.css({
-				"width": clipWidth,
-				"height": clipHeight,
-				"margin-left": -clipWidth/2 - 1,
-				"margin-top": -clipHeight/2 - 1
+				'width': clipWidth,
+				'height': clipHeight,
+				'margin-left': -clipWidth/2 - 1,
+				'margin-top': -clipHeight/2 - 1
 			});
 
 			if (curImgWidth && curImgHeight) {
@@ -792,16 +795,16 @@
 		}
 
 		function destroy() {
-			$file.off("change");
+			$file.off('change');
 			$file = null;
 
 			if (hammerManager) {
-				hammerManager.off("rotatemove");
-				hammerManager.off("rotateend");
+				hammerManager.off('rotatemove');
+				hammerManager.off('rotateend');
 				hammerManager.destroy();
 				hammerManager = null;
 			} else {
-				$moveLayer.off("dblclick");
+				$moveLayer.off('dblclick');
 			}
 
 			myScroll.destroy();
@@ -814,10 +817,10 @@
 			$rotateLayer = null;
 
 			$view.css({
-				"background-color": "",
-				"background-repeat": "",
-				"background-position": "",
-				"background-size": ""
+				'background-color': '',
+				'background-repeat': '',
+				'background-position': '',
+				'background-size': ''
 			});
 			$view = null;
 		}

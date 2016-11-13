@@ -27,7 +27,7 @@
 <button id="clipBtn">截取</button>
 <div id="view"></div>
 
-<script src="js/jquery-3.0.0.min.js"></script>
+<script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/hammer.min.js"></script>
 <script src="js/iscroll-zoom.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
