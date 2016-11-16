@@ -1,5 +1,5 @@
 /**
- * PhotoClip v2.0.4
+ * PhotoClip v2.0.5
  * 依赖插件
  * - jquery.js
  * - iscroll-zoom.js
@@ -88,15 +88,15 @@
 			lrzOption = option.lrzOption;
 
 		if (!$.isArray(size)) {
-			size = [260, 260];
+			size = defaultOption.size;
 		}
 
 		if (!$.isArray(outputSize)) {
-			outputSize = [0, 0];
+			outputSize = defaultOption.outputSize;
 		}
 
-		var originWidth = size[0] || 260,
-			originHeight = size[1] || 260,
+		var originWidth = size[0] || defaultOption.size[0],
+			originHeight = size[1] || defaultOption.size[1],
 			outputWidth = Math.max(outputSize[0], 0),
 			outputHeight = Math.max(outputSize[1], 0),
 			widthIsPercent,
@@ -209,7 +209,7 @@
 
 		var $ok = $(ok);
 		if ($ok.length) {
-			$ok.click(function() {
+			$ok.on('click', function() {
 				clipImg();
 			});
 		}
@@ -798,6 +798,9 @@
 			$file.off('change');
 			$file = null;
 
+			$ok.off('click');
+			$ok = null;
+
 			if (hammerManager) {
 				hammerManager.off('rotatemove');
 				hammerManager.off('rotateend');
@@ -816,6 +819,13 @@
 			$moveLayer = null;
 			$rotateLayer = null;
 
+			$mask_left = null;
+			$mask_right = null;
+			$mask_top = null;
+			$mask_bottom = null;
+			$mask_area = null;
+			$clip_area = null;
+
 			$view.css({
 				'background-color': '',
 				'background-repeat': '',
@@ -823,6 +833,9 @@
 				'background-size': ''
 			});
 			$view = null;
+
+			$img = null;
+			canvas = null;
 		}
 
 		self.setSize = setSize;
