@@ -1,4 +1,4 @@
-﻿# PhotoClip.js
+# PhotoClip.js
 一款支持手势的裁图插件插件
 
 由于目前网上很难找到一款支持手势的裁图插件，因此自己动手写了一个。为了快速开发，依赖了很多其他的开源插件。不过目前仅解决需求即可。
@@ -7,10 +7,10 @@
 
 ## 依赖插件
 
-[[jquery.js]](https://github.com/jquery/jquery) 插件 <br>
-<del>[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件</del> （v1.4 中已经移除了对该插件的依赖）<br>
-[[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件（由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复）<br>
-[[hammer.js]](https://github.com/hammerjs/hammer.js) 插件 <br>
+[[jquery.js]](https://github.com/jquery/jquery) 插件  
+~~[[jquery.transit.js]](https://github.com/rstacruz/jquery.transit) 插件~~ （v1.4 中已经移除了对该插件的依赖）  
+[[iscroll-zoom.js]](https://github.com/cubiq/iscroll) 插件（由于原插件的zoom扩展存在几个bug，所以建议使用demo中提供的iscroll-zoom.js文件，本人已经将这些bug修复）  
+[[hammer.js]](https://github.com/hammerjs/hammer.js) 插件  
 [[lrz.all.bundle.js]](https://github.com/think2011/localResizeIMG) 插件
 
 ## 操作说明
@@ -35,7 +35,7 @@
 <script>
 var clipArea = new PhotoClip("#clipArea", {
 	size: [260, 260], // 截取框的宽和高组成的数组。默认值为[260,260]
-	adaptive: null, // 截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
+	adaptive: ['60%', '80%'], // 截取框自适应，值为截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置。当设置了宽或高其中一个值得百分比时，如果另一个未设置，那么将会按 size 中的宽高比来设置另一个。
 	outputSize: [640, 640], // 输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
 	outputType: "jpg", // 指定输出图片的类型，可选 "jpg" 和 "png" 两种种类型，默认为 "jpg"
 	outputQuality: .8, // 输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 lrzOption.quality 是相乘关系）

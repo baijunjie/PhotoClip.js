@@ -13,7 +13,7 @@
  *			在移动设备上双指捏合为缩放，双指旋转可根据旋转方向每次旋转90度
  *			在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
  * @option_param    {array}    size          截取框宽和高组成的数组。默认值为[260,260]
- * @option_param    {array}    adaptive      截取框自适应，截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置，size 中的值仅用于计算宽高比。当设置了其中一个值得百分比时，如果另一个未设置，则将会按 size 中的比例等比缩放。
+ * @option_param    {array}    adaptive      截取框自适应，值为截取框宽和高的百分比组成的数组。默认为 null。如果设置了该参数，且值有效，则会忽略 size 的大小设置。当设置了宽或高其中一个值得百分比时，如果另一个未设置，那么将会按 size 中的宽高比来设置另一个。
  * @option_param    {array}    outputSize    输出图像的宽和高组成的数组。默认值为[0,0]，表示输出图像原始大小
  * @option_param    {string}   outputType    指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'
  * @option_param    {string}   outputQuality 输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 lrzOption.quality 是相乘关系）
