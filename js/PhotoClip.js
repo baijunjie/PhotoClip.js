@@ -35,7 +35,7 @@
  * - view                {String}        显示截取后图像的容器的选择器或者DOM对象。
  * - file                {String}        上传图片的 <input type="file"> 控件的选择器或者DOM对象。
  * - ok                  {String}        确认截图按钮的选择器或者DOM对象。
- * - img                 {String}        需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。
+ * - img                 {String}        需要裁剪图片的url地址。该参数表示当前立即开始读取图片，不需要使用 file 控件获取。注意，加载的图片必须要与本程序同源，如果图片跨域，则无法截图。
  *
  * - loadStart           {Function}      图片开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 <img> 对象）
  * - loadComplete        {Function}      图片加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。

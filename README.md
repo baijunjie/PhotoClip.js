@@ -150,7 +150,7 @@ new PhotoClip( **container** [, **options**] )
 
   type: String
 
-  需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。
+  需要裁剪图片的url地址。该参数表示当前立即开始读取图片，不需要使用 file 控件获取。注意，加载的图片必须要与本程序同源，如果图片跨域，则无法截图。
 
 
 - **options.loadStart**
