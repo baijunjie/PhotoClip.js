@@ -725,7 +725,7 @@ IScroll.prototype = {
 		this.enabled = true;
 	},
 
-	refresh: function () {
+	refresh: function (duration) {
 		var rf = this.wrapper.offsetHeight;		// Force reflow
 
 		this.wrapperWidth	= this.wrapper.clientWidth;
@@ -760,7 +760,7 @@ IScroll.prototype = {
 
 		this._execEvent('refresh');
 
-		this.resetPosition(this.options.bounceTime);
+		this.resetPosition(duration);
 
 // INSERT POINT: _refresh
 

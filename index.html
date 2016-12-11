@@ -7,14 +7,13 @@
 <meta name="format-detection" content="telephone=no, email=no" />
 <meta name="keywords" content="">
 <meta name="description" content="">
-<title>图片裁剪</title>
+<title>PhotoClip</title>
 <style>
 body {
 	margin: 0;
 	text-align: center;
 }
 #clipArea {
-	margin: 20px;
 	height: 300px;
 }
 #file,
@@ -25,6 +24,7 @@ body {
 	margin: 0 auto;
 	width: 200px;
 	height: 200px;
+	background-color: #666;
 }
 </style>
 </head>
@@ -34,31 +34,36 @@ body {
 <button id="clipBtn">截取</button>
 <div id="view"></div>
 
-<script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/iscroll-zoom.js"></script>
-<script src="js/hammer.js"></script>
+<script src="js/hammer.min.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
 <script src="js/PhotoClip.js"></script>
 <script>
-var clipArea = new PhotoClip("#clipArea", {
-	size: [260, 260],
-	outputSize: [640, 640],
-	file: "#file",
-	//img: "img/mm.jpg",
-	view: "#view",
-	ok: "#clipBtn",
-	loadStart: function() {
-		console.log("照片读取中");
-	},
-	loadComplete: function() {
-		console.log("照片读取完成");
-	},
-	clipFinish: function(dataURL) {
-		console.log(dataURL);
-	}
-});
-//clipArea.destroy(); // 销毁
-clipArea.setImg("img/mm.jpg");
+
+	var pc = new PhotoClip('#clipArea', {
+		size: 260,
+		outputSize: 640,
+		//adaptive: ['60%', '80%'],
+		file: '#file',
+		view: '#view',
+		ok: '#clipBtn',
+		//img: 'img/mm.jpg',
+		loadStart: function() {
+			console.log('开始读取照片');
+		},
+		loadComplete: function() {
+			console.log('照片读取完成');
+		},
+		done: function(dataURL) {
+			console.log(dataURL);
+		},
+		fail: function(msg) {
+			alert(msg);
+		}
+	});
+
+	pc.load('img/mm.jpg');
+
 </script>
 
 </body>
