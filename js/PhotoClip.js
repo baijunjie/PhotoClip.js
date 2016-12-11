@@ -880,6 +880,7 @@
 		this._fileOnChangeHandle = proxy(this, '_fileOnChangeHandle');
 		this._rotateCW90 = proxy(this, '_rotateCW90');
 		this._resize = proxy(this, '_resize');
+		this._clipImg = proxy(this, '_clipImg');
 
 		// 确保对外接口函数，无论持有者是谁，调用都不会出错
 		this.size = proxy(this, 'size');
