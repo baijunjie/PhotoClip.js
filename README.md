@@ -83,18 +83,18 @@ new PhotoClip( **container** [, **options**] )
 
 配置选项，详细配置如下：
 
-- `options.size`
+- **options.size**
 
-  **type: Number|Array**
+  type: Number|Array
 
   截取框大小。  
   当值为数字时，表示截取框为宽高都等于该值的正方形。  
   当值为数组时，数组中索引`[0]`和`[1]`所对应的值分别表示宽和高。  
   默认值为 `[100,100]`。
 
-- `options.adaptive`
+- **options.adaptive**
 
-  **type: String|Array**
+  type: String|Array
 
   截取框自适应。设置该选项后，`size` 选项将会失效，此时 `size` 进用于计算截取框的宽高比例。  
   当值为一个百分数字符串时，表示截取框的宽度百分比。  
@@ -102,183 +102,183 @@ new PhotoClip( **container** [, **options**] )
   当宽或高有一项值未设置或值无效时，则该项会根据 `size` 选项中定义的宽高比例自适应。  
   默认为 ` ''`。
 
-- `options.outputSize`
+- **options.outputSize**
 
-  **type: Number|Array**
+  type: Number|Array
 
   输出图像大小。  
   当值为数字时，表示输出宽度，此时高度根据截取框比例自适应。  
   当值为数组时，数组中索引 `[0]` 和 `[1]` 所对应的值分别表示宽和高，若宽或高有一项值无效，则会根据另一项等比自适应。  
   默认值为`[0,0]`，表示输出图像原始大小。
 
-- `options.outputType`
+- **options.outputType**
 
-  **type: String**
+  type: String
 
   指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
 
 
-- `options.outputQuality`
+- **options.outputQuality**
 
-  **type: String**
+  type: String
 
   输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 `options.lrzOption.quality` 是相乘关系）  
 
 
-- `options.view`
+- **options.view**
 
-  **type: String**
+  type: String
 
   显示截取后图像的容器的选择器或者DOM对象。
 
 
-- `options.file`
+- **options.file**
 
-  **type: String**
+  type: String
 
   上传图片的 \<input type="file"\> 控件的选择器或者DOM对象。
 
 
-- `options.ok`
+- **options.ok**
 
-  **type: String**
+  type: String
 
   确认截图按钮的选择器或者DOM对象。
 
 
-- `options.img`
+- **options.img**
 
-  **type: String**
+  type: String
 
   需要裁剪图片的url地址。该参数表示当前立即开始裁剪的图片，不需要使用 file 控件获取。
 
 
-- `options.loadStart`
+- **options.loadStart**
 
-  **type: Function**
+  type: Function
 
   图片开始加载的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 \<img\> 对象）
 
-- `options.loadComplete`
+- **options.loadComplete**
 
-  **type: Function**
+  type: Function
 
   图片加载完成的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，并将图片的 \<img\> 对象作为参数传入。
 
 
-- `options.loadError`
+- **options.loadError**
 
-  **type: Function**
+  type: Function
 
   图片加载失败的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，并将错误信息作为第一个参数传入，如果还有其它错误对象或者信息会作为第二个参数传入。
 
 
-- `options.done`
+- **options.done**
 
-  **type: Function**
+  type: Function
 
   裁剪完成的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
 
 
-- `options.fail`
+- **options.fail**
 
-  **type: Function**
+  type: Function
 
   裁剪失败的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，会将失败信息作为参数传入。
 
-- `options.lrzOption`
+- **options.lrzOption**
 
-  **type: Object**
+  type: Object
 
   lrz 压缩插件的配置参数。以下为子属性：
 
-  - `options.lrzOption.width`：
+  - **options.lrzOption.width**：
 
-    **type: Number**
+    type: Number
 
     图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
 
-  - `options.lrzOption.height`
+  - **options.lrzOption.height**
 
-    **type: Number**
+    type: Number
 
     图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
 
-  - `options.lrzOption.quality`
+  - **options.lrzOption.quality**
 
-    **type: Number**
+    type: Number
 
     图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 `options.outputQuality` 是相乘关系）
 
-- `options.style`
+- **options.style**
 
-  **type: Object**
+  type: Object
 
   样式配置。以下为子属性：
 
-  - `options.style.maskColor`：
+  - **options.style.maskColor**
 
-    **type: String**
+    type: String
 
     遮罩层的颜色。默认为 `'rgba(0,0,0,.5)'`。
 
-  - `options.style.maskBorder`
+  - **options.style.maskBorder**
 
-    **type: String**
+    type: String
 
     遮罩层的 border 样式。默认为 `'2px dashed #ddd'`。
 
-  - `options.style.jpgFillColor`
+  - **options.style.jpgFillColor**
 
-    **type: String**
+    type: String
 
     当输出 jpg 格式时透明区域的填充色。默认为 `'#fff'`。
 
-- `options.errorMsg`
+- **options.errorMsg**
 
-  **type: Object**
+  type: Object
 
   错误信息对象，包含各个阶段出错时的文字说明。以下为子属性：
 
-  - `options.errorMsg.noSupport`：
+  - **options.errorMsg.noSupport**
 
-    **type: String**
+    type: String
 
     浏览器无法支持本插件。将会使用 `alert` 弹出该信息，若不希望弹出，可将该值置空。
 
-  - `options.errorMsg.notFile`
+  - **options.errorMsg.notFile**
 
-    **type: String**
+    type: String
 
     不支持 `FileReader` API，不能使用 file 控件读取图片的错误信息。将会使用 `alert` 弹出该信息，若不希望弹出，可将该值置空。
 
-  - `options.errorMsg.imgError`
+  - **options.errorMsg.imgError**
 
-    **type: String**
+    type: String
 
     使用 file 控件读取图片格式错误时的错误信息。将会在 `loadError` 回调的错误信息中输出。
 
-  - `options.errorMsg.imgHandleError`
+  - **options.errorMsg.imgHandleError**
 
-    **type: String**
+    type: String
 
     lrz 压缩插件处理图片失败时的错误信息。将会在 `loadError` 回调的错误信息中输出。
 
-  - `options.errorMsg.imgLoadError`
+  - **options.errorMsg.imgLoadError**
 
-    **type: String**
+    type: String
 
     图片加载出错时的错误信息。将会在 `loadError` 回调的错误信息中输出。
 
-  - `options.errorMsg.noImg`
+  - **options.errorMsg.noImg**
 
-    **type: String**
+    type: String
 
     没有加载完成的图片时，执行截图操作时的错误信息。将会在 `fail` 回调的失败信息中输出。
 
-  - `options.errorMsg.clipError`
+  - **options.errorMsg.clipError**
 
-    **type: String**
+    type: String
 
     截图出错时的错误信息。将会在 `fail` 回调的失败信息中输出。
 
