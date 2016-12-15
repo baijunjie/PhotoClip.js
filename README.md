@@ -310,7 +310,7 @@ pc.load(src);
 pc.clear();
 
 /**
- * 在当前角度的基础上旋转
+ * 图片在当前角度的基础上旋转
  * @param  {Number} angle    在当前角度的基础上旋转的角度
  * @param  {Number} duration 可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
  * @param  {Object} center   可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
@@ -319,7 +319,7 @@ pc.clear();
 pc.rotateBy(angle, duration, center);
 
 /**
- * 旋转到指定角度
+ * 图片旋转到指定角度
  * @param  {Number}  angle      旋转的角度
  * @param  {Number}  duration   可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
  * @param  {Object}  center     可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
