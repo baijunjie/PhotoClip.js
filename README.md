@@ -127,21 +127,21 @@ new PhotoClip( **container** [, **options**] )
 
 - **options.view**
 
-  type: String
+  type: String|HTMLElement
 
   显示截取后图像的容器的选择器或者DOM对象。
 
 
 - **options.file**
 
-  type: String
+  type: String|HTMLElement
 
   上传图片的 \<input type="file"\> 控件的选择器或者DOM对象。
 
 
 - **options.ok**
 
-  type: String
+  type: String|HTMLElement
 
   确认截图按钮的选择器或者DOM对象。
 

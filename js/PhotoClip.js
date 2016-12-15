@@ -16,51 +16,51 @@
  *
  * option 参数配置
  *
- * - size                {Number|Array}  截取框大小。
- *                                       当值为数字时，表示截取框为宽高都等于该值的正方形。
- *                                       当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高。
- *                                       默认值为[100,100]。
- * - adaptive            {String|Array}  截取框自适应。设置该选项后，size 选项将会失效，此时 size 进用于计算截取框的宽高比例。
- *                                       当值为一个百分数字符串时，表示截取框的宽度百分比。
- *                                       当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高的百分比。
- *                                       当宽或高有一项值未设置或值无效时，则该项会根据 size 选项中定义的宽高比例自适应。
- *                                       默认为 ''。
- * - outputSize          {Number|Array}  输出图像大小。
- *                                       当值为数字时，表示输出宽度，此时高度根据截取框比例自适应。
- *                                       当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高，若宽或高有一项值无效，则会根据另一项等比自适应。
- *                                       默认值为[0,0]，表示输出图像原始大小。
+ * - size                {Number|Array}        截取框大小。
+ *                                             当值为数字时，表示截取框为宽高都等于该值的正方形。
+ *                                             当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高。
+ *                                             默认值为[100,100]。
+ * - adaptive            {String|Array}        截取框自适应。设置该选项后，size 选项将会失效，此时 size 进用于计算截取框的宽高比例。
+ *                                             当值为一个百分数字符串时，表示截取框的宽度百分比。
+ *                                             当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高的百分比。
+ *                                             当宽或高有一项值未设置或值无效时，则该项会根据 size 选项中定义的宽高比例自适应。
+ *                                             默认为 ''。
+ * - outputSize          {Number|Array}        输出图像大小。
+ *                                             当值为数字时，表示输出宽度，此时高度根据截取框比例自适应。
+ *                                             当值为数组时，数组中索引[0]和[1]所对应的值分别表示宽和高，若宽或高有一项值无效，则会根据另一项等比自适应。
+ *                                             默认值为[0,0]，表示输出图像原始大小。
  *
- * - outputType          {String}        指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
- * - outputQuality       {String}        输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 options.lrzOption.quality 是相乘关系）
- * - view                {String}        显示截取后图像的容器的选择器或者DOM对象。
- * - file                {String}        上传图片的 <input type="file"> 控件的选择器或者DOM对象。
- * - ok                  {String}        确认截图按钮的选择器或者DOM对象。
- * - img                 {String}        需要裁剪图片的url地址。该参数表示当前立即开始读取图片，不需要使用 file 控件获取。注意，加载的图片必须要与本程序同源，如果图片跨域，则无法截图。
+ * - outputType          {String}              指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
+ * - outputQuality       {String}              输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 options.lrzOption.quality 是相乘关系）
+ * - view                {String|HTMLElement}  显示截取后图像的容器的选择器或者DOM对象。
+ * - file                {String|HTMLElement}  上传图片的 <input type="file"> 控件的选择器或者DOM对象。
+ * - ok                  {String|HTMLElement}  确认截图按钮的选择器或者DOM对象。
+ * - img                 {String}              需要裁剪图片的url地址。该参数表示当前立即开始读取图片，不需要使用 file 控件获取。注意，加载的图片必须要与本程序同源，如果图片跨域，则无法截图。
  *
- * - loadStart           {Function}      图片开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 <img> 对象）
- * - loadComplete        {Function}      图片加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
- * - loadError           {Function}      图片加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误信息作为第一个参数传入，如果还有其它错误对象或者信息会作为第二个参数传入。
- * - done                {Function}      裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
- * - fail                {Function}      裁剪失败的回调函数。this指向当前 PhotoClip 的实例对象，会将失败信息作为参数传入。
+ * - loadStart           {Function}            图片开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 <img> 对象）
+ * - loadComplete        {Function}            图片加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+ * - loadError           {Function}            图片加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误信息作为第一个参数传入，如果还有其它错误对象或者信息会作为第二个参数传入。
+ * - done                {Function}            裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+ * - fail                {Function}            裁剪失败的回调函数。this指向当前 PhotoClip 的实例对象，会将失败信息作为参数传入。
  *
- * - lrzOption           {Object}        lrz 压缩插件的配置参数。以下为子属性：
- * ----- width           {Number}        图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
- * ----- height          {Number}        图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
- * ----- quality         {Number}        图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 options.outputQuality 是相乘关系）
+ * - lrzOption           {Object}              lrz 压缩插件的配置参数。以下为子属性：
+ * ----- width           {Number}              图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
+ * ----- height          {Number}              图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
+ * ----- quality         {Number}              图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 options.outputQuality 是相乘关系）
  *
- * - style               {Object}        样式配置。以下为子属性：
- * ----- maskColor       {String}        遮罩层的颜色。默认为 'rgba(0,0,0,.5)'。
- * ----- maskBorder      {String}        遮罩层的 border 样式。默认为 '2px dashed #ddd'。
- * ----- jpgFillColor    {String}        当输出 jpg 格式时透明区域的填充色。默认为 '#fff'。
+ * - style               {Object}              样式配置。以下为子属性：
+ * ----- maskColor       {String}              遮罩层的颜色。默认为 'rgba(0,0,0,.5)'。
+ * ----- maskBorder      {String}              遮罩层的 border 样式。默认为 '2px dashed #ddd'。
+ * ----- jpgFillColor    {String}              当输出 jpg 格式时透明区域的填充色。默认为 '#fff'。
  *
- * - errorMsg            {Object}        错误信息对象，包含各个阶段出错时的文字说明。以下为子属性：
- * ----- noSupport       {String}        浏览器无法支持本插件。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
- * ----- notFile         {String}        不支持 FileReader API，不能使用 file 控件读取图片的错误信息。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
- * ----- imgError        {String}        使用 file 控件读取图片格式错误时的错误信息。将会在 loadError 回调的错误信息中输出。
- * ----- imgHandleError  {String}        lrz 压缩插件处理图片失败时的错误信息。将会在 loadError 回调的错误信息中输出。
- * ----- imgLoadError    {String}        图片加载出错时的错误信息。将会在 loadError 回调的错误信息中输出。
- * ----- noImg           {String}        没有加载完成的图片时，执行截图操作时的错误信息。将会在 fail 回调的失败信息中输出。
- * ----- clipError       {String}        截图出错时的错误信息。将会在 fail 回调的失败信息中输出。
+ * - errorMsg            {Object}              错误信息对象，包含各个阶段出错时的文字说明。以下为子属性：
+ * ----- noSupport       {String}              浏览器无法支持本插件。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
+ * ----- notFile         {String}              不支持 FileReader API，不能使用 file 控件读取图片的错误信息。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
+ * ----- imgError        {String}              使用 file 控件读取图片格式错误时的错误信息。将会在 loadError 回调的错误信息中输出。
+ * ----- imgHandleError  {String}              lrz 压缩插件处理图片失败时的错误信息。将会在 loadError 回调的错误信息中输出。
+ * ----- imgLoadError    {String}              图片加载出错时的错误信息。将会在 loadError 回调的错误信息中输出。
+ * ----- noImg           {String}              没有加载完成的图片时，执行截图操作时的错误信息。将会在 fail 回调的失败信息中输出。
+ * ----- clipError       {String}              截图出错时的错误信息。将会在 fail 回调的失败信息中输出。
  */
 
 (function(root, factory) {
@@ -925,7 +925,7 @@
 	};
 
 	/**
-	 * 在当前角度的基础上旋转
+	 * 图片在当前角度的基础上旋转
 	 * @param  {Number} angle    在当前角度的基础上旋转的角度
 	 * @param  {Number} duration 可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
 	 * @param  {Object} center   可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
@@ -937,7 +937,7 @@
 	};
 
 	/**
-	 * 旋转到指定角度
+	 * 图片旋转到指定角度
 	 * @param  {Number}  angle      旋转的角度
 	 * @param  {Number}  duration   可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
 	 * @param  {Object}  center     可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
