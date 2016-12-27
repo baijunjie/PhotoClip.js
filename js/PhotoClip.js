@@ -363,11 +363,11 @@
 		if (width && height) {
 			this._iScroll.options.zoomMin = getScale(this._clipWidth, this._clipHeight, width, height);
 			this._iScroll.options.zoomMax = Math.max(1, this._iScroll.options.zoomMin);
-			this._iScroll.options.zoomStart = Math.min(this._iScroll.options.zoomMax, getScale(this._containerWidth, this._containerHeight, width, height));
+			this._iScroll.options.startZoom = Math.min(this._iScroll.options.zoomMax, getScale(this._containerWidth, this._containerHeight, width, height));
 		} else {
 			this._iScroll.options.zoomMin = 1
 			this._iScroll.options.zoomMax = 1
-			this._iScroll.options.zoomStart = 1;
+			this._iScroll.options.startZoom = 1;
 		}
 
 		css(this._$moveLayer, {
@@ -409,7 +409,7 @@
 			posY = (this._clipHeight - height * scale) * .5;
 
 		this._iScroll.scrollTo(posX, posY);
-		this._iScroll.zoom(this._iScroll.options.zoomStart, undefined, undefined, 0);
+		this._iScroll.zoom(this._iScroll.options.startZoom, undefined, undefined, 0);
 	};
 
 	p._initRotationEvent = function() {
