@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.0.0
+ * PhotoClip v3.0.1
  * (c) 2014-2016 BaiJunjie
  * GPL Licensed.
  *
@@ -1140,14 +1140,14 @@
 					// 深拷贝对象或者数组
 					if (deep && copy &&
 						(copyIsArray = toString.call(copy) === '[object Array]') ||
-						(typeof copy === 'object')) {
+						(toString.call(copy) === '[object Object]')) {
 
 						if (copyIsArray) {
 							copyIsArray = false;
 							src = src && (toString.call(src) === '[object Array]') ? src : [];
 
 						} else {
-							src = src && (typeof src === 'object') ? src : {};
+							src = src && (toString.call(src) === '[object Object]') ? src : {};
 						}
 
 						target[name] = extend(deep, src, copy);
