@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.0.1
+ * PhotoClip v3.0.2
  * (c) 2014-2016 BaiJunjie
  * GPL Licensed.
  *
@@ -31,7 +31,8 @@
  *                                             默认值为[0,0]，表示输出图像原始大小。
  *
  * - outputType          {String}              指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
- * - outputQuality       {String}              输出质量，取值 0 - 1，默认为0.8。（这个质量不是最终输出的质量，与 options.lrzOption.quality 是相乘关系）
+ * - outputQuality       {String}              图片输出质量，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 outputQuality * lrzOption.quality）
+ * - rotateFree          {Boolean}             是否启用图片自由旋转。由于安卓浏览器上存在性能问题，因此在安卓设备上默认关闭。
  * - view                {String|HTMLElement}  显示截取后图像的容器的选择器或者DOM对象。
  * - file                {String|HTMLElement}  上传图片的 <input type="file"> 控件的选择器或者DOM对象。
  * - ok                  {String|HTMLElement}  确认截图按钮的选择器或者DOM对象。
@@ -43,10 +44,10 @@
  * - done                {Function}            裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
  * - fail                {Function}            裁剪失败的回调函数。this指向当前 PhotoClip 的实例对象，会将失败信息作为参数传入。
  *
- * - lrzOption           {Object}              lrz 压缩插件的配置参数。以下为子属性：
- * ----- width           {Number}              图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。
- * ----- height          {Number}              图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。
- * ----- quality         {Number}              图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 options.outputQuality 是相乘关系）
+ * - lrzOption           {Object}              lrz 压缩插件的配置参数。该压缩插件作用于图片从相册输出到移动设备浏览器过程中的压缩，配置的高低将直接关系到图片在移动设备上操作的流畅度。以下为子属性：
+ * ----- width           {Number}              图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。（由于安卓浏览器存在性能问题，所以默认值为 1000）
+ * ----- height          {Number}              图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。（由于安卓浏览器存在性能问题，所以默认值为 1000）
+ * ----- quality         {Number}              图片压缩质量，取值 0 - 1，默认为0.7。
  *
  * - style               {Object}              样式配置。以下为子属性：
  * ----- maskColor       {String}              遮罩层的颜色。默认为 'rgba(0,0,0,.5)'。
@@ -78,6 +79,7 @@
 	'use strict';
 
 	var is_mobile = !!navigator.userAgent.match(/mobile/i),
+		is_android = !!navigator.userAgent.match(/android/i),
 
 		// 测试浏览器是否支持 Transition 动画，以及支持的前缀
 		supportTransition = support('transition'),
@@ -91,6 +93,7 @@
 			outputSize: [0, 0],
 			outputType: 'jpg',
 			outputQuality: .8,
+			rotateFree: !is_android,
 			view: '',
 			file: '',
 			ok: '',
@@ -101,8 +104,8 @@
 			done: noop,
 			fail: noop,
 			lrzOption: {
-				width: undefined,
-				height: undefined,
+				width: is_android ? 1000 : undefined,
+				height: is_android ? 1000 : undefined,
 				quality: .7
 			},
 			style: {
@@ -348,7 +351,8 @@
 			scrollY: true,
 			freeScroll: true,
 			mouseWheel: true,
-			wheelAction: 'zoom'
+			wheelAction: 'zoom',
+			bounceTime: 300
 		});
 	};
 
@@ -419,22 +423,40 @@
 
 			var startAngle,
 				curAngle,
-				self = this;
+				self = this,
+				rotateFree = this._options.rotateFree;
 
 			this._hammerManager.on('rotatestart', function(e) {
 				if (self._atRotation) return;
-				startAngle = e.rotation - self._curAngle;
-				self._rotationLayerRotateReady(e.center);
+				if (rotateFree) {
+					startAngle = e.rotation - self._curAngle;
+					self._rotationLayerRotateReady(e.center);
+				} else {
+					startAngle = e.rotation;
+				}
 			});
 
 			this._hammerManager.on('rotatemove', function(e) {
 				if (self._atRotation) return;
 				curAngle = e.rotation - startAngle;
-				self._rotationLayerRotate(curAngle);
+				rotateFree && self._rotationLayerRotate(curAngle);
 			});
 
 			this._hammerManager.on('rotateend rotatecancel', function(e) {
 				if (self._atRotation) return;
+
+				if (!rotateFree) {
+					curAngle %= 360;
+					if (curAngle > 180) curAngle -= 360;
+					else if (curAngle < -180) curAngle += 360;
+
+					if (curAngle > 30) {
+						self._rotateBy(90, 200, e.center);
+					} else if (curAngle < -30) {
+						self._rotateBy(-90, 200, e.center);
+					}
+					return;
+				}
 
 				// 接近整90度方向时，进行校正
 				var angle = curAngle % 360;
@@ -452,7 +474,7 @@
 					curAngle += 360 - angle;
 				}
 
-				self._rotationLayerRotateFinish(curAngle, 200);
+				self._rotationLayerRotateFinish(curAngle, self._iScroll.options.bounceTime);
 			});
 		} else {
 			this._$moveLayer.addEventListener('dblclick', this._rotateCW90);
@@ -525,6 +547,7 @@
 
 	// 旋转层旋转结束
 	p._rotationLayerRotateFinish = function(angle, duration) {
+
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
 
 		if (angle !== this._curAngle && duration && isNumber(duration) && supportTransition !== undefined) {
@@ -591,7 +614,6 @@
 		this._rotationLayerY = (rectByAngle0.top - rectByOrigin0.top) / scale;
 		this._curAngle = angle % 360;
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
-
 		this._refreshScroll(200);
 
 		// 由于双指旋转时也伴随着缩放，因此这里代码执行完后，将会执行 iscroll 的 _zoomEnd
@@ -1019,16 +1041,17 @@
 	}
 
 	function setOrigin($obj, originX, originY) {
-		originX = originX || 0;
-		originY = originY || 0;
+		originX = (originX || 0).toFixed(2);
+		originY = (originY || 0).toFixed(2);
 		css($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
 	}
 
 	function setTransform($obj, x, y, angle) {
 		// translate(x, y) 中坐标的小数点位数过多会引发 bug
 		// 因此这里需要保留两位小数
-		x = x.toFixed(2) - 0;
-		y = y.toFixed(2) - 0;
+		x = x.toFixed(2);
+		y = y.toFixed(2);
+		angle = angle.toFixed(2);
 
 		css($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
 	}
@@ -1038,7 +1061,8 @@
 		// 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
 		// 这样就会导致之前设置的位移也被应用到动画中
 		css($obj, prefix + 'transform');
-		css($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms');
+		// 这里应用的缓动与 iScroll 的默认缓动相同
+		css($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
 		setTransform($obj, x, y, angle);
 
 		setTimeout(function() {
