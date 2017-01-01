@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.0.2
+ * PhotoClip v3.0.3
  * (c) 2014-2016 BaiJunjie
  * GPL Licensed.
  *
@@ -219,6 +219,8 @@
 		this._rotationLayerHeight = 0; // 旋转层的高度
 		this._rotationLayerX = 0; // 旋转层的当前X坐标
 		this._rotationLayerY = 0; // 旋转层的当前Y坐标
+		this._rotationLayerOriginX = 0; // 旋转层的旋转参考点X
+		this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
 		this._curAngle = 0; // 旋转层的当前角度
 
 		this._initProxy();
@@ -236,7 +238,7 @@
 		}
 
 		if (this._options.img) {
-			this._createImg(this._options.img);
+			this._lrzHandle(this._options.img);
 		}
 	};
 
@@ -361,17 +363,18 @@
 	p._refreshScroll = function(duration) {
 		duration = duration || 0;
 
-		var width = this._rotationLayerWidth,
+		var iScrollOptions = this._iScroll.options,
+			width = this._rotationLayerWidth,
 			height = this._rotationLayerHeight;
 
 		if (width && height) {
-			this._iScroll.options.zoomMin = getScale(this._clipWidth, this._clipHeight, width, height);
-			this._iScroll.options.zoomMax = Math.max(1, this._iScroll.options.zoomMin);
-			this._iScroll.options.startZoom = Math.min(this._iScroll.options.zoomMax, getScale(this._containerWidth, this._containerHeight, width, height));
+			iScrollOptions.zoomMin = getScale(this._clipWidth, this._clipHeight, width, height);
+			iScrollOptions.zoomMax = Math.max(1, iScrollOptions.zoomMin);
+			iScrollOptions.startZoom = Math.min(iScrollOptions.zoomMax, getScale(this._containerWidth, this._containerHeight, width, height));
 		} else {
-			this._iScroll.options.zoomMin = 1
-			this._iScroll.options.zoomMax = 1
-			this._iScroll.options.startZoom = 1;
+			iScrollOptions.zoomMin = 1
+			iScrollOptions.zoomMax = 1
+			iScrollOptions.startZoom = 1;
 		}
 
 		css(this._$moveLayer, {
@@ -408,12 +411,13 @@
 
 		this._refreshScroll();
 
-		var scale = this._iScroll.scale,
+		var iScroll = this._iScroll,
+			scale = iScroll.scale,
 			posX = (this._clipWidth - width * scale) * .5,
 			posY = (this._clipHeight - height * scale) * .5;
 
-		this._iScroll.scrollTo(posX, posY);
-		this._iScroll.zoom(this._iScroll.options.startZoom, undefined, undefined, 0);
+		iScroll.scrollTo(posX, posY);
+		iScroll.zoom(iScroll.options.startZoom, undefined, undefined, 0);
 	};
 
 	p._initRotationEvent = function() {
@@ -421,15 +425,19 @@
 			this._hammerManager = new Hammer.Manager(this._$moveLayer);
 			this._hammerManager.add(new Hammer.Rotate());
 
-			var startAngle,
+			var startTouch,
+				startAngle,
 				curAngle,
 				self = this,
-				rotateFree = this._options.rotateFree;
+				rotateFree = this._options.rotateFree,
+				bounceTime = this._iScroll.options.bounceTime;
 
 			this._hammerManager.on('rotatestart', function(e) {
 				if (self._atRotation) return;
+				startTouch = true;
+
 				if (rotateFree) {
-					startAngle = e.rotation - self._curAngle;
+					startAngle = (e.rotation - self._curAngle) % 360;
 					self._rotationLayerRotateReady(e.center);
 				} else {
 					startAngle = e.rotation;
@@ -437,13 +445,14 @@
 			});
 
 			this._hammerManager.on('rotatemove', function(e) {
-				if (self._atRotation) return;
+				if (!startTouch) return;
 				curAngle = e.rotation - startAngle;
 				rotateFree && self._rotationLayerRotate(curAngle);
 			});
 
 			this._hammerManager.on('rotateend rotatecancel', function(e) {
-				if (self._atRotation) return;
+				if (!startTouch) return;
+				startTouch = false;
 
 				if (!rotateFree) {
 					curAngle %= 360;
@@ -451,9 +460,9 @@
 					else if (curAngle < -180) curAngle += 360;
 
 					if (curAngle > 30) {
-						self._rotateBy(90, 200, e.center);
+						self._rotateBy(90, bounceTime, e.center);
 					} else if (curAngle < -30) {
-						self._rotateBy(-90, 200, e.center);
+						self._rotateBy(-90, bounceTime, e.center);
 					}
 					return;
 				}
@@ -474,7 +483,7 @@
 					curAngle += 360 - angle;
 				}
 
-				self._rotationLayerRotateFinish(curAngle, self._iScroll.options.bounceTime);
+				self._rotationLayerRotateFinish(curAngle, bounceTime);
 			});
 		} else {
 			this._$moveLayer.addEventListener('dblclick', this._rotateCW90);
@@ -482,11 +491,10 @@
 	};
 
 	p._rotateCW90 = function(e) {
-		this._rotateBy(90, 200, { x: e.clientX, y: e.clientY });
+		this._rotateBy(90, this._iScroll.options.bounceTime, { x: e.clientX, y: e.clientY });
 	};
 
 	p._rotateBy = function(angle, duration, center) {
-		if (this._atRotation) return;
 		this._rotateTo(this._curAngle + angle, duration, center);
 	};
 
@@ -494,11 +502,6 @@
 		if (this._atRotation) return;
 
 		this._rotationLayerRotateReady(center);
-
-		if (!duration || !isNumber(duration)) {
-			// 旋转到新的角度
-			this._rotationLayerRotate(angle);
-		}
 
 		// 旋转层旋转结束
 		this._rotationLayerRotateFinish(angle, duration);
@@ -529,57 +532,28 @@
 		// 这个参考点就是旋转中心点映射在旋转层图片上的坐标
 		// 这个位置表示旋转层旋转前，该点所对应的坐标
 		var origin = pointRotate(coordBy0, -this._curAngle);
+		this._rotationLayerOriginX = origin.x;
+		this._rotationLayerOriginY = origin.y;
 
 		// 设置参考点，算出新参考点作用下的旋转层位移，然后进行补差
 		var rect = this._$rotationLayer.getBoundingClientRect();
-		setOrigin(this._$rotationLayer, origin.x, origin.y);
+		setOrigin(this._$rotationLayer, this._rotationLayerOriginX, this._rotationLayerOriginY);
 		var newRect = this._$rotationLayer.getBoundingClientRect();
-		this._rotationLayerX -= (newRect.left - rect.left) / scale;
-		this._rotationLayerY -= (newRect.top - rect.top) / scale;
+		this._rotationLayerX += (rect.left - newRect.left) / scale;
+		this._rotationLayerY += (rect.top - newRect.top) / scale;
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
 	};
 
 	// 旋转层旋转
 	p._rotationLayerRotate = function(angle) {
-		this._curAngle = angle;
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
+		this._curAngle = angle;
 	};
 
 	// 旋转层旋转结束
 	p._rotationLayerRotateFinish = function(angle, duration) {
-
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
 
-		if (angle !== this._curAngle && duration && isNumber(duration) && supportTransition !== undefined) {
-			// 当缩放过量时，在旋转动画结束的回调执行中，iScroll 的 scale 已经被更改为恢复后的正常值，无法拿到准确的实时 scale
-			// 因此这里先获取 scale 恢复前的矩形，以便之后计算准确的实时 scale
-			var scale = this._iScroll.scale,
-				zoomOut = scale < this._iScroll.options.zoomMin || scale > this._iScroll.options.zoomMax;
-			if (zoomOut) {
-				var rect1 = this._$rotationLayer.getBoundingClientRect();
-			}
-
-			// 开始旋转
-			var self = this;
-			this._atRotation = true;
-			setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
-			setTransition(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle, duration, function() {
-				self._atRotation = false;
-
-				if (zoomOut) {
-					var rect2 = self._$rotationLayer.getBoundingClientRect();
-					self._iScroll.scale = scale / rect1.width * rect2.width;
-				}
-
-				self._rotateFinishUpdataElem(angle);
-			});
-		} else {
-			this._rotateFinishUpdataElem(angle);
-		}
-	};
-
-	// 旋转结束更新相关元素
-	p._rotateFinishUpdataElem = function(angle) {
 		// 获取旋转后的矩形
 		var rect = this._$rotationLayer.getBoundingClientRect();
 
@@ -589,22 +563,21 @@
 
 		// 获取旋转前（零度）的矩形
 		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, 0);
-		var rectByAngle0 = this._$rotationLayer.getBoundingClientRect();
+		var rectByAngle0 = this._$rotationLayer.getBoundingClientRect(),
 
-		// 获取移动层的矩形
-		var moveLayerRect = this._$moveLayer.getBoundingClientRect();
+			// 获取移动层的矩形
+			moveLayerRect = this._$moveLayer.getBoundingClientRect(),
 
-		// 求出移动层与旋转层之前的位置偏移
-		var offsetX = (moveLayerRect.left - rect.left),
-			offsetY = (moveLayerRect.top - rect.top);
+			// 求出移动层与旋转层之间的位置偏移
+			// 由于直接应用在移动层，因此不需要根据缩放换算
+			// 注意，这里的偏移有可能还包含缩放过量时多出来的偏移
+			offset = {
+				x: rect.left - moveLayerRect.left,
+				y: rect.top - moveLayerRect.top
+			},
 
-		// 移动层要减去与旋转层之间的偏移量
-		this._iScroll.scrollTo(
-			this._iScroll.x - offsetX,
-			this._iScroll.y - offsetY
-		);
-
-		var scale = this._iScroll.scale;
+			iScroll = this._iScroll,
+			scale = iScroll.scale;
 
 		// 更新旋转层当前所呈现矩形的宽高
 		this._rotationLayerWidth = rect.width / scale;
@@ -612,29 +585,53 @@
 		// 当参考点为零时，旋转层旋转后，在形成的新矩形中，旋转层零位（旋转层旋转前左上角）的新坐标
 		this._rotationLayerX = (rectByAngle0.left - rectByOrigin0.left) / scale;
 		this._rotationLayerY = (rectByAngle0.top - rectByOrigin0.top) / scale;
-		this._curAngle = angle % 360;
-		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
-		this._refreshScroll(200);
+
+		iScroll.scrollTo(
+			iScroll.x + offset.x,
+			iScroll.y + offset.y
+		);
+		this._refreshScroll(iScroll.options.bounceTime);
 
 		// 由于双指旋转时也伴随着缩放，因此这里代码执行完后，将会执行 iscroll 的 _zoomEnd
-		// 而该方法会将 x、y 重置回 touchstart 时记录的位置，这个位置是基于 startX、startY 计算的
-		// 所以这里也要将这两个值进行补差
-		var lastScale = Math.max(this._iScroll.options.zoomMin, Math.min(this._iScroll.options.zoomMax, scale));
-
-		// 当缩放过量时，缩放比例会有一个回归正常的动画
+		// 而该方法会基于 touchstart 时记录的位置重新计算 x、y，这将导致手指离开屏幕后，移动层又会向回移动一段距离
+		// 所以这里也要将 startX、startY 这两个值进行补差，而这个差值必须是最终的正常比例对应的值
+		// 由于 offset 可能还包含缩放过量时多出来的偏移
+		// 因此，这里判断是否缩放过量
+		var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
 		if (lastScale !== scale) {
-			// 通常双指操作的缩放过量后，会自动恢复到正常缩放
-			// 但有时旋转完后，并不会触发自动恢复。这是因为旋转完成的同时，并没有双指离开屏幕的动作。
-			// 比如，rotateTo 触发的旋转，或者是给旋转添加了动画持续时长
-			// 因此这里需要手动执行恢复动画
-			this._iScroll.zoom(lastScale, undefined, undefined, 200);
-			// 当缩放过量时，这里偏移量必须是最终的正常比例对应的值
-			offsetX = offsetX / scale * lastScale;
-			offsetY = offsetY / scale * lastScale;
+			// 当缩放过量时，将 offset 换算为最终的正常比例对应的值
+			offset.x = offset.x / scale * lastScale;
+			offset.y = offset.y / scale * lastScale;
 		}
+		iScroll.startX += offset.x;
+		iScroll.startY += offset.y;
 
-		this._iScroll.startX -= offsetX;
-		this._iScroll.startY -= offsetY;
+		if (angle !== this._curAngle && duration && isNumber(duration) && supportTransition !== undefined) {
+			// 计算旋转层参考点，设为零位前后的偏移量
+			offset = {
+				x: (rectByOrigin0.left - rect.left) / scale,
+				y: (rectByOrigin0.top - rect.top) / scale
+			};
+			// 将旋转参考点设回前值，同时调整偏移量，保证视图位置不变，准备开始动画
+			setOrigin(this._$rotationLayer, this._rotationLayerOriginX, this._rotationLayerOriginY);
+			setTransform(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, this._curAngle);
+
+			// 开始旋转
+			var self = this;
+			this._atRotation = true;
+			setTransition(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, angle, duration, function() {
+				self._atRotation = false;
+				self._rotateFinishUpdataElem(angle);
+			});
+		} else {
+			this._rotateFinishUpdataElem(angle);
+		}
+	};
+
+	// 旋转结束更新相关元素
+	p._rotateFinishUpdataElem = function(angle) {
+		setOrigin(this._$rotationLayer, this._rotationLayerOriginX = 0, this._rotationLayerOriginY = 0);
+		setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle = angle % 360);
 	};
 
 	p._initFile = function() {
@@ -686,17 +683,7 @@
 			};
 
 			this._fileReader.onload = function(e) {
-
-				lrz(file, options.lrzOption)
-					.then(function (rst) {
-						// 处理成功会执行
-						self._createImg(rst.base64);
-					})
-					.catch(function (err) {
-						// 处理失败会执行
-						options.loadError.call(self, errorMsg.imgHandleError, err);
-						self._imgLoading = false;
-					});
+				self._lrzHandle(file);
 			};
 
 			this._fileReader.onerror = function(e) {
@@ -706,6 +693,23 @@
 
 			this._fileReader.readAsDataURL(file); // 读取文件内容
 		}
+	};
+
+	p._lrzHandle = function(src) {
+		var self = this,
+			options = this._options,
+			errorMsg = options.errorMsg;
+
+		lrz(src, options.lrzOption)
+			.then(function (rst) {
+				// 处理成功会执行
+				self._createImg(rst.base64);
+			})
+			.catch(function (err) {
+				// 处理失败会执行
+				options.loadError.call(self, errorMsg.imgHandleError, err);
+				self._imgLoading = false;
+			});
 	};
 
 	p._clearImg = function() {
@@ -885,14 +889,15 @@
 		if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
 			this._refreshScroll();
 
-			var scale = this._iScroll.scale,
+			var iScroll = this._iScroll,
+				scale = iScroll.scale,
 				offsetX = (clipWidth - oldClipWidth) * .5 * scale,
 				offsetY = (clipHeight - oldClipHeight) * .5 * scale;
-			this._iScroll.scrollBy(offsetX, offsetY);
+			iScroll.scrollBy(offsetX, offsetY);
 
-			var lastScale = Math.max(this._iScroll.options.zoomMin, Math.min(this._iScroll.options.zoomMax, scale));
+			var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
 			if (lastScale !== scale) {
-				this._iScroll.zoom(lastScale, undefined, undefined, 0);
+				iScroll.zoom(lastScale, undefined, undefined, 0);
 			}
 		}
 	};
@@ -931,7 +936,7 @@
 	 * @return {PhotoClip}  返回 PhotoClip 的实例对象
 	 */
 	p.load = function(src) {
-		this._createImg(src);
+		this._lrzHandle(src);
 		return this;
 	};
 
