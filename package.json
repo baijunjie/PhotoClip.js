@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/baijunjie/PhotoClip/issues"
   },
-  "homepage": "https://github.com/baijunjie/PhotoClip#readme"
+  "homepage": "https://github.com/baijunjie/PhotoClip#readme",
+  "files": [
+    "img/mm.jpg",
+    "js/hammer.min.js",
+    "js/iscroll-zoom.js",
+    "js/lrz.all.bundle.js",
+    "js/PhotoClip.js",
+    "index.html"
+  ]
 }
