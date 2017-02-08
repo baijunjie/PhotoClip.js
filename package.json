@@ -1,8 +1,8 @@
 {
   "name": "photoclip",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description": "一款手势驱动的裁图插件",
-  "main": "js/PhotoClip.min.js",
+  "main": "js/PhotoClip.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

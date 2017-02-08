@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.0.7
+ * PhotoClip v3.0.8
  * (c) 2014-2017 BaiJunjie
  * GPL Licensed.
  *
