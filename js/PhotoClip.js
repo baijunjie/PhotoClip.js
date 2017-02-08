@@ -1,6 +1,6 @@
 /**
- * PhotoClip v3.0.3
- * (c) 2014-2016 BaiJunjie
+ * PhotoClip v3.0.7
+ * (c) 2014-2017 BaiJunjie
  * GPL Licensed.
  *
  * https://github.com/baijunjie/PhotoClip.js
@@ -10,7 +10,7 @@
  * - hammer.js
  * - lrz.all.bundle.js
  *
- * @brief 支持手势的裁图插件
+ * @brief 一款手势驱动的裁图插件
  *        在移动设备上双指捏合为缩放，双指转动为旋转
  *        在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
  *
@@ -67,10 +67,14 @@
 (function(root, factory) {
 	'use strict';
 
-	if (typeof define === 'function' && define.amd) {
+	if (typeof module === 'object' && typeof exports === 'object') {
+		module.exports = factory(
+			require('./iscroll-zoom'),
+			require('./hammer.min'),
+			require('./lrz.all.bundle')
+		);
+	} else if (typeof define === 'function' && define.amd) {
 		define(['iscroll-zoom', 'hammer', 'lrz'], factory);
-	} else if (typeof exports === 'object') {
-		module.exports = factory(require('iscroll-zoom'), require('hammer'), require('lrz'));
 	} else {
 		root.PhotoClip = factory(root.IScroll, root.Hammer, root.lrz);
 	}

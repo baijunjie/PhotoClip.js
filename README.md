@@ -28,6 +28,8 @@ IE10及以上版本，Chrome、Firefox、Safari、Android、微信等主流先�
 
 ## 使用方法
 
+#### 一般引入
+
 ```html
 <div id="clipArea"></div>
 ...
@@ -40,12 +42,7 @@ var pc = new PhotoClip('#clipArea');
 </script>
 ```
 
-
-
-## AMD
-
-由于引入的开源插件较多，因此很多小伙伴感觉在移动端比较臃肿，这里推荐大家用模块化的方式管理插件，最终可以用打包工具进行整合。  
-这里以 RequireJS 为例：
+#### AMD模块化引入
 
 ```js
 require.config({
@@ -65,6 +62,23 @@ require.config({
 require(['PhotoClip'], function(PhotoClip) {
 	new PhotoClip('#clipArea');
 });
+```
+
+#### 通过npm引入
+
+安装
+
+```
+$ npm install photoclip
+```
+
+引入
+
+```js
+// ES6
+import PhotoClip from 'photoclip'
+// CommonJS
+var PhotoClip = require('photoclip')
 ```
 
 
