@@ -330,22 +330,20 @@ pc.load(src);
 pc.clear();
 
 /**
- * 图片在当前角度的基础上旋转
- * @param  {Number} angle    在当前角度的基础上旋转的角度
- * @param  {Number} duration 可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
- * @param  {Object} center   可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
- * @return {PhotoClip}       返回 PhotoClip 的实例对象
+ * 图片旋转到指定角度
+ * @param  {Number} angle      可选。旋转的角度
+ * @param  {Number} duration   可选。旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
+ * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的旋转角度
  */
-pc.rotateBy(angle, duration, center);
+pc.rotate(angle, duration);
 
 /**
- * 图片旋转到指定角度
- * @param  {Number}  angle      旋转的角度
- * @param  {Number}  duration   可选，旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
- * @param  {Object}  center     可选，旋转中心点，相对于窗口的坐标对象，包含 x、y。默认为截取框的中心点
- * @return {PhotoClip}          返回 PhotoClip 的实例对象
+ * 图片缩放到指定比例，如果超出缩放范围，则会被缩放到可缩放极限
+ * @param  {Number} zoom       可选。缩放比例，取值在 0 - 1 之间
+ * @param  {Number} duration   可选。缩放动画的时长，如果为 0 或 false，则表示没有过渡动画
+ * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的缩放比例
  */
-pc.rotateTo(angle, duration, center);
+pc.scale(zoom, duration);
 
 /**
  * 截图

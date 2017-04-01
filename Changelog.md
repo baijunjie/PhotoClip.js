@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.1.0
+
+- 新增 rotate 方法
+- 新增 scale 方法
+- 废除了 rotateBy 与 rotateTo 方法，使用 rotate 替代
+
 ### v3.0.8
 
 - 现在插件可以通过 npm 进行安装了。

@@ -1,6 +1,6 @@
 {
   "name": "photoclip",
-  "version": "3.0.8",
+  "version": "3.1.0",
   "description": "一款手势驱动的裁图插件",
   "main": "js/PhotoClip.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/baijunjie/PhotoClip.git"
   },
   "author": "baijunjie",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/baijunjie/PhotoClip/issues"
   },
