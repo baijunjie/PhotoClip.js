@@ -32,6 +32,7 @@ IE10及以上版本，Chrome、Firefox、Safari、Android、微信等主流先�
 
 ```html
 <div id="clipArea"></div>
+<input type="file" id="file" />
 ...
 <script src="js/iscroll-zoom.js"></script>
 <script src="js/hammer.min.js"></script>
@@ -39,6 +40,9 @@ IE10及以上版本，Chrome、Firefox、Safari、Android、微信等主流先�
 <script src="js/PhotoClip.js"></script>
 <script>
 var pc = new PhotoClip('#clipArea');
+file.addEventListener('change', function() {
+	pc.load(this.files[0]);
+});
 </script>
 ```
 
@@ -60,7 +64,7 @@ require.config({
 });
 
 require(['PhotoClip'], function(PhotoClip) {
-	new PhotoClip('#clipArea');
+	var pc = new PhotoClip('#clipArea');
 });
 ```
 
@@ -136,7 +140,7 @@ new PhotoClip( **container** [, **options**] )
 
   type: String
 
-  图片输出质量，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 `outputQuality` * `lrzOption.quality`）  
+  图片输出质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 `outputQuality` * `lrzOption.quality`）  
 
 - **options.rotateFree**
 
@@ -149,21 +153,21 @@ new PhotoClip( **container** [, **options**] )
 
   type: String|HTMLElement
 
-  显示截取后图像的容器的选择器或者DOM对象。
+  显示截取后图像的容器的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
 
 
 - **options.file**
 
   type: String|HTMLElement
 
-  上传图片的 \<input type="file"\> 控件的选择器或者DOM对象。
+  上传图片的 `<input type="file">` 控件的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
 
 
 - **options.ok**
 
   type: String|HTMLElement
 
-  确认截图按钮的选择器或者DOM对象。
+  确认截图按钮的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
 
 
 - **options.img**
@@ -177,7 +181,7 @@ new PhotoClip( **container** [, **options**] )
 
   type: Function
 
-  图片开始加载的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 \<img\> 对象）
+  图片开始加载的回调函数。`this` 指向当前 `PhotoClip` 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
 
 - **options.loadComplete**
 
@@ -228,7 +232,7 @@ new PhotoClip( **container** [, **options**] )
 
     type: Number
 
-    图片压缩质量，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 `options.outputQuality` 是相乘关系）
+    图片压缩质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 `options.outputQuality` 是相乘关系）
 
 - **options.style**
 
@@ -265,12 +269,6 @@ new PhotoClip( **container** [, **options**] )
     type: String
 
     浏览器无法支持本插件。将会使用 `alert` 弹出该信息，若不希望弹出，可将该值置空。
-
-  - **options.errorMsg.notFile**
-
-    type: String
-
-    不支持 `FileReader` API，不能使用 file 控件读取图片的错误信息。将会使用 `alert` 弹出该信息，若不希望弹出，可将该值置空。
 
   - **options.errorMsg.imgError**
 
@@ -318,8 +316,8 @@ pc.size(width, height);
 
 /**
  * 加载一张图片
- * @param  {String} src 图片的 url
- * @return {PhotoClip}  返回 PhotoClip 的实例对象
+ * @param  {String|Object} src 图片的 url，或者图片的 file 文件对象
+ * @return {PhotoClip}         返回 PhotoClip 的实例对象
  */
 pc.load(src);
 

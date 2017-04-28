@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.1.0
+ * PhotoClip v3.1.1
  * (c) 2014-2017 BaiJunjie
  * MIT Licensed.
  *
@@ -31,14 +31,14 @@
  *                                             默认值为[0,0]，表示输出图像原始大小。
  *
  * - outputType          {String}              指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
- * - outputQuality       {String}              图片输出质量，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 outputQuality * lrzOption.quality）
+ * - outputQuality       {String}              图片输出质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 outputQuality * lrzOption.quality）
  * - rotateFree          {Boolean}             是否启用图片自由旋转。由于安卓浏览器上存在性能问题，因此在安卓设备上默认关闭。
- * - view                {String|HTMLElement}  显示截取后图像的容器的选择器或者DOM对象。
- * - file                {String|HTMLElement}  上传图片的 <input type="file"> 控件的选择器或者DOM对象。
- * - ok                  {String|HTMLElement}  确认截图按钮的选择器或者DOM对象。
+ * - view                {String|HTMLElement}  显示截取后图像的容器的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
+ * - file                {String|HTMLElement}  上传图片的 <input type="file"> 控件的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
+ * - ok                  {String|HTMLElement}  确认截图按钮的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
  * - img                 {String}              需要裁剪图片的url地址。该参数表示当前立即开始读取图片，不需要使用 file 控件获取。注意，加载的图片必须要与本程序同源，如果图片跨域，则无法截图。
  *
- * - loadStart           {Function}            图片开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 <img> 对象）
+ * - loadStart           {Function}            图片开始加载的回调函数。this指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
  * - loadComplete        {Function}            图片加载完成的回调函数。this指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
  * - loadError           {Function}            图片加载失败的回调函数。this指向当前 PhotoClip 的实例对象，并将错误信息作为第一个参数传入，如果还有其它错误对象或者信息会作为第二个参数传入。
  * - done                {Function}            裁剪完成的回调函数。this指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
@@ -47,7 +47,7 @@
  * - lrzOption           {Object}              lrz 压缩插件的配置参数。该压缩插件作用于图片从相册输出到移动设备浏览器过程中的压缩，配置的高低将直接关系到图片在移动设备上操作的流畅度。以下为子属性：
  * ----- width           {Number}              图片最大不超过的宽度，默认为原图宽度，高度不设时会适应宽度。（由于安卓浏览器存在性能问题，所以默认值为 1000）
  * ----- height          {Number}              图片最大不超过的高度，默认为原图高度，宽度不设时会适应高度。（由于安卓浏览器存在性能问题，所以默认值为 1000）
- * ----- quality         {Number}              图片压缩质量，取值 0 - 1，默认为0.7。
+ * ----- quality         {Number}              图片压缩质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.7。（这个质量不是最终输出的质量，与 options.outputQuality 是相乘关系）
  *
  * - style               {Object}              样式配置。以下为子属性：
  * ----- maskColor       {String}              遮罩层的颜色。默认为 'rgba(0,0,0,.5)'。
@@ -56,7 +56,6 @@
  *
  * - errorMsg            {Object}              错误信息对象，包含各个阶段出错时的文字说明。以下为子属性：
  * ----- noSupport       {String}              浏览器无法支持本插件。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
- * ----- notFile         {String}              不支持 FileReader API，不能使用 file 控件读取图片的错误信息。将会使用 alert 弹出该信息，若不希望弹出，可将该值置空。
  * ----- imgError        {String}              使用 file 控件读取图片格式错误时的错误信息。将会在 loadError 回调的错误信息中输出。
  * ----- imgHandleError  {String}              lrz 压缩插件处理图片失败时的错误信息。将会在 loadError 回调的错误信息中输出。
  * ----- imgLoadError    {String}              图片加载出错时的错误信息。将会在 loadError 回调的错误信息中输出。
@@ -119,7 +118,6 @@
 			},
 			errorMsg: {
 				noSupport: '您的浏览器版本过于陈旧，无法支持裁图功能，请更换新的浏览器！',
-				notFile: '您的浏览器不支持 HTML5 的 FileReader API，因此不能使用 file 控件读取图片！',
 				imgError: '不支持该图片格式，请选择常规格式的图片文件！',
 				imgHandleError: '图片处理失败！请更换其它图片尝试。',
 				imgLoadError: '图片读取失败！请更换其它图片尝试。',
@@ -133,8 +131,12 @@
 			return new PhotoClip(options);
 		}
 
-		this._$container = $(container); // 容器，包含裁剪视图层和遮罩层
-		if (!this._$container) return;
+		container = $(container); // 获取容器
+		if (container && container.length) {
+			this._$container = container[0];
+		} else {
+			return;
+		}
 
 		this._options = extend(true, {}, defaultOptions, options);
 
@@ -188,7 +190,6 @@
 		this._outputHeight = options.outputSize[1];
 
 		this._canvas = document.createElement('canvas'); // 图片裁剪用到的画布
-		this._fileReader = null; // 图片读取器
 		this._iScroll = null; // 图片的scroll对象，包含图片的位置与缩放信息
 		this._hammerManager = null; // hammer 管理对象
 
@@ -206,10 +207,10 @@
 		this._$clipLayer = null; // 裁剪层，包含移动层
 		this._$moveLayer = null; // 移动层，包含旋转层
 		this._$rotationLayer = null; // 旋转层
-		this._$view = null; // 最终截图后呈现的视图容器
 
-		this._$file = null; // file 控件
-		this._$ok = null; // 截图按钮
+		this._viewList = null; // 最终截图后呈现的视图容器的DOM数组
+		this._fileList = null; // file 控件的DOM数组
+		this._okList = null; // 截图按钮的DOM数组
 
 		this._$mask = null;
 		this._$mask_left = null;
@@ -237,8 +238,10 @@
 		this._resize();
 		window.addEventListener('resize', this._resize);
 
-		if (this._$ok = $(options.ok)) {
-			this._$ok.addEventListener('click', this._clipImg);
+		if (this._okList = $(options.ok)) {
+			this._okList.forEach(function($ok) {
+				$ok.addEventListener('click', self._clipImg);
+			});
 		}
 
 		if (this._options.img) {
@@ -333,20 +336,24 @@
 		});
 
 		// 初始化视图容器
-		var $view = this._$view = $(options.view);
-		if ($view) {
-			var style = $view.style,
-				viewOriginStyle = {};
-			viewOriginStyle['background-repeat'] = style['background-repeat'];
-			viewOriginStyle['background-position'] = style['background-position'];
-			viewOriginStyle['background-size'] = style['background-size'];
-			this._viewOriginStyle = viewOriginStyle;
+		this._viewList = $(options.view);
+		if (this._viewList) {
+			var viewOriginStyleList = [];
+			this._viewList.forEach(function($view, i) {
+				var style = $view.style,
+					viewOriginStyle = {};
+				viewOriginStyle['background-repeat'] = style['background-repeat'];
+				viewOriginStyle['background-position'] = style['background-position'];
+				viewOriginStyle['background-size'] = style['background-size'];
+				viewOriginStyleList[i] = viewOriginStyle;
 
-			css($view, {
-				'background-repeat': 'no-repeat',
-				'background-position': 'center',
-				'background-size': 'contain'
+				css($view, {
+					'background-repeat': 'no-repeat',
+					'background-position': 'center',
+					'background-size': 'contain'
+				});
 			});
+			this._viewOriginStyleList = viewOriginStyleList;
 		}
 	};
 
@@ -639,63 +646,27 @@
 	};
 
 	p._initFile = function() {
-		var options = this._options,
+		var self = this,
+			options = this._options,
 			errorMsg = options.errorMsg;
 
-		if (this._$file = $(options.file)) {
+		if (this._fileList = $(options.file)) {
+			this._fileList.forEach(function($file) {
+				// 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
+				if (!is_mobile) {
+					attr($file, 'accept', 'image/jpeg, image/x-png, image/gif');
+				}
 
-			if (!window.FileReader) {
-				errorMsg.notFile && alert(errorMsg.notFile);
-				return;
-			}
-
-			// 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
-			if (!is_mobile) {
-				attr(this._$file, 'accept', 'image/jpeg, image/x-png, image/gif');
-			}
-
-			this._fileReader = new FileReader();
-
-			this._$file.addEventListener('change', this._fileOnChangeHandle);
+				$file.addEventListener('change', self._fileOnChangeHandle);
+			});
 		}
 	};
 
 	p._fileOnChangeHandle = function(e) {
-		var self = this,
-			options = this._options,
-			errorMsg = options.errorMsg,
-			files = e.target.files;
+		var files = e.target.files;
 
-		if (!files.length) return;
-
-		var file = files[0];
-
-		if (!/image\/\w+/.test(file.type)) {
-
-			options.loadError.call(this, errorMsg.imgError);
-			return false;
-
-		} else {
-
-			if (!this._imgLoading) {
-				this._imgLoading = true;
-				options.loadStart.call(this, file);
-			}
-
-			this._fileReader.onprogress = function(e) {
-				console.log((e.loaded / e.total * 100).toFixed() + '%');
-			};
-
-			this._fileReader.onload = function(e) {
-				self._lrzHandle(file);
-			};
-
-			this._fileReader.onerror = function(e) {
-				options.loadError.call(self, errorMsg.imgLoadError, e);
-				self._imgLoading = false;
-			};
-
-			this._fileReader.readAsDataURL(file); // 读取文件内容
+		if (files.length) {
+			this._lrzHandle(files[0]);
 		}
 	};
 
@@ -704,9 +675,19 @@
 			options = this._options,
 			errorMsg = options.errorMsg;
 
+		if (typeof src === 'object' && src.type && !/image\/\w+/.test(src.type)) {
+			options.loadError.call(this, errorMsg.imgError);
+			return false;
+		}
+
+		this._imgLoaded = false;
+		this._imgLoading = true;
+		options.loadStart.call(this, src);
+
 		lrz(src, options.lrzOption)
 			.then(function (rst) {
 				// 处理成功会执行
+				self._clearImg();
 				self._createImg(rst.base64);
 			})
 			.catch(function (err) {
@@ -731,21 +712,12 @@
 			options = this._options,
 			errorMsg = options.errorMsg;
 
-		this._clearImg();
-
 		this._$img = new Image();
 
 		css(this._$img, {
 			'user-select': 'none',
 			'pointer-events': 'none'
 		});
-
-		if (!this._imgLoading) {
-			this._imgLoading = true;
-			options.loadStart.call(this, this._$img);
-		}
-
-		this._imgLoaded = false;
 
 		this._$img.onload = function() {
 			self._imgLoaded = true;
@@ -806,7 +778,11 @@
 
 		try {
 			var dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
-			this._$view && css(this._$view, 'background-image', 'url('+ dataURL +')');
+			if (this._viewList) {
+				this._viewList.forEach(function($view, i) {
+					css($view, 'background-image', 'url('+ dataURL +')');
+				});
+			}
 			options.done.call(this, dataURL);
 			return dataURL;
 		} catch(e) {
@@ -936,8 +912,8 @@
 
 	/**
 	 * 加载一张图片
-	 * @param  {String} src 图片的 url
-	 * @return {PhotoClip}  返回 PhotoClip 的实例对象
+	 * @param  {String|Object} src 图片的 url，或者图片的 file 文件对象
+	 * @return {PhotoClip}         返回 PhotoClip 的实例对象
 	 */
 	p.load = function(src) {
 		this._lrzHandle(src);
@@ -951,7 +927,11 @@
 	p.clear = function() {
 		this._clearImg();
 		this._resetScroll();
-		this._$file.value = '';
+		if (this._fileList) {
+			this._fileList.forEach(function($file) {
+				$file.value = '';
+			});
+		}
 		return this;
 	};
 
@@ -992,22 +972,14 @@
 	 * @return {Undefined}  无返回值
 	 */
 	p.destroy = function() {
+		var self = this;
+
 		window.removeEventListener('resize', this._resize);
 
 		this._$container.removeChild(this._$clipLayer);
 		this._$container.removeChild(this._$mask);
 
 		css(this._$container, this._containerOriginStyle);
-
-		if (this._$view) {
-			css(this._$view, this._viewOriginStyle);
-		}
-
-		if (this._fileReader) {
-			this._fileReader.onprogress = null;
-			this._fileReader.onload = null;
-			this._fileReader.onerror = null;
-		}
 
 		if (this._iScroll) {
 			this._iScroll.destroy();
@@ -1026,12 +998,22 @@
 			this._$img.onerror = null;
 		}
 
-		if (this._$file) {
-			this._$file.removeEventListener('change', this._fileOnChangeHandle);
+		if (this._viewList) {
+			this._viewList.forEach(function($view, i) {
+				css($view, self._viewOriginStyleList[i]);
+			});
 		}
 
-		if (this._$ok) {
-			this._$ok.removeEventListener('click', this._clipImg);
+		if (this._fileList) {
+			this._fileList.forEach(function($file) {
+				$file.removeEventListener('change', self._fileOnChangeHandle);
+			});
+		}
+
+		if (this._okList) {
+			this._okList.forEach(function($ok) {
+				$ok.removeEventListener('click', self._clipImg);
+			});
 		}
 
 		// 清除所有属性
@@ -1292,6 +1274,11 @@
 		return Object.prototype.toString.call(obj) === '[object Array]';
 	}
 
+	// 类似数组对象转数组
+	function toArray(obj) {
+		return Array.prototype.map.call(obj, function(n) { return n });
+	}
+
 	// 创建元素
 	function createElement(parentNode, className, id, prop) {
 		var elem = document.createElement('DIV');
@@ -1328,9 +1315,11 @@
 	// 获取元素（IE8及以上浏览器）
 	function $(selector, context) {
 		if (selector instanceof HTMLElement) {
-			return selector;
+			return [selector];
+		} else if (typeof selector === 'object' && selector.length) {
+			return toArray(selector);
 		} else if (!selector || typeof selector !== 'string') {
-			return null;
+			return [];
 		}
 
 		if (typeof context === 'string') {
@@ -1341,7 +1330,7 @@
 			context = document;
 		}
 
-		return context.querySelector(selector);
+		return toArray(context.querySelectorAll(selector));
 	}
 
 	// 设置属性
