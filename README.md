@@ -6,8 +6,6 @@
 
 [**Demo**](http://htmlpreview.github.io/?https://github.com/baijunjie/PhotoClip.js/blob/master/index.html)（如果无法打开，请翻墙，或者自行下载体验）
 
-[**Changelog**](https://github.com/baijunjie/PhotoClip.js/blob/master/Changelog.md)
-
 
 
 ## 兼容
