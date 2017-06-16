@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.1.3
+ * PhotoClip v3.2.0
  * (c) 2014-2017 BaiJunjie
  * MIT Licensed.
  *
@@ -31,7 +31,8 @@
  *                                             默认值为[0,0]，表示输出图像原始大小。
  *
  * - outputType          {String}              指定输出图片的类型，可选 'jpg' 和 'png' 两种种类型，默认为 'jpg'。
- * - outputQuality       {String}              图片输出质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 outputQuality * lrzOption.quality）
+ * - outputQuality       {Number}              图片输出质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 outputQuality * lrzOption.quality）
+ * - maxZoom             {Number}              图片的最大缩放比，默认为 1。
  * - rotateFree          {Boolean}             是否启用图片自由旋转。由于安卓浏览器上存在性能问题，因此在安卓设备上默认关闭。
  * - view                {String|HTMLElement}  显示截取后图像的容器的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
  * - file                {String|HTMLElement}  上传图片的 <input type="file"> 控件的选择器或者DOM对象。如果有多个，可使用英文逗号隔开的选择器字符串，或者DOM对象数组。
@@ -96,6 +97,7 @@
 			outputSize: [0, 0],
 			outputType: 'jpg',
 			outputQuality: .8,
+			maxZoom: 1,
 			rotateFree: !is_android,
 			view: '',
 			file: '',
@@ -375,16 +377,17 @@
 		duration = duration || 0;
 
 		var iScrollOptions = this._iScroll.options,
+			maxZoom = this._options.maxZoom,
 			width = this._rotationLayerWidth,
 			height = this._rotationLayerHeight;
 
 		if (width && height) {
 			iScrollOptions.zoomMin = getScale(this._clipWidth, this._clipHeight, width, height);
-			iScrollOptions.zoomMax = Math.max(1, iScrollOptions.zoomMin);
+			iScrollOptions.zoomMax = Math.max(maxZoom, iScrollOptions.zoomMin);
 			iScrollOptions.startZoom = Math.min(iScrollOptions.zoomMax, getScale(this._containerWidth, this._containerHeight, width, height));
 		} else {
-			iScrollOptions.zoomMin = 1
-			iScrollOptions.zoomMax = 1
+			iScrollOptions.zoomMin = 1;
+			iScrollOptions.zoomMax = maxZoom;
 			iScrollOptions.startZoom = 1;
 		}
 
@@ -684,7 +687,8 @@
 		this._imgLoading = true;
 		options.loadStart.call(this, src);
 
-		lrz(src, options.lrzOption)
+		try {
+			lrz(src, options.lrzOption)
 			.then(function (rst) {
 				// 处理成功会执行
 				self._clearImg();
@@ -695,6 +699,11 @@
 				options.loadError.call(self, errorMsg.imgHandleError, err);
 				self._imgLoading = false;
 			});
+		} catch(err) {
+			throw err;
+			options.loadError.call(self, errorMsg.imgHandleError, err);
+			self._imgLoading = false;
+		}
 	};
 
 	p._clearImg = function() {

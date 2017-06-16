@@ -136,9 +136,15 @@ new PhotoClip( **container** [, **options**] )
 
 - **options.outputQuality**
 
-  type: String
+  type: Number
 
   图片输出质量，仅对 jpeg 格式的图片有效，取值 0 - 1，默认为0.8。（这个质量并不是图片的最终质量，而是在经过 lrz 插件压缩后的基础上输出的质量。相当于 `outputQuality` * `lrzOption.quality`）  
+
+- **options.maxZoom**
+
+  type: Number
+
+  图片的最大缩放比，默认为 1。
 
 - **options.rotateFree**
 
