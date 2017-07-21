@@ -39,7 +39,7 @@ IE10及以上版本，Chrome、Firefox、Safari、Android、微信等主流先�
 <script>
 var pc = new PhotoClip('#clipArea');
 file.addEventListener('change', function() {
-	pc.load(this.files[0]);
+    pc.load(this.files[0]);
 });
 </script>
 ```
@@ -48,21 +48,21 @@ file.addEventListener('change', function() {
 
 ```js
 require.config({
-	paths: {
-		'iscroll-zoom': 'js/iscroll-zoom',
-		'hammer': 'js/hammer.min',
-		'lrz': 'js/lrz.all.bundle',
-		'PhotoClip': 'js/PhotoClip'
-	},
-	shim: {
-		'iscroll-zoom': {
-			exports: 'IScroll'
-		}
-	}
+    paths: {
+        'iscroll-zoom': 'js/iscroll-zoom',
+        'hammer': 'js/hammer.min',
+        'lrz': 'js/lrz.all.bundle',
+        'PhotoClip': 'js/PhotoClip'
+    },
+    shim: {
+        'iscroll-zoom': {
+            exports: 'IScroll'
+        }
+    }
 });
 
 require(['PhotoClip'], function(PhotoClip) {
-	var pc = new PhotoClip('#clipArea');
+    var pc = new PhotoClip('#clipArea');
 });
 ```
 

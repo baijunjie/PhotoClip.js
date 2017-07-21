@@ -1,5 +1,5 @@
 /**
- * PhotoClip v3.2.0
+ * PhotoClip v3.2.1
  * (c) 2014-2017 BaiJunjie
  * MIT Licensed.
  *
@@ -366,6 +366,9 @@
 			scrollY: true,
 			freeScroll: true,
 			mouseWheel: true,
+			disablePointer: true, // important to disable the pointer events that causes the issues
+			disableTouch: false, // false if you want the slider to be usable with touch devices
+			disableMouse: false, // false if you want the slider to be usable with a mouse (desktop)
 			wheelAction: 'zoom',
 			bounceTime: 300
 		});
