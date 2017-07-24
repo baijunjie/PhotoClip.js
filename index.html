@@ -17,9 +17,12 @@ body {
 	height: 300px;
 }
 #file,
-#clipBtn {
-	margin: 20px;
+#clipBtn,
+#flipX 
+#flipY {
+	margin: 20px 0;
 }
+
 #view {
 	margin: 0 auto;
 	width: 200px;
@@ -32,6 +35,8 @@ body {
 <div id="clipArea"></div>
 <input type="file" id="file">
 <button id="clipBtn">截取</button>
+<button id="flipX">X翻转</button>
+<button id="flipY">Y翻转</button>
 <div id="view"></div>
 
 <script src="js/iscroll-zoom.js"></script>
@@ -47,6 +52,8 @@ body {
 		file: '#file',
 		view: '#view',
 		ok: '#clipBtn',
+		flipX: '#flipX',
+		flipY: '#flipY',
 		//img: 'img/mm.jpg',
 		loadStart: function() {
 			console.log('开始读取照片');
@@ -54,8 +61,8 @@ body {
 		loadComplete: function() {
 			console.log('照片读取完成');
 		},
-		done: function(dataURL) {
-			console.log(dataURL);
+		done: function(dataURL,type) {
+			console.log(dataURL,type);
 		},
 		fail: function(msg) {
 			alert(msg);

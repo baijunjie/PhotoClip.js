@@ -102,6 +102,8 @@
 			view: '',
 			file: '',
 			ok: '',
+			flipX: '',
+			flipY: '',
 			img: '',
 			loadStart: noop,
 			loadComplete: noop,
@@ -213,6 +215,8 @@
 		this._viewList = null; // 最终截图后呈现的视图容器的DOM数组
 		this._fileList = null; // file 控件的DOM数组
 		this._okList = null; // 截图按钮的DOM数组
+		this._flipXList = null; // 水平翻转按钮都DOM数组
+		this._flipYList = null; // 垂直翻转按钮都DOM数组
 
 		this._$mask = null;
 		this._$mask_left = null;
@@ -243,6 +247,18 @@
 		if (this._okList = $(options.ok)) {
 			this._okList.forEach(function($ok) {
 				$ok.addEventListener('click', self._clipImg);
+			});
+		}
+
+		if (this._flipXList = $(options.flipX)) {
+			this._flipXList.forEach(function($flipX) {
+				$flipX.addEventListener('click', self._flipXImg);
+			});
+		}
+
+		if (this._flipYList = $(options.flipY)) {
+			this._flipYList.forEach(function($flipY) {
+				$flipY.addEventListener('click', self._flipYImg);
 			});
 		}
 
@@ -751,7 +767,7 @@
 		attr(this._$img, 'src', src);
 	};
 
-	p._clipImg = function() {
+	p._setImg = function (type){
 		var options = this._options,
 			errorMsg = options.errorMsg;
 
@@ -786,6 +802,34 @@
 		ctx.rotate(this._curAngle * Math.PI / 180);
 
 		ctx.drawImage(this._$img, 0, 0);
+		var w = this._canvas.width, h = this._canvas.height;
+		var imgData = ctx.getImageData(0,0,w,h);
+		var imgData2 = ctx.createImageData(w,h);
+		if (type=='flipX') {
+			for (var i = 0; i < h; i++) {
+				for (var j = 0; j < w; j++) {
+					var s = (i * w + j) * 4;
+					var e = (i * w + w - 1 - j) * 4;
+					imgData2.data[s] = imgData.data[e];
+					imgData2.data[s+1] = imgData.data[e+1];
+					imgData2.data[s+2] = imgData.data[e+2];
+					imgData2.data[s+3] = imgData.data[e+3];
+				}
+			}
+			ctx.putImageData(imgData2,0,0);
+		}else if (type == 'flipY'){
+			for (var i = 0; i < h; i++) {
+				for (var j = 0; j < w; j++) {
+					var s = (i * w + j) * 4;
+					var e = ( (h - i - 1) * w + j) * 4;
+					imgData2.data[s] = imgData.data[e];
+					imgData2.data[s+1] = imgData.data[e+1];
+					imgData2.data[s+2] = imgData.data[e+2];
+					imgData2.data[s+3] = imgData.data[e+3];
+				}
+			}
+			ctx.putImageData(imgData2,0,0);
+		}
 		ctx.restore();
 
 		try {
@@ -795,12 +839,24 @@
 					css($view, 'background-image', 'url('+ dataURL +')');
 				});
 			}
-			options.done.call(this, dataURL);
+			options.done.call(this, dataURL, type);
 			return dataURL;
 		} catch(e) {
 			options.fail.call(this, errorMsg.clipError, e);
 		}
+	}
+
+	p._clipImg = function() {
+		this._setImg('clip');
 	};
+
+	p._flipXImg = function (){
+		this._setImg('flipX');
+	}
+
+	p._flipYImg = function (){
+		this._setImg('flipY');
+	}
 
 	p._resize = function(width, height) {
 		hideAction(this._$container, function() {
@@ -900,6 +956,8 @@
 		this._rotateCW90 = proxy(this, '_rotateCW90');
 		this._resize = proxy(this, '_resize');
 		this._clipImg = proxy(this, '_clipImg');
+		this._flipXImg = proxy(this, '_flipXImg');
+		this._flipYImg = proxy(this, '_flipYImg');
 
 		// 确保对外接口函数，无论持有者是谁，调用都不会出错
 		this.size = proxy(this, 'size');
@@ -907,6 +965,8 @@
 		this.rotateBy = proxy(this, 'rotateBy');
 		this.rotateTo = proxy(this, 'rotateTo');
 		this.clip = proxy(this, 'clip');
+		this.flipX = proxy(this, 'flipX');
+		this.flipY = proxy(this, 'flipY');
 		this.destroy = proxy(this, 'destroy');
 	};
 
@@ -978,6 +1038,21 @@
 	p.clip = function() {
 		return this._clipImg();
 	};
+
+	/**
+	 * 水平翻转 
+	 * @return {String} 返回截图后图片的 Base64 字符串
+	 */
+	p.flipX = function() {
+		return this._flipXImg();
+	} 
+	/**
+	 * 垂直翻转 
+	 * @return {String} 返回截图后图片的 Base64 字符串
+	 */
+	p.flipY = function() {
+		return this._flipYImg();
+	} 
 
 	/**
 	 * 销毁
