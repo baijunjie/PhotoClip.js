@@ -1,6 +1,6 @@
 {
   "name": "photoclip",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "一款手势驱动的裁图插件",
   "main": "dist/Photoclip.js",
   "module": "src/index.js",

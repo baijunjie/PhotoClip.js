@@ -4,7 +4,7 @@
 - 在移动设备上双指捏合为缩放，双指转动为旋转
 - 在PC设备上鼠标滚轮为缩放，每次双击则顺时针旋转90度
 
-[**Demo**](http://htmlpreview.github.io/?https://github.com/baijunjie/PhotoClip.js/blob/master/index.html)（如果无法打开，请翻墙，或者自行下载体验）
+[**Demo**](http://htmlpreview.github.io/?https://github.com/baijunjie/PhotoClip.js/blob/master/demo/index.html)（如果无法打开，请翻墙，或者自行下载体验）
 
 
 
