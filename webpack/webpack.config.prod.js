@@ -19,11 +19,15 @@ var webpackConfig = merge(baseWebpackConfig, {
 });
 
 module.exports = [
+    webpackConfig,
     merge(webpackConfig, {
+        output: {
+            path: path.resolve(__dirname, '../demo/js')
+        },
         plugins: [
             new HtmlWebpackPlugin({
                 title: process.env.PROJECT_NAME,
-                filename: '../demo/index.html', // 相对于输出目录
+                filename: '../index.html', // 相对于输出目录
                 template: './src/index-template.html', // 相对于根目录
                 inject: false // 取消自动注入，使用模板手动注入
             })
