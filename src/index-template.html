@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+<title><%= htmlWebpackPlugin.options.title %></title>
+<style>
+body {
+	margin: 0;
+	text-align: center;
+}
+#clipArea {
+	height: 300px;
+}
+#file,
+#clipBtn {
+	margin: 20px;
+}
+#view {
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+	background-color: #666;
+}
+</style>
+</head>
+<body ontouchstart="">
+<div id="clipArea"></div>
+<input type="file" id="file">
+<button id="clipBtn">截取</button>
+<div id="view"></div>
+
+<script src="js/hammer.min.js"></script>
+<script src="js/iscroll-zoom-min.js"></script>
+<script src="js/lrz.all.bundle.js"></script>
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+<script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+<% } %>
+<script>
+	var pc = new PhotoClip('#clipArea', {
+		size: 260,
+		outputSize: 640,
+		//adaptive: ['60%', '80%'],
+		file: '#file',
+		view: '#view',
+		ok: '#clipBtn',
+		//img: 'img/mm.jpg',
+		loadStart: function() {
+			console.log('开始读取照片');
+		},
+		loadComplete: function() {
+			console.log('照片读取完成');
+		},
+		done: function(dataURL) {
+			console.log(dataURL);
+		},
+		fail: function(msg) {
+			alert(msg);
+		}
+	});
+
+	// 加载的图片必须要与本程序同源，否则无法截图
+	pc.load('img/mm.jpg');
+
+</script>
+</body>
+</html>

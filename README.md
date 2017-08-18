@@ -49,13 +49,13 @@ file.addEventListener('change', function() {
 ```js
 require.config({
     paths: {
-        'iscroll-zoom': 'js/iscroll-zoom',
+        'iscroll': 'js/iscroll-zoom-min',
         'hammer': 'js/hammer.min',
         'lrz': 'js/lrz.all.bundle',
         'PhotoClip': 'js/PhotoClip'
     },
     shim: {
-        'iscroll-zoom': {
+        'iscroll': {
             exports: 'IScroll'
         }
     }

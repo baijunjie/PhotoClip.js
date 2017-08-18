@@ -1,14 +1,16 @@
 {
   "name": "photoclip",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "一款手势驱动的裁图插件",
-  "main": "js/PhotoClip.js",
+  "main": "dist/Photoclip.js",
+  "module": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --config webpack/webpack.config.dev.js --open",
+    "build": "webpack --config webpack/webpack.config.prod.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baijunjie/PhotoClip.git"
+    "url": "https://github.com/baijunjie/PhotoClip.git"
   },
   "author": "baijunjie",
   "license": "MIT",
@@ -16,12 +18,25 @@
     "url": "https://github.com/baijunjie/PhotoClip/issues"
   },
   "homepage": "https://github.com/baijunjie/PhotoClip#readme",
+  "dependencies": {
+    "hammerjs": "^2.0.8",
+    "iscroll": "baijunjie/iscroll",
+    "lrz": "^4.9.40"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "html-webpack-plugin": "^2.29.0",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
+    "webpack-merge": "^4.1.0"
+  },
   "files": [
-    "img/mm.jpg",
-    "js/hammer.min.js",
-    "js/iscroll-zoom.js",
-    "js/lrz.all.bundle.js",
-    "js/PhotoClip.js",
-    "index.html"
+    "dist"
   ]
 }

@@ -1,12 +1,8 @@
 <!doctype html>
-<html lang="zh-CN" id="index">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="format-detection" content="telephone=no, email=no" />
-<meta name="keywords" content="">
-<meta name="description" content="">
 <title>PhotoClip</title>
 <style>
 body {
@@ -34,12 +30,13 @@ body {
 <button id="clipBtn">截取</button>
 <div id="view"></div>
 
-<script src="js/iscroll-zoom.js"></script>
 <script src="js/hammer.min.js"></script>
+<script src="js/iscroll-zoom-min.js"></script>
 <script src="js/lrz.all.bundle.js"></script>
-<script src="js/PhotoClip.js"></script>
-<script>
 
+<script src="../dist/PhotoClip.js"></script>
+
+<script>
 	var pc = new PhotoClip('#clipArea', {
 		size: 260,
 		outputSize: 640,
@@ -63,9 +60,8 @@ body {
 	});
 
 	// 加载的图片必须要与本程序同源，否则无法截图
-	//pc.load('img/mm.jpg');
+	pc.load('img/mm.jpg');
 
 </script>
-
 </body>
 </html>
