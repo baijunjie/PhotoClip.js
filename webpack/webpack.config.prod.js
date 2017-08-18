@@ -22,19 +22,6 @@ module.exports = [
     webpackConfig,
     merge(webpackConfig, {
         output: {
-            path: path.resolve(__dirname, '../demo/js')
-        },
-        plugins: [
-            new HtmlWebpackPlugin({
-                title: process.env.PROJECT_NAME,
-                filename: '../index.html', // 相对于输出目录
-                template: './src/index-template.html', // 相对于根目录
-                inject: false // 取消自动注入，使用模板手动注入
-            })
-        ]
-    }),
-    merge(webpackConfig, {
-        output: {
             filename: '[name].min.js'
         },
         plugins: [
@@ -45,6 +32,19 @@ module.exports = [
                     drop_debugger: true,
                     // drop_console: true
                 }
+            })
+        ]
+    }),
+    merge(webpackConfig, {
+        output: {
+            path: path.resolve(__dirname, '../demo/js')
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                title: process.env.PROJECT_NAME,
+                filename: '../index.html', // 相对于输出目录
+                template: './src/index-template.html', // 相对于根目录
+                inject: false // 取消自动注入，使用模板手动注入
             })
         ]
     })
