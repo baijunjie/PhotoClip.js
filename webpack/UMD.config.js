@@ -6,8 +6,8 @@ module.exports = {
         root: 'Hammer'
     },
     'iscroll/build/iscroll-zoom': {
-        commonjs: 'iscroll',
-        commonjs2: 'iscroll',
+        commonjs: 'iscroll/build/iscroll-zoom',
+        commonjs2: 'iscroll/build/iscroll-zoom',
         amd: 'iscroll',
         root: 'IScroll'
     },

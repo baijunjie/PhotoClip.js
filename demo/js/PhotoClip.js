@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.3.2
+ * @version v3.3.3
  * @author baijunjie
  * @license MIT
  * 
@@ -8,11 +8,11 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("lrz"), require("hammerjs"), require("iscroll"));
+		module.exports = factory(require("lrz"), require("hammerjs"), require("iscroll/build/iscroll-zoom"));
 	else if(typeof define === 'function' && define.amd)
 		define(["lrz", "hammerjs", "iscroll"], factory);
 	else if(typeof exports === 'object')
-		exports["PhotoClip"] = factory(require("lrz"), require("hammerjs"), require("iscroll"));
+		exports["PhotoClip"] = factory(require("lrz"), require("hammerjs"), require("iscroll/build/iscroll-zoom"));
 	else
 		root["PhotoClip"] = factory(root["lrz"], root["Hammer"], root["IScroll"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__) {
