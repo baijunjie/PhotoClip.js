@@ -567,8 +567,7 @@ export default class {
 
     _initFile() {
         var self = this,
-            options = this._options,
-            errorMsg = options.errorMsg;
+            options = this._options;
 
         if (this._fileList = utils.$(options.file)) {
             this._fileList.forEach(function($file) {
@@ -709,10 +708,17 @@ export default class {
                     utils.css($view, 'background-image', 'url('+ dataURL +')');
                 });
             }
-            options.done.call(this, dataURL);
+
+            try {
+                options.done.call(this, dataURL);
+            } catch(err) {
+                throw err;
+            }
+
             return dataURL;
-        } catch(e) {
-            options.fail.call(this, errorMsg.clipError, e);
+        } catch(err) {
+            throw err;
+            options.fail.call(this, errorMsg.clipError);
         }
     }
 

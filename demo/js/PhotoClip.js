@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.3.3
+ * @version v3.3.4
  * @author baijunjie
  * @license MIT
  * 
@@ -1145,8 +1145,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             key: '_initFile',
             value: function _initFile() {
                 var self = this,
-                    options = this._options,
-                    errorMsg = options.errorMsg;
+                    options = this._options;
 
                 if (this._fileList = utils.$(options.file)) {
                     this._fileList.forEach(function ($file) {
@@ -1290,10 +1289,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                             utils.css($view, 'background-image', 'url(' + dataURL + ')');
                         });
                     }
-                    options.done.call(this, dataURL);
+
+                    try {
+                        options.done.call(this, dataURL);
+                    } catch (err) {
+                        throw err;
+                    }
+
                     return dataURL;
-                } catch (e) {
-                    options.fail.call(this, errorMsg.clipError, e);
+                } catch (err) {
+                    throw err;
+                    options.fail.call(this, errorMsg.clipError);
                 }
             }
         }, {
