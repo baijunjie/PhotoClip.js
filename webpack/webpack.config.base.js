@@ -1,7 +1,8 @@
-var path = require('path');
-var webpack = require('webpack');
-var UMDConfig = require('./UMD.config');
-var pkg = require('../package.json');
+'use strict'
+const path = require('path');
+const webpack = require('webpack');
+const UMDConfig = require('./UMD.config');
+const pkg = require('../package.json');
 
 const PROJECT_NAME = 'PhotoClip';
 process.env.PROJECT_NAME = PROJECT_NAME;
