@@ -573,7 +573,7 @@ export default class {
             this._fileList.forEach(function($file) {
                 // 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
                 if (!is_mobile) {
-                    utils.attr($file, 'accept', 'image/jpeg, image/x-png, image/gif');
+                    utils.attr($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
                 }
 
                 $file.addEventListener('change', self._fileOnChangeHandle);
