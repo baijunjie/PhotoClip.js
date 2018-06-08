@@ -49,7 +49,7 @@ let defaultOptions = {
     }
 };
 
-export default class {
+export default class PhotoClip {
     constructor(container, options) {
         container = utils.$(container); // 获取容器
         if (container && container.length) {
@@ -68,8 +68,7 @@ export default class {
     }
 
     _init() {
-        var self = this,
-            options = this._options;
+        const options = this._options;
 
         // options 预设
         if (utils.isNumber(options.size)) {
@@ -114,7 +113,6 @@ export default class {
         this._clipSizeRatio = 1; // 截取框宽高比
 
         this._$img = null; // 图片的DOM对象
-        this._imgLoading = false; // 正在读取图片
         this._imgLoaded = false; // 图片是否已经加载完成
 
         this._containerWidth = 0;
@@ -144,8 +142,6 @@ export default class {
         this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
         this._curAngle = 0; // 旋转层的当前角度
 
-        this._initProxy();
-
         this._initElements();
         this._initScroll();
         this._initRotationEvent();
@@ -155,8 +151,8 @@ export default class {
         window.addEventListener('resize', this._resize);
 
         if (this._okList = utils.$(options.ok)) {
-            this._okList.forEach(function($ok) {
-                $ok.addEventListener('click', self._clipImg);
+            this._okList.forEach($ok => {
+                $ok.addEventListener('click', this._clipImg);
             });
         }
 
@@ -167,7 +163,7 @@ export default class {
 
     _initElements() {
         // 初始化容器
-        var $container = this._$container,
+        const $container = this._$container,
             style = $container.style,
             containerOriginStyle = {};
 
@@ -196,7 +192,7 @@ export default class {
         this._$rotationLayer = utils.createElement(this._$moveLayer, 'photo-clip-rotation-layer');
 
         // 创建遮罩
-        var $mask = this._$mask = utils.createElement($container, 'photo-clip-mask', {
+        const $mask = this._$mask = utils.createElement($container, 'photo-clip-mask', {
             'position': 'absolute',
             'left': 0,
             'top': 0,
@@ -205,7 +201,7 @@ export default class {
             'pointer-events': 'none'
         });
 
-        var options = this._options,
+        const options = this._options,
             maskColor = options.style.maskColor,
             maskBorder = options.style.maskBorder;
 
@@ -254,9 +250,9 @@ export default class {
         // 初始化视图容器
         this._viewList = utils.$(options.view);
         if (this._viewList) {
-            var viewOriginStyleList = [];
+            const viewOriginStyleList = [];
             this._viewList.forEach(function($view, i) {
-                var style = $view.style,
+                const style = $view.style,
                     viewOriginStyle = {};
                 viewOriginStyle['background-repeat'] = style['background-repeat'];
                 viewOriginStyle['background-position'] = style['background-position'];
@@ -293,7 +289,7 @@ export default class {
     _refreshScroll(duration) {
         duration = duration || 0;
 
-        var iScrollOptions = this._iScroll.options,
+        const iScrollOptions = this._iScroll.options,
             maxZoom = this._options.maxZoom,
             width = this._rotationLayerWidth,
             height = this._rotationLayerHeight;
@@ -342,7 +338,7 @@ export default class {
 
         this._refreshScroll();
 
-        var iScroll = this._iScroll,
+        const iScroll = this._iScroll,
             scale = iScroll.scale,
             posX = (this._clipWidth - width * scale) * .5,
             posY = (this._clipHeight - height * scale) * .5;
@@ -356,32 +352,32 @@ export default class {
             this._hammerManager = new Hammer.Manager(this._$moveLayer);
             this._hammerManager.add(new Hammer.Rotate());
 
-            var startTouch,
-                startAngle,
-                curAngle,
-                self = this,
-                rotateFree = this._options.rotateFree,
+            const rotateFree = this._options.rotateFree,
                 bounceTime = this._iScroll.options.bounceTime;
 
-            this._hammerManager.on('rotatestart', function(e) {
-                if (self._atRotation) return;
+            let startTouch,
+                startAngle,
+                curAngle;
+
+            this._hammerManager.on('rotatestart', e => {
+                if (this._atRotation) return;
                 startTouch = true;
 
                 if (rotateFree) {
-                    startAngle = (e.rotation - self._curAngle) % 360;
-                    self._rotationLayerRotateReady(e.center);
+                    startAngle = (e.rotation - this._curAngle) % 360;
+                    this._rotationLayerRotateReady(e.center);
                 } else {
                     startAngle = e.rotation;
                 }
             });
 
-            this._hammerManager.on('rotatemove', function(e) {
+            this._hammerManager.on('rotatemove', e => {
                 if (!startTouch) return;
                 curAngle = e.rotation - startAngle;
-                rotateFree && self._rotationLayerRotate(curAngle);
+                rotateFree && this._rotationLayerRotate(curAngle);
             });
 
-            this._hammerManager.on('rotateend rotatecancel', function(e) {
+            this._hammerManager.on('rotateend rotatecancel', e => {
                 if (!startTouch) return;
                 startTouch = false;
 
@@ -391,15 +387,15 @@ export default class {
                     else if (curAngle < -180) curAngle += 360;
 
                     if (curAngle > 30) {
-                        self._rotateBy(90, bounceTime, e.center);
+                        this._rotateBy(90, bounceTime, e.center);
                     } else if (curAngle < -30) {
-                        self._rotateBy(-90, bounceTime, e.center);
+                        this._rotateBy(-90, bounceTime, e.center);
                     }
                     return;
                 }
 
                 // 接近整90度方向时，进行校正
-                var angle = curAngle % 360;
+                let angle = curAngle % 360;
                 if (angle < 0) angle += 360;
 
                 if (angle < 10) {
@@ -414,16 +410,16 @@ export default class {
                     curAngle += 360 - angle;
                 }
 
-                self._rotationLayerRotateFinish(curAngle, bounceTime);
+                this._rotationLayerRotateFinish(curAngle, bounceTime);
             });
         } else {
             this._$moveLayer.addEventListener('dblclick', this._rotateCW90);
         }
     }
 
-    _rotateCW90(e) {
+    _rotateCW90 = (e) => {
         this._rotateBy(90, this._iScroll.options.bounceTime, { x: e.clientX, y: e.clientY });
-    }
+    };
 
     _rotateBy(angle, duration, center) {
         this._rotateTo(this._curAngle + angle, duration, center);
@@ -440,8 +436,8 @@ export default class {
 
     // 旋转层旋转准备
     _rotationLayerRotateReady(center) {
-        var scale = this._iScroll.scale,
-            coord; // 旋转参考点在移动层中的坐标
+        const scale = this._iScroll.scale;
+        let coord; // 旋转参考点在移动层中的坐标
 
         if (!center) {
             coord = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer, this._clipWidth * .5, this._clipHeight * .5);
@@ -454,7 +450,7 @@ export default class {
         coord.y /= scale;
 
         // 旋转参考点相对于旋转层零位（旋转层旋转前左上角）的坐标
-        var coordBy0 = {
+        const coordBy0 = {
             x: coord.x - this._rotationLayerX,
             y: coord.y - this._rotationLayerY
         };
@@ -462,14 +458,14 @@ export default class {
         // 求出旋转层旋转前的旋转参考点
         // 这个参考点就是旋转中心点映射在旋转层图片上的坐标
         // 这个位置表示旋转层旋转前，该点所对应的坐标
-        var origin = utils.pointRotate(coordBy0, -this._curAngle);
+        const origin = utils.pointRotate(coordBy0, -this._curAngle);
         this._rotationLayerOriginX = origin.x;
         this._rotationLayerOriginY = origin.y;
 
         // 设置参考点，算出新参考点作用下的旋转层位移，然后进行补差
-        var rect = this._$rotationLayer.getBoundingClientRect();
+        const rect = this._$rotationLayer.getBoundingClientRect();
         setOrigin(this._$rotationLayer, this._rotationLayerOriginX, this._rotationLayerOriginY);
-        var newRect = this._$rotationLayer.getBoundingClientRect();
+        const newRect = this._$rotationLayer.getBoundingClientRect();
         this._rotationLayerX += (rect.left - newRect.left) / scale;
         this._rotationLayerY += (rect.top - newRect.top) / scale;
         setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
@@ -486,29 +482,29 @@ export default class {
         setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
 
         // 获取旋转后的矩形
-        var rect = this._$rotationLayer.getBoundingClientRect();
+        const rect = this._$rotationLayer.getBoundingClientRect();
 
         // 当参考点为零时，获取位移后的矩形
         setOrigin(this._$rotationLayer, 0, 0);
-        var rectByOrigin0 = this._$rotationLayer.getBoundingClientRect();
+        const rectByOrigin0 = this._$rotationLayer.getBoundingClientRect();
 
         // 获取旋转前（零度）的矩形
         setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, 0);
-        var rectByAngle0 = this._$rotationLayer.getBoundingClientRect(),
+        const rectByAngle0 = this._$rotationLayer.getBoundingClientRect(),
 
             // 获取移动层的矩形
             moveLayerRect = this._$moveLayer.getBoundingClientRect(),
 
-            // 求出移动层与旋转层之间的位置偏移
-            // 由于直接应用在移动层，因此不需要根据缩放换算
-            // 注意，这里的偏移有可能还包含缩放过量时多出来的偏移
-            offset = {
-                x: rect.left - moveLayerRect.left,
-                y: rect.top - moveLayerRect.top
-            },
-
             iScroll = this._iScroll,
             scale = iScroll.scale;
+
+        // 求出移动层与旋转层之间的位置偏移
+        // 由于直接应用在移动层，因此不需要根据缩放换算
+        // 注意，这里的偏移有可能还包含缩放过量时多出来的偏移
+        let offset = {
+            x: rect.left - moveLayerRect.left,
+            y: rect.top - moveLayerRect.top
+        };
 
         // 更新旋转层当前所呈现矩形的宽高
         this._rotationLayerWidth = rect.width / scale;
@@ -528,7 +524,7 @@ export default class {
         // 所以这里也要将 startX、startY 这两个值进行补差，而这个差值必须是最终的正常比例对应的值
         // 由于 offset 可能还包含缩放过量时多出来的偏移
         // 因此，这里判断是否缩放过量
-        var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
+        const lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
         if (lastScale !== scale) {
             // 当缩放过量时，将 offset 换算为最终的正常比例对应的值
             offset.x = offset.x / scale * lastScale;
@@ -548,11 +544,10 @@ export default class {
             setTransform(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, this._curAngle);
 
             // 开始旋转
-            var self = this;
             this._atRotation = true;
-            setTransition(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, angle, duration, function() {
-                self._atRotation = false;
-                self._rotateFinishUpdataElem(angle);
+            setTransition(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, angle, duration, () => {
+                this._atRotation = false;
+                this._rotateFinishUpdataElem(angle);
             });
         } else {
             this._rotateFinishUpdataElem(angle);
@@ -566,32 +561,30 @@ export default class {
     }
 
     _initFile() {
-        var self = this,
-            options = this._options;
+        const options = this._options;
 
         if (this._fileList = utils.$(options.file)) {
-            this._fileList.forEach(function($file) {
+            this._fileList.forEach($file => {
                 // 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
                 if (!is_mobile) {
                     utils.attr($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
                 }
 
-                $file.addEventListener('change', self._fileOnChangeHandle);
+                $file.addEventListener('change', this._fileOnChangeHandle);
             });
         }
     }
 
-    _fileOnChangeHandle(e) {
-        var files = e.target.files;
+    _fileOnChangeHandle = (e) => {
+        const files = e.target.files;
 
         if (files.length) {
             this._lrzHandle(files[0]);
         }
-    }
+    };
 
     _lrzHandle(src) {
-        var self = this,
-            options = this._options,
+        const options = this._options,
             errorMsg = options.errorMsg;
 
         if (typeof src === 'object' && src.type && !/image\/\w+/.test(src.type)) {
@@ -600,25 +593,22 @@ export default class {
         }
 
         this._imgLoaded = false;
-        this._imgLoading = true;
         options.loadStart.call(this, src);
 
         try {
             lrz(src, options.lrzOption)
-            .then(function (rst) {
-                // 处理成功会执行
-                self._clearImg();
-                self._createImg(rst.base64);
-            })
-            .catch(function (err) {
-                // 处理失败会执行
-                options.loadError.call(self, errorMsg.imgHandleError, err);
-                self._imgLoading = false;
-            });
+                .then(rst => {
+                    // 处理成功会执行
+                    this._clearImg();
+                    this._createImg(rst.base64);
+                })
+                .catch(err => {
+                    // 处理失败会执行
+                    options.loadError.call(this, errorMsg.imgHandleError, err);
+                });
         } catch(err) {
+            options.loadError.call(this, errorMsg.imgHandleError, err);
             throw err;
-            options.loadError.call(self, errorMsg.imgHandleError, err);
-            self._imgLoading = false;
         }
     }
 
@@ -630,11 +620,11 @@ export default class {
         this._$img.onerror = null;
         utils.removeElement(this._$img);
         this._$img = null;
+        this._imgLoaded = false;
     }
 
     _createImg(src) {
-        var self = this,
-            options = this._options,
+        const options = this._options,
             errorMsg = options.errorMsg;
 
         this._$img = new Image();
@@ -644,28 +634,27 @@ export default class {
             'pointer-events': 'none'
         });
 
-        this._$img.onload = function() {
-            self._imgLoaded = true;
-            self._imgLoading = false;
-            options.loadComplete.call(self, this);
+        this._$img.onload = e => {
+            const img = e.target;
+            this._imgLoaded = true;
+            options.loadComplete.call(this, img);
 
-            self._$rotationLayer.appendChild(this);
+            this._$rotationLayer.appendChild(img);
 
-            utils.hideAction([this, self._$moveLayer], function() {
-                self._resetScroll(this.naturalWidth, this.naturalHeight);
-            }, this);
+            utils.hideAction([img, this._$moveLayer], () => {
+                this._resetScroll(img.naturalWidth, img.naturalHeight);
+            });
         };
 
-        this._$img.onerror = function(e) {
-            options.loadError.call(self, errorMsg.imgLoadError, e);
-            self._imgLoading = false;
-        }
+        this._$img.onerror = e => {
+            options.loadError.call(this, errorMsg.imgLoadError, e);
+        };
 
         utils.attr(this._$img, 'src', src);
     }
 
-    _clipImg() {
-        var options = this._options,
+    _clipImg = () => {
+        const options = this._options,
             errorMsg = options.errorMsg;
 
         if (!this._imgLoaded) {
@@ -673,11 +662,12 @@ export default class {
             return;
         }
 
-        var local = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer),
+        const local = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer),
             scale = this._iScroll.scale,
-            scaleX = 1,
-            scaleY = 1,
             ctx = this._canvas.getContext('2d');
+
+        let scaleX = 1,
+            scaleY = 1;
 
         if (this._outputWidth || this._outputHeight) {
             this._canvas.width = this._outputWidth;
@@ -702,33 +692,29 @@ export default class {
         ctx.restore();
 
         try {
-            var dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
+            const dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
             if (this._viewList) {
-                this._viewList.forEach(function($view, i) {
+                this._viewList.forEach($view => {
                     utils.css($view, 'background-image', 'url('+ dataURL +')');
                 });
             }
 
-            try {
-                options.done.call(this, dataURL);
-            } catch(err) {
-                throw err;
-            }
+            options.done.call(this, dataURL);
 
             return dataURL;
         } catch(err) {
-            throw err;
             options.fail.call(this, errorMsg.clipError);
+            throw err;
         }
-    }
+    };
 
-    _resize(width, height) {
+    _resize = (width, height) => {
         utils.hideAction(this._$container, function() {
             this._containerWidth = this._$container.offsetWidth;
             this._containerHeight = this._$container.offsetHeight;
         }, this);
 
-        var size = this._options.size,
+        const size = this._options.size,
             oldClipWidth = this._clipWidth,
             oldClipHeight = this._clipHeight;
 
@@ -736,7 +722,7 @@ export default class {
         if (utils.isNumber(height)) size[1] = height;
 
         if (this._widthIsPercent || this._heightIsPercent) {
-            var ratio = size[0] / size[1];
+            const ratio = size[0] / size[1];
 
             if (this._widthIsPercent) {
                 this._clipWidth = this._containerWidth / 100 * parseFloat(this._widthIsPercent);
@@ -757,7 +743,7 @@ export default class {
             this._clipHeight = size[1];
         }
 
-        var clipWidth = this._clipWidth,
+        const clipWidth = this._clipWidth,
             clipHeight = this._clipHeight;
 
         this._clipSizeRatio = clipWidth / clipHeight;
@@ -801,34 +787,18 @@ export default class {
         if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
             this._refreshScroll();
 
-            var iScroll = this._iScroll,
+            const iScroll = this._iScroll,
                 scale = iScroll.scale,
                 offsetX = (clipWidth - oldClipWidth) * .5 * scale,
                 offsetY = (clipHeight - oldClipHeight) * .5 * scale;
             iScroll.scrollBy(offsetX, offsetY);
 
-            var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
+            const lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
             if (lastScale !== scale) {
                 iScroll.zoom(lastScale, undefined, undefined, 0);
             }
         }
-    }
-
-    _initProxy() {
-        // 生成回调代理
-        this._fileOnChangeHandle = utils.proxy(this, '_fileOnChangeHandle');
-        this._rotateCW90 = utils.proxy(this, '_rotateCW90');
-        this._resize = utils.proxy(this, '_resize');
-        this._clipImg = utils.proxy(this, '_clipImg');
-
-        // 确保对外接口函数，无论持有者是谁，调用都不会出错
-        this.size = utils.proxy(this, 'size');
-        this.load = utils.proxy(this, 'load');
-        this.rotateBy = utils.proxy(this, 'rotateBy');
-        this.rotateTo = utils.proxy(this, 'rotateTo');
-        this.clip = utils.proxy(this, 'clip');
-        this.destroy = utils.proxy(this, 'destroy');
-    }
+    };
 
     /**
      * 设置截取框的宽高
@@ -837,26 +807,26 @@ export default class {
      * @param  {Number} height 截取框的高度
      * @return {PhotoClip}     返回 PhotoClip 的实例对象
      */
-    size(width, height) {
+    size = (width, height) => {
         this._resize(width, height);
         return this;
-    }
+    };
 
     /**
      * 加载一张图片
      * @param  {String|Object} src 图片的 url，或者图片的 file 文件对象
      * @return {PhotoClip}         返回 PhotoClip 的实例对象
      */
-    load(src) {
+    load = (src) => {
         this._lrzHandle(src);
         return this;
-    }
+    };
 
     /**
      * 清除当前图片
      * @return {PhotoClip}  返回 PhotoClip 的实例对象
      */
-    clear() {
+    clear = () => {
         this._clearImg();
         this._resetScroll();
         if (this._fileList) {
@@ -865,7 +835,7 @@ export default class {
             });
         }
         return this;
-    }
+    };
 
     /**
      * 图片旋转到指定角度
@@ -873,11 +843,11 @@ export default class {
      * @param  {Number} duration   可选。旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
      * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的旋转角度
      */
-    rotate(angle, duration) {
+    rotate = (angle, duration) => {
         if (angle === undefined) return this._curAngle;
         this._rotateTo(angle, duration);
         return this;
-    }
+    };
 
     /**
      * 图片缩放到指定比例，如果超出缩放范围，则会被缩放到可缩放极限
@@ -885,27 +855,25 @@ export default class {
      * @param  {Number} duration   可选。缩放动画的时长，如果为 0 或 false，则表示没有过渡动画
      * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的缩放比例
      */
-    scale(zoom, duration) {
+    scale = (zoom, duration) => {
         if (zoom === undefined) return this._iScroll.scale;
         this._iScroll.zoom(zoom, undefined, undefined, duration);
         return this;
-    }
+    };
 
     /**
      * 截图
      * @return {String}  返回截取后图片的 Base64 字符串
      */
-    clip() {
+    clip = () => {
         return this._clipImg();
-    }
+    };
 
     /**
      * 销毁
      * @return {Undefined}  无返回值
      */
-    destroy() {
-        var self = this;
-
+    destroy = () => {
         window.removeEventListener('resize', this._resize);
 
         this._$container.removeChild(this._$clipLayer);
@@ -931,30 +899,30 @@ export default class {
         }
 
         if (this._viewList) {
-            this._viewList.forEach(function($view, i) {
-                utils.css($view, self._viewOriginStyleList[i]);
+            this._viewList.forEach(($view, i) => {
+                utils.css($view, this._viewOriginStyleList[i]);
             });
         }
 
         if (this._fileList) {
-            this._fileList.forEach(function($file) {
-                $file.removeEventListener('change', self._fileOnChangeHandle);
+            this._fileList.forEach($file => {
+                $file.removeEventListener('change', this._fileOnChangeHandle);
             });
         }
 
         if (this._okList) {
-            this._okList.forEach(function($ok) {
-                $ok.removeEventListener('click', self._clipImg);
+            this._okList.forEach($ok =>  {
+                $ok.removeEventListener('click', this._clipImg);
             });
         }
 
         // 清除所有属性
-        for (var p in this) {
-            delete this[p];
-        }
+        Object.getOwnPropertyNames(this).forEach(prop => {
+            delete this[prop];
+        });
 
         this.__proto__ = Object.prototype;
-    }
+    };
 };
 
 // 设置变换注册点

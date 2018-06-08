@@ -1,4 +1,3 @@
-'use strict'
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
@@ -6,11 +5,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 
 module.exports = merge(baseWebpackConfig, {
+    // Provides process.env.NODE_ENV with value development.
+    // Enables NamedModulesPlugin.
+    mode: 'development',
     plugins: [
-        // 在导入的代码中，任何出现 process.env.NODE_ENV 的地方都会被替换为 "development"
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
-        }),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: process.env.PROJECT_NAME,
