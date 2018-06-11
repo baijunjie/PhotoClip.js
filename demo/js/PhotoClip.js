@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.3.7
+ * @version v3.3.8
  * @author baijunjie
  * @license MIT
  * 
@@ -115,6 +115,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+exports.destroy = destroy;
+exports.bind = bind;
 exports.getScale = getScale;
 exports.pointRotate = pointRotate;
 exports.angleToRadian = angleToRadian;
@@ -133,6 +135,25 @@ exports.$ = $;
 exports.attr = attr;
 exports.css = css;
 exports.support = support;
+function destroy(context) {
+    // 清除所有属性
+    Object.getOwnPropertyNames(context).forEach(function (prop) {
+        delete context[prop];
+    });
+
+    context.__proto__ = Object.prototype;
+}
+
+function bind(context) {
+    for (var _len = arguments.length, methods = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        methods[_key - 1] = arguments[_key];
+    }
+
+    methods.forEach(function (method) {
+        context[method] = context[method].bind(context);
+    });
+}
+
 // 获取最大缩放比例
 function getScale(w1, h1, w2, h2) {
     var sx = w1 / w2;
@@ -571,8 +592,6 @@ var PhotoClip = function () {
     function PhotoClip(container, options) {
         _classCallCheck(this, PhotoClip);
 
-        _initialiseProps.call(this);
-
         container = utils.$(container); // 获取容器
         if (container && container.length) {
             this._$container = container[0];
@@ -668,6 +687,8 @@ var PhotoClip = function () {
             this._rotationLayerOriginX = 0; // 旋转层的旋转参考点X
             this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
             this._curAngle = 0; // 旋转层的当前角度
+
+            utils.bind(this, '_rotateCW90', '_fileOnChangeHandle', '_clipImg', '_resize', 'size', 'load', 'clear', 'rotate', 'scale', 'clip', 'destroy');
 
             this._initElements();
             this._initScroll();
@@ -954,6 +975,11 @@ var PhotoClip = function () {
             }
         }
     }, {
+        key: '_rotateCW90',
+        value: function _rotateCW90(e) {
+            this._rotateBy(90, this._iScroll.options.bounceTime, { x: e.clientX, y: e.clientY });
+        }
+    }, {
         key: '_rotateBy',
         value: function _rotateBy(angle, duration, center) {
             this._rotateTo(this._curAngle + angle, duration, center);
@@ -1124,6 +1150,15 @@ var PhotoClip = function () {
             }
         }
     }, {
+        key: '_fileOnChangeHandle',
+        value: function _fileOnChangeHandle(e) {
+            var files = e.target.files;
+
+            if (files.length) {
+                this._lrzHandle(files[0]);
+            }
+        }
+    }, {
         key: '_lrzHandle',
         value: function _lrzHandle(src) {
             var _this5 = this;
@@ -1198,6 +1233,154 @@ var PhotoClip = function () {
 
             utils.attr(this._$img, 'src', src);
         }
+    }, {
+        key: '_clipImg',
+        value: function _clipImg() {
+            var options = this._options,
+                errorMsg = options.errorMsg;
+
+            if (!this._imgLoaded) {
+                options.fail.call(this, errorMsg.noImg);
+                return;
+            }
+
+            var local = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer),
+                scale = this._iScroll.scale,
+                ctx = this._canvas.getContext('2d');
+
+            var scaleX = 1,
+                scaleY = 1;
+
+            if (this._outputWidth || this._outputHeight) {
+                this._canvas.width = this._outputWidth;
+                this._canvas.height = this._outputHeight;
+                scaleX = this._outputWidth / this._clipWidth * scale;
+                scaleY = this._outputHeight / this._clipHeight * scale;
+            } else {
+                this._canvas.width = this._clipWidth / scale;
+                this._canvas.height = this._clipHeight / scale;
+            }
+
+            ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+            ctx.fillStyle = options.style.jpgFillColor;
+            ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+            ctx.save();
+
+            ctx.scale(scaleX, scaleY);
+            ctx.translate(this._rotationLayerX - local.x / scale, this._rotationLayerY - local.y / scale);
+            ctx.rotate(this._curAngle * Math.PI / 180);
+
+            ctx.drawImage(this._$img, 0, 0);
+            ctx.restore();
+
+            try {
+                var dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
+                if (this._viewList) {
+                    this._viewList.forEach(function ($view) {
+                        utils.css($view, 'background-image', 'url(' + dataURL + ')');
+                    });
+                }
+
+                options.done.call(this, dataURL);
+
+                return dataURL;
+            } catch (err) {
+                options.fail.call(this, errorMsg.clipError);
+                throw err;
+            }
+        }
+    }, {
+        key: '_resize',
+        value: function _resize(width, height) {
+            utils.hideAction(this._$container, function () {
+                this._containerWidth = this._$container.offsetWidth;
+                this._containerHeight = this._$container.offsetHeight;
+            }, this);
+
+            var size = this._options.size,
+                oldClipWidth = this._clipWidth,
+                oldClipHeight = this._clipHeight;
+
+            if (utils.isNumber(width)) size[0] = width;
+            if (utils.isNumber(height)) size[1] = height;
+
+            if (this._widthIsPercent || this._heightIsPercent) {
+                var ratio = size[0] / size[1];
+
+                if (this._widthIsPercent) {
+                    this._clipWidth = this._containerWidth / 100 * parseFloat(this._widthIsPercent);
+                    if (!this._heightIsPercent) {
+                        this._clipHeight = this._clipWidth / ratio;
+                    }
+                }
+
+                if (this._heightIsPercent) {
+                    this._clipHeight = this._containerHeight / 100 * parseFloat(this._heightIsPercent);
+                    if (!this._widthIsPercent) {
+                        this._clipWidth = this._clipHeight * ratio;
+                    }
+                }
+            } else {
+                this._clipWidth = size[0];
+                this._clipHeight = size[1];
+            }
+
+            var clipWidth = this._clipWidth,
+                clipHeight = this._clipHeight;
+
+            this._clipSizeRatio = clipWidth / clipHeight;
+
+            if (this._outputWidth && !this._outputHeight) {
+                this._outputHeight = this._outputWidth / this._clipSizeRatio;
+            }
+
+            if (this._outputHeight && !this._outputWidth) {
+                this._outputWidth = this._outputHeight * this._clipSizeRatio;
+            }
+
+            utils.css(this._$clipLayer, {
+                'width': clipWidth,
+                'height': clipHeight,
+                'margin-left': -clipWidth / 2,
+                'margin-top': -clipHeight / 2
+            });
+            utils.css(this._$mask_left, {
+                'margin-right': clipWidth / 2,
+                'margin-top': -clipHeight / 2,
+                'margin-bottom': -clipHeight / 2
+            });
+            utils.css(this._$mask_right, {
+                'margin-left': clipWidth / 2,
+                'margin-top': -clipHeight / 2,
+                'margin-bottom': -clipHeight / 2
+            });
+            utils.css(this._$mask_top, {
+                'margin-bottom': clipHeight / 2
+            });
+            utils.css(this._$mask_bottom, {
+                'margin-top': clipHeight / 2
+            });
+            utils.css(this._$clip_frame, {
+                'width': clipWidth,
+                'height': clipHeight
+            });
+            utils.css(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
+
+            if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
+                this._refreshScroll();
+
+                var iScroll = this._iScroll,
+                    scale = iScroll.scale,
+                    offsetX = (clipWidth - oldClipWidth) * .5 * scale,
+                    offsetY = (clipHeight - oldClipHeight) * .5 * scale;
+                iScroll.scrollBy(offsetX, offsetY);
+
+                var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
+                if (lastScale !== scale) {
+                    iScroll.zoom(lastScale, undefined, undefined, 0);
+                }
+            }
+        }
 
         /**
          * 设置截取框的宽高
@@ -1207,6 +1390,12 @@ var PhotoClip = function () {
          * @return {PhotoClip}     返回 PhotoClip 的实例对象
          */
 
+    }, {
+        key: 'size',
+        value: function size(width, height) {
+            this._resize(width, height);
+            return this;
+        }
 
         /**
          * 加载一张图片
@@ -1214,12 +1403,30 @@ var PhotoClip = function () {
          * @return {PhotoClip}         返回 PhotoClip 的实例对象
          */
 
+    }, {
+        key: 'load',
+        value: function load(src) {
+            this._lrzHandle(src);
+            return this;
+        }
 
         /**
          * 清除当前图片
          * @return {PhotoClip}  返回 PhotoClip 的实例对象
          */
 
+    }, {
+        key: 'clear',
+        value: function clear() {
+            this._clearImg();
+            this._resetScroll();
+            if (this._fileList) {
+                this._fileList.forEach(function ($file) {
+                    $file.value = '';
+                });
+            }
+            return this;
+        }
 
         /**
          * 图片旋转到指定角度
@@ -1228,6 +1435,13 @@ var PhotoClip = function () {
          * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的旋转角度
          */
 
+    }, {
+        key: 'rotate',
+        value: function rotate(angle, duration) {
+            if (angle === undefined) return this._curAngle;
+            this._rotateTo(angle, duration);
+            return this;
+        }
 
         /**
          * 图片缩放到指定比例，如果超出缩放范围，则会被缩放到可缩放极限
@@ -1236,272 +1450,83 @@ var PhotoClip = function () {
          * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的缩放比例
          */
 
+    }, {
+        key: 'scale',
+        value: function scale(zoom, duration) {
+            if (zoom === undefined) return this._iScroll.scale;
+            this._iScroll.zoom(zoom, undefined, undefined, duration);
+            return this;
+        }
 
         /**
          * 截图
          * @return {String}  返回截取后图片的 Base64 字符串
          */
 
+    }, {
+        key: 'clip',
+        value: function clip() {
+            return this._clipImg();
+        }
 
         /**
          * 销毁
          * @return {Undefined}  无返回值
          */
 
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            var _this7 = this;
+
+            window.removeEventListener('resize', this._resize);
+
+            this._$container.removeChild(this._$clipLayer);
+            this._$container.removeChild(this._$mask);
+
+            utils.css(this._$container, this._containerOriginStyle);
+
+            if (this._iScroll) {
+                this._iScroll.destroy();
+            }
+
+            if (this._hammerManager) {
+                this._hammerManager.off('rotatemove');
+                this._hammerManager.off('rotateend');
+                this._hammerManager.destroy();
+            } else {
+                this._$moveLayer.removeEventListener('dblclick', this._rotateCW90);
+            }
+
+            if (this._$img) {
+                this._$img.onload = null;
+                this._$img.onerror = null;
+            }
+
+            if (this._viewList) {
+                this._viewList.forEach(function ($view, i) {
+                    utils.css($view, _this7._viewOriginStyleList[i]);
+                });
+            }
+
+            if (this._fileList) {
+                this._fileList.forEach(function ($file) {
+                    $file.removeEventListener('change', _this7._fileOnChangeHandle);
+                });
+            }
+
+            if (this._okList) {
+                this._okList.forEach(function ($ok) {
+                    $ok.removeEventListener('click', _this7._clipImg);
+                });
+            }
+
+            utils.destroy(this);
+        }
     }]);
 
     return PhotoClip;
 }();
-
-var _initialiseProps = function _initialiseProps() {
-    var _this7 = this;
-
-    this._rotateCW90 = function (e) {
-        _this7._rotateBy(90, _this7._iScroll.options.bounceTime, { x: e.clientX, y: e.clientY });
-    };
-
-    this._fileOnChangeHandle = function (e) {
-        var files = e.target.files;
-
-        if (files.length) {
-            _this7._lrzHandle(files[0]);
-        }
-    };
-
-    this._clipImg = function () {
-        var options = _this7._options,
-            errorMsg = options.errorMsg;
-
-        if (!_this7._imgLoaded) {
-            options.fail.call(_this7, errorMsg.noImg);
-            return;
-        }
-
-        var local = utils.loaclToLoacl(_this7._$rotationLayer, _this7._$clipLayer),
-            scale = _this7._iScroll.scale,
-            ctx = _this7._canvas.getContext('2d');
-
-        var scaleX = 1,
-            scaleY = 1;
-
-        if (_this7._outputWidth || _this7._outputHeight) {
-            _this7._canvas.width = _this7._outputWidth;
-            _this7._canvas.height = _this7._outputHeight;
-            scaleX = _this7._outputWidth / _this7._clipWidth * scale;
-            scaleY = _this7._outputHeight / _this7._clipHeight * scale;
-        } else {
-            _this7._canvas.width = _this7._clipWidth / scale;
-            _this7._canvas.height = _this7._clipHeight / scale;
-        }
-
-        ctx.clearRect(0, 0, _this7._canvas.width, _this7._canvas.height);
-        ctx.fillStyle = options.style.jpgFillColor;
-        ctx.fillRect(0, 0, _this7._canvas.width, _this7._canvas.height);
-        ctx.save();
-
-        ctx.scale(scaleX, scaleY);
-        ctx.translate(_this7._rotationLayerX - local.x / scale, _this7._rotationLayerY - local.y / scale);
-        ctx.rotate(_this7._curAngle * Math.PI / 180);
-
-        ctx.drawImage(_this7._$img, 0, 0);
-        ctx.restore();
-
-        try {
-            var dataURL = _this7._canvas.toDataURL(options.outputType, options.outputQuality);
-            if (_this7._viewList) {
-                _this7._viewList.forEach(function ($view) {
-                    utils.css($view, 'background-image', 'url(' + dataURL + ')');
-                });
-            }
-
-            options.done.call(_this7, dataURL);
-
-            return dataURL;
-        } catch (err) {
-            options.fail.call(_this7, errorMsg.clipError);
-            throw err;
-        }
-    };
-
-    this._resize = function (width, height) {
-        utils.hideAction(_this7._$container, function () {
-            this._containerWidth = this._$container.offsetWidth;
-            this._containerHeight = this._$container.offsetHeight;
-        }, _this7);
-
-        var size = _this7._options.size,
-            oldClipWidth = _this7._clipWidth,
-            oldClipHeight = _this7._clipHeight;
-
-        if (utils.isNumber(width)) size[0] = width;
-        if (utils.isNumber(height)) size[1] = height;
-
-        if (_this7._widthIsPercent || _this7._heightIsPercent) {
-            var ratio = size[0] / size[1];
-
-            if (_this7._widthIsPercent) {
-                _this7._clipWidth = _this7._containerWidth / 100 * parseFloat(_this7._widthIsPercent);
-                if (!_this7._heightIsPercent) {
-                    _this7._clipHeight = _this7._clipWidth / ratio;
-                }
-            }
-
-            if (_this7._heightIsPercent) {
-                _this7._clipHeight = _this7._containerHeight / 100 * parseFloat(_this7._heightIsPercent);
-                if (!_this7._widthIsPercent) {
-                    _this7._clipWidth = _this7._clipHeight * ratio;
-                }
-            }
-        } else {
-            _this7._clipWidth = size[0];
-            _this7._clipHeight = size[1];
-        }
-
-        var clipWidth = _this7._clipWidth,
-            clipHeight = _this7._clipHeight;
-
-        _this7._clipSizeRatio = clipWidth / clipHeight;
-
-        if (_this7._outputWidth && !_this7._outputHeight) {
-            _this7._outputHeight = _this7._outputWidth / _this7._clipSizeRatio;
-        }
-
-        if (_this7._outputHeight && !_this7._outputWidth) {
-            _this7._outputWidth = _this7._outputHeight * _this7._clipSizeRatio;
-        }
-
-        utils.css(_this7._$clipLayer, {
-            'width': clipWidth,
-            'height': clipHeight,
-            'margin-left': -clipWidth / 2,
-            'margin-top': -clipHeight / 2
-        });
-        utils.css(_this7._$mask_left, {
-            'margin-right': clipWidth / 2,
-            'margin-top': -clipHeight / 2,
-            'margin-bottom': -clipHeight / 2
-        });
-        utils.css(_this7._$mask_right, {
-            'margin-left': clipWidth / 2,
-            'margin-top': -clipHeight / 2,
-            'margin-bottom': -clipHeight / 2
-        });
-        utils.css(_this7._$mask_top, {
-            'margin-bottom': clipHeight / 2
-        });
-        utils.css(_this7._$mask_bottom, {
-            'margin-top': clipHeight / 2
-        });
-        utils.css(_this7._$clip_frame, {
-            'width': clipWidth,
-            'height': clipHeight
-        });
-        utils.css(_this7._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
-
-        if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
-            _this7._refreshScroll();
-
-            var iScroll = _this7._iScroll,
-                scale = iScroll.scale,
-                offsetX = (clipWidth - oldClipWidth) * .5 * scale,
-                offsetY = (clipHeight - oldClipHeight) * .5 * scale;
-            iScroll.scrollBy(offsetX, offsetY);
-
-            var lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
-            if (lastScale !== scale) {
-                iScroll.zoom(lastScale, undefined, undefined, 0);
-            }
-        }
-    };
-
-    this.size = function (width, height) {
-        _this7._resize(width, height);
-        return _this7;
-    };
-
-    this.load = function (src) {
-        _this7._lrzHandle(src);
-        return _this7;
-    };
-
-    this.clear = function () {
-        _this7._clearImg();
-        _this7._resetScroll();
-        if (_this7._fileList) {
-            _this7._fileList.forEach(function ($file) {
-                $file.value = '';
-            });
-        }
-        return _this7;
-    };
-
-    this.rotate = function (angle, duration) {
-        if (angle === undefined) return _this7._curAngle;
-        _this7._rotateTo(angle, duration);
-        return _this7;
-    };
-
-    this.scale = function (zoom, duration) {
-        if (zoom === undefined) return _this7._iScroll.scale;
-        _this7._iScroll.zoom(zoom, undefined, undefined, duration);
-        return _this7;
-    };
-
-    this.clip = function () {
-        return _this7._clipImg();
-    };
-
-    this.destroy = function () {
-        window.removeEventListener('resize', _this7._resize);
-
-        _this7._$container.removeChild(_this7._$clipLayer);
-        _this7._$container.removeChild(_this7._$mask);
-
-        utils.css(_this7._$container, _this7._containerOriginStyle);
-
-        if (_this7._iScroll) {
-            _this7._iScroll.destroy();
-        }
-
-        if (_this7._hammerManager) {
-            _this7._hammerManager.off('rotatemove');
-            _this7._hammerManager.off('rotateend');
-            _this7._hammerManager.destroy();
-        } else {
-            _this7._$moveLayer.removeEventListener('dblclick', _this7._rotateCW90);
-        }
-
-        if (_this7._$img) {
-            _this7._$img.onload = null;
-            _this7._$img.onerror = null;
-        }
-
-        if (_this7._viewList) {
-            _this7._viewList.forEach(function ($view, i) {
-                utils.css($view, _this7._viewOriginStyleList[i]);
-            });
-        }
-
-        if (_this7._fileList) {
-            _this7._fileList.forEach(function ($file) {
-                $file.removeEventListener('change', _this7._fileOnChangeHandle);
-            });
-        }
-
-        if (_this7._okList) {
-            _this7._okList.forEach(function ($ok) {
-                $ok.removeEventListener('click', _this7._clipImg);
-            });
-        }
-
-        // 清除所有属性
-        Object.getOwnPropertyNames(_this7).forEach(function (prop) {
-            delete _this7[prop];
-        });
-
-        _this7.__proto__ = Object.prototype;
-    };
-};
 
 exports.default = PhotoClip;
 ;
