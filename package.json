@@ -1,6 +1,6 @@
 {
   "name": "photoclip",
-  "version": "3.3.7",
+  "version": "3.3.8",
   "description": "一款手势驱动的裁图插件",
   "main": "dist/PhotoClip.js",
   "module": "src/index.js",
@@ -38,7 +38,6 @@
   },
   "files": [
     "src",
-    "dist",
-    "README.md"
+    "dist"
   ]
 }

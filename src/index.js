@@ -142,6 +142,21 @@ export default class PhotoClip {
         this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
         this._curAngle = 0; // 旋转层的当前角度
 
+        utils.bind(
+            this,
+            '_rotateCW90',
+            '_fileOnChangeHandle',
+            '_clipImg',
+            '_resize',
+            'size',
+            'load',
+            'clear',
+            'rotate',
+            'scale',
+            'clip',
+            'destroy'
+        );
+
         this._initElements();
         this._initScroll();
         this._initRotationEvent();
@@ -417,9 +432,9 @@ export default class PhotoClip {
         }
     }
 
-    _rotateCW90 = (e) => {
+    _rotateCW90(e) {
         this._rotateBy(90, this._iScroll.options.bounceTime, { x: e.clientX, y: e.clientY });
-    };
+    }
 
     _rotateBy(angle, duration, center) {
         this._rotateTo(this._curAngle + angle, duration, center);
@@ -575,13 +590,13 @@ export default class PhotoClip {
         }
     }
 
-    _fileOnChangeHandle = (e) => {
+    _fileOnChangeHandle(e) {
         const files = e.target.files;
 
         if (files.length) {
             this._lrzHandle(files[0]);
         }
-    };
+    }
 
     _lrzHandle(src) {
         const options = this._options,
@@ -653,7 +668,7 @@ export default class PhotoClip {
         utils.attr(this._$img, 'src', src);
     }
 
-    _clipImg = () => {
+    _clipImg() {
         const options = this._options,
             errorMsg = options.errorMsg;
 
@@ -706,9 +721,9 @@ export default class PhotoClip {
             options.fail.call(this, errorMsg.clipError);
             throw err;
         }
-    };
+    }
 
-    _resize = (width, height) => {
+    _resize(width, height) {
         utils.hideAction(this._$container, function() {
             this._containerWidth = this._$container.offsetWidth;
             this._containerHeight = this._$container.offsetHeight;
@@ -798,7 +813,7 @@ export default class PhotoClip {
                 iScroll.zoom(lastScale, undefined, undefined, 0);
             }
         }
-    };
+    }
 
     /**
      * 设置截取框的宽高
@@ -807,26 +822,26 @@ export default class PhotoClip {
      * @param  {Number} height 截取框的高度
      * @return {PhotoClip}     返回 PhotoClip 的实例对象
      */
-    size = (width, height) => {
+    size(width, height) {
         this._resize(width, height);
         return this;
-    };
+    }
 
     /**
      * 加载一张图片
      * @param  {String|Object} src 图片的 url，或者图片的 file 文件对象
      * @return {PhotoClip}         返回 PhotoClip 的实例对象
      */
-    load = (src) => {
+    load(src) {
         this._lrzHandle(src);
         return this;
-    };
+    }
 
     /**
      * 清除当前图片
      * @return {PhotoClip}  返回 PhotoClip 的实例对象
      */
-    clear = () => {
+    clear() {
         this._clearImg();
         this._resetScroll();
         if (this._fileList) {
@@ -835,7 +850,7 @@ export default class PhotoClip {
             });
         }
         return this;
-    };
+    }
 
     /**
      * 图片旋转到指定角度
@@ -843,11 +858,11 @@ export default class PhotoClip {
      * @param  {Number} duration   可选。旋转动画的时长，如果为 0 或 false，则表示没有过渡动画
      * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的旋转角度
      */
-    rotate = (angle, duration) => {
+    rotate(angle, duration) {
         if (angle === undefined) return this._curAngle;
         this._rotateTo(angle, duration);
         return this;
-    };
+    }
 
     /**
      * 图片缩放到指定比例，如果超出缩放范围，则会被缩放到可缩放极限
@@ -855,25 +870,25 @@ export default class PhotoClip {
      * @param  {Number} duration   可选。缩放动画的时长，如果为 0 或 false，则表示没有过渡动画
      * @return {PhotoClip|Number}  返回 PhotoClip 的实例对象。如果参数为空，则返回当前的缩放比例
      */
-    scale = (zoom, duration) => {
+    scale(zoom, duration) {
         if (zoom === undefined) return this._iScroll.scale;
         this._iScroll.zoom(zoom, undefined, undefined, duration);
         return this;
-    };
+    }
 
     /**
      * 截图
      * @return {String}  返回截取后图片的 Base64 字符串
      */
-    clip = () => {
+    clip() {
         return this._clipImg();
-    };
+    }
 
     /**
      * 销毁
      * @return {Undefined}  无返回值
      */
-    destroy = () => {
+    destroy() {
         window.removeEventListener('resize', this._resize);
 
         this._$container.removeChild(this._$clipLayer);
@@ -916,13 +931,8 @@ export default class PhotoClip {
             });
         }
 
-        // 清除所有属性
-        Object.getOwnPropertyNames(this).forEach(prop => {
-            delete this[prop];
-        });
-
-        this.__proto__ = Object.prototype;
-    };
+        utils.destroy(this);
+    }
 };
 
 // 设置变换注册点
@@ -958,4 +968,3 @@ function setTransition($obj, x, y, angle, dur, fn) {
         fn();
     }, dur);
 }
-

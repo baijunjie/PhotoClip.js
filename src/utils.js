@@ -1,3 +1,18 @@
+export function destroy(context) {
+    // 清除所有属性
+    Object.getOwnPropertyNames(context).forEach(prop => {
+        delete context[prop];
+    });
+
+    context.__proto__ = Object.prototype;
+}
+
+export function bind(context, ...methods) {
+    methods.forEach(method => {
+        context[method] = context[method].bind(context);
+    });
+}
+
 // 获取最大缩放比例
 export function getScale(w1, h1, w2, h2) {
     let sx = w1 / w2;
