@@ -922,6 +922,7 @@ export default class PhotoClip {
         if (this._fileList) {
             this._fileList.forEach($file => {
                 $file.removeEventListener('change', this._fileOnChangeHandle);
+                $file.value = null;
             });
         }
 

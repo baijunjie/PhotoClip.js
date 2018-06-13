@@ -1512,6 +1512,7 @@ var PhotoClip = function () {
             if (this._fileList) {
                 this._fileList.forEach(function ($file) {
                     $file.removeEventListener('change', _this7._fileOnChangeHandle);
+                    $file.value = null;
                 });
             }
 
