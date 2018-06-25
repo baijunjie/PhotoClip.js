@@ -1,6 +1,17 @@
 import Hammer from 'hammerjs';
 import IScroll from 'iscroll/build/iscroll-zoom';
 import lrz from 'lrz';
+import bind from 'utils/bind';
+import destroy from 'utils/destroy';
+import extend from 'utils/extend';
+import isNumber from 'utils/isNumber';
+import isArray from 'utils/isArray';
+import createElement from 'utils/createElement';
+import removeElement from 'utils/removeElement';
+import hideAction from 'utils/hideAction';
+import css from 'utils/css';
+import attr from 'utils/attr';
+import $ from 'utils/$';
 import * as utils from './utils';
 
 const is_mobile = !!navigator.userAgent.match(/mobile/i),
@@ -51,14 +62,14 @@ let defaultOptions = {
 
 export default class PhotoClip {
     constructor(container, options) {
-        container = utils.$(container); // 获取容器
+        container = $(container); // 获取容器
         if (container && container.length) {
             this._$container = container[0];
         } else {
             return;
         }
 
-        this._options = utils.extend(true, {}, defaultOptions, options);
+        this._options = extend(true, {}, defaultOptions, options);
 
         if (prefix === undefined) {
             this._options.errorMsg.noSupport && alert(this._options.errorMsg.noSupport);
@@ -71,22 +82,22 @@ export default class PhotoClip {
         const options = this._options;
 
         // options 预设
-        if (utils.isNumber(options.size)) {
+        if (isNumber(options.size)) {
             options.size = [options.size, options.size];
-        } else if (utils.isArray(options.size)) {
-            if (!utils.isNumber(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
-            if (!utils.isNumber(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
+        } else if (isArray(options.size)) {
+            if (!isNumber(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
+            if (!isNumber(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
         } else {
-            options.size = utils.extend({}, defaultOptions.size);
+            options.size = extend({}, defaultOptions.size);
         }
 
-        if (utils.isNumber(options.outputSize)) {
+        if (isNumber(options.outputSize)) {
             options.outputSize = [options.outputSize, 0];
-        } else if (utils.isArray(options.outputSize)) {
-            if (!utils.isNumber(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
-            if (!utils.isNumber(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
+        } else if (isArray(options.outputSize)) {
+            if (!isNumber(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
+            if (!isNumber(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
         } else {
-            options.outputSize = utils.extend({}, defaultOptions.outputSize);
+            options.outputSize = extend({}, defaultOptions.outputSize);
         }
 
         if (options.outputType === 'jpg') {
@@ -96,7 +107,7 @@ export default class PhotoClip {
         }
 
         // 变量初始化
-        if (utils.isArray(options.adaptive)) {
+        if (isArray(options.adaptive)) {
             this._widthIsPercent = options.adaptive[0] && utils.isPercent(options.adaptive[0]) ? options.adaptive[0] : false;
             this._heightIsPercent = options.adaptive[1] && utils.isPercent(options.adaptive[1]) ? options.adaptive[1] : false;
         }
@@ -142,7 +153,7 @@ export default class PhotoClip {
         this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
         this._curAngle = 0; // 旋转层的当前角度
 
-        utils.bind(
+        bind(
             this,
             '_rotateCW90',
             '_fileOnChangeHandle',
@@ -165,7 +176,7 @@ export default class PhotoClip {
         this._resize();
         window.addEventListener('resize', this._resize);
 
-        if (this._okList = utils.$(options.ok)) {
+        if (this._okList = $(options.ok)) {
             this._okList.forEach($ok => {
                 $ok.addEventListener('click', this._clipImg);
             });
@@ -187,27 +198,27 @@ export default class PhotoClip {
         containerOriginStyle['position'] = style['position'];
         this._containerOriginStyle = containerOriginStyle;
 
-        utils.css($container, {
+        css($container, {
             'user-select': 'none',
             'overflow': 'hidden'
         });
 
-        if (utils.css($container, 'position') === 'static') {
-            utils.css($container, 'position', 'relative');
+        if (css($container, 'position') === 'static') {
+            css($container, 'position', 'relative');
         }
 
         // 创建裁剪层
-        this._$clipLayer = utils.createElement($container, 'photo-clip-layer', {
+        this._$clipLayer = createElement($container, 'photo-clip-layer', {
             'position': 'absolute',
             'left': '50%',
             'top': '50%'
         });
 
-        this._$moveLayer = utils.createElement(this._$clipLayer, 'photo-clip-move-layer');
-        this._$rotationLayer = utils.createElement(this._$moveLayer, 'photo-clip-rotation-layer');
+        this._$moveLayer = createElement(this._$clipLayer, 'photo-clip-move-layer');
+        this._$rotationLayer = createElement(this._$moveLayer, 'photo-clip-rotation-layer');
 
         // 创建遮罩
-        const $mask = this._$mask = utils.createElement($container, 'photo-clip-mask', {
+        const $mask = this._$mask = createElement($container, 'photo-clip-mask', {
             'position': 'absolute',
             'left': 0,
             'top': 0,
@@ -220,7 +231,7 @@ export default class PhotoClip {
             maskColor = options.style.maskColor,
             maskBorder = options.style.maskBorder;
 
-        this._$mask_left = utils.createElement($mask, 'photo-clip-mask-left', {
+        this._$mask_left = createElement($mask, 'photo-clip-mask-left', {
             'position': 'absolute',
             'left': 0,
             'right': '50%',
@@ -229,7 +240,7 @@ export default class PhotoClip {
             'width': 'auto',
             'background-color': maskColor
         });
-        this._$mask_right = utils.createElement($mask, 'photo-clip-mask-right', {
+        this._$mask_right = createElement($mask, 'photo-clip-mask-right', {
             'position': 'absolute',
             'left': '50%',
             'right': 0,
@@ -237,7 +248,7 @@ export default class PhotoClip {
             'bottom': '50%',
             'background-color': maskColor
         });
-        this._$mask_top = utils.createElement($mask, 'photo-clip-mask-top', {
+        this._$mask_top = createElement($mask, 'photo-clip-mask-top', {
             'position': 'absolute',
             'left': 0,
             'right': 0,
@@ -245,7 +256,7 @@ export default class PhotoClip {
             'bottom': '50%',
             'background-color': maskColor
         });
-        this._$mask_bottom = utils.createElement($mask, 'photo-clip-mask-bottom', {
+        this._$mask_bottom = createElement($mask, 'photo-clip-mask-bottom', {
             'position': 'absolute',
             'left': 0,
             'right': 0,
@@ -255,7 +266,7 @@ export default class PhotoClip {
         });
 
         // 创建截取框
-        this._$clip_frame = utils.createElement($mask, 'photo-clip-area', {
+        this._$clip_frame = createElement($mask, 'photo-clip-area', {
             'border': maskBorder,
             'position': 'absolute',
             'left': '50%',
@@ -263,7 +274,7 @@ export default class PhotoClip {
         });
 
         // 初始化视图容器
-        this._viewList = utils.$(options.view);
+        this._viewList = $(options.view);
         if (this._viewList) {
             const viewOriginStyleList = [];
             this._viewList.forEach(function($view, i) {
@@ -274,7 +285,7 @@ export default class PhotoClip {
                 viewOriginStyle['background-size'] = style['background-size'];
                 viewOriginStyleList[i] = viewOriginStyle;
 
-                utils.css($view, {
+                css($view, {
                     'background-repeat': 'no-repeat',
                     'background-position': 'center',
                     'background-size': 'contain'
@@ -319,7 +330,7 @@ export default class PhotoClip {
             iScrollOptions.startZoom = 1;
         }
 
-        utils.css(this._$moveLayer, {
+        css(this._$moveLayer, {
             'width': width,
             'height': height
         });
@@ -346,7 +357,7 @@ export default class PhotoClip {
         this._curAngle = 0;
         setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
 
-        utils.css(this._$rotationLayer, {
+        css(this._$rotationLayer, {
             'width': width,
             'height': height
         });
@@ -548,7 +559,7 @@ export default class PhotoClip {
         iScroll.startX += offset.x;
         iScroll.startY += offset.y;
 
-        if (angle !== this._curAngle && duration && utils.isNumber(duration) && supportTransition !== undefined) {
+        if (angle !== this._curAngle && duration && isNumber(duration) && supportTransition !== undefined) {
             // 计算旋转层参考点，设为零位前后的偏移量
             offset = {
                 x: (rectByOrigin0.left - rect.left) / scale,
@@ -578,11 +589,11 @@ export default class PhotoClip {
     _initFile() {
         const options = this._options;
 
-        if (this._fileList = utils.$(options.file)) {
+        if (this._fileList = $(options.file)) {
             this._fileList.forEach($file => {
                 // 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
                 if (!is_mobile) {
-                    utils.attr($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
+                    attr($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
                 }
 
                 $file.addEventListener('change', this._fileOnChangeHandle);
@@ -633,7 +644,7 @@ export default class PhotoClip {
         // 删除旧的图片以释放内存，防止IOS设备的 webview 崩溃
         this._$img.onload = null;
         this._$img.onerror = null;
-        utils.removeElement(this._$img);
+        removeElement(this._$img);
         this._$img = null;
         this._imgLoaded = false;
     }
@@ -644,7 +655,7 @@ export default class PhotoClip {
 
         this._$img = new Image();
 
-        utils.css(this._$img, {
+        css(this._$img, {
             'user-select': 'none',
             'pointer-events': 'none'
         });
@@ -656,7 +667,7 @@ export default class PhotoClip {
 
             this._$rotationLayer.appendChild(img);
 
-            utils.hideAction([img, this._$moveLayer], () => {
+            hideAction([img, this._$moveLayer], () => {
                 this._resetScroll(img.naturalWidth, img.naturalHeight);
             });
         };
@@ -665,7 +676,7 @@ export default class PhotoClip {
             options.loadError.call(this, errorMsg.imgLoadError, e);
         };
 
-        utils.attr(this._$img, 'src', src);
+        attr(this._$img, 'src', src);
     }
 
     _clipImg() {
@@ -710,7 +721,7 @@ export default class PhotoClip {
             const dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
             if (this._viewList) {
                 this._viewList.forEach($view => {
-                    utils.css($view, 'background-image', 'url('+ dataURL +')');
+                    css($view, 'background-image', 'url('+ dataURL +')');
                 });
             }
 
@@ -724,7 +735,7 @@ export default class PhotoClip {
     }
 
     _resize(width, height) {
-        utils.hideAction(this._$container, function() {
+        hideAction(this._$container, function() {
             this._containerWidth = this._$container.offsetWidth;
             this._containerHeight = this._$container.offsetHeight;
         }, this);
@@ -733,8 +744,8 @@ export default class PhotoClip {
             oldClipWidth = this._clipWidth,
             oldClipHeight = this._clipHeight;
 
-        if (utils.isNumber(width)) size[0] = width;
-        if (utils.isNumber(height)) size[1] = height;
+        if (isNumber(width)) size[0] = width;
+        if (isNumber(height)) size[1] = height;
 
         if (this._widthIsPercent || this._heightIsPercent) {
             const ratio = size[0] / size[1];
@@ -771,33 +782,33 @@ export default class PhotoClip {
             this._outputWidth = this._outputHeight * this._clipSizeRatio;
         }
 
-        utils.css(this._$clipLayer, {
+        css(this._$clipLayer, {
             'width': clipWidth,
             'height': clipHeight,
             'margin-left': -clipWidth/2,
             'margin-top': -clipHeight/2
         });
-        utils.css(this._$mask_left, {
+        css(this._$mask_left, {
             'margin-right': clipWidth/2,
             'margin-top': -clipHeight/2,
             'margin-bottom': -clipHeight/2
         });
-        utils.css(this._$mask_right, {
+        css(this._$mask_right, {
             'margin-left': clipWidth/2,
             'margin-top': -clipHeight/2,
             'margin-bottom': -clipHeight/2
         });
-        utils.css(this._$mask_top, {
+        css(this._$mask_top, {
             'margin-bottom': clipHeight/2
         });
-        utils.css(this._$mask_bottom, {
+        css(this._$mask_bottom, {
             'margin-top': clipHeight/2
         });
-        utils.css(this._$clip_frame, {
+        css(this._$clip_frame, {
             'width': clipWidth,
             'height': clipHeight
         });
-        utils.css(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
+        css(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
 
         if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
             this._refreshScroll();
@@ -894,7 +905,7 @@ export default class PhotoClip {
         this._$container.removeChild(this._$clipLayer);
         this._$container.removeChild(this._$mask);
 
-        utils.css(this._$container, this._containerOriginStyle);
+        css(this._$container, this._containerOriginStyle);
 
         if (this._iScroll) {
             this._iScroll.destroy();
@@ -915,7 +926,7 @@ export default class PhotoClip {
 
         if (this._viewList) {
             this._viewList.forEach(($view, i) => {
-                utils.css($view, this._viewOriginStyleList[i]);
+                css($view, this._viewOriginStyleList[i]);
             });
         }
 
@@ -932,7 +943,7 @@ export default class PhotoClip {
             });
         }
 
-        utils.destroy(this);
+        destroy(this);
     }
 };
 
@@ -940,7 +951,7 @@ export default class PhotoClip {
 function setOrigin($obj, originX, originY) {
     originX = (originX || 0).toFixed(2);
     originY = (originY || 0).toFixed(2);
-    utils.css($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
+    css($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
 }
 
 // 设置变换坐标与旋转角度
@@ -951,7 +962,7 @@ function setTransform($obj, x, y, angle) {
     y = y.toFixed(2);
     angle = angle.toFixed(2);
 
-    utils.css($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
+    css($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
 }
 
 // 设置变换动画
@@ -959,13 +970,14 @@ function setTransition($obj, x, y, angle, dur, fn) {
     // 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
     // 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
     // 这样就会导致之前设置的位移也被应用到动画中
-    utils.css($obj, prefix + 'transform');
+    css($obj, prefix + 'transform');
     // 这里应用的缓动与 iScroll 的默认缓动相同
-    utils.css($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
+    css($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
     setTransform($obj, x, y, angle);
 
     setTimeout(function() {
-        utils.css($obj, prefix + 'transition', '');
+        css($obj, prefix + 'transition', '');
         fn();
     }, dur);
 }
+

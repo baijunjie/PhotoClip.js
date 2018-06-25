@@ -1,43 +1,38 @@
 {
   "name": "photoclip",
-  "version": "3.3.9",
+  "version": "3.4.0",
   "description": "一款手势驱动的裁图插件",
-  "main": "dist/PhotoClip.js",
-  "module": "src/index.js",
-  "scripts": {
-    "dev": "webpack-dev-server --config webpack/webpack.config.dev.js --open",
-    "build": "webpack --config webpack/webpack.config.prod.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/baijunjie/PhotoClip.git"
-  },
   "author": "baijunjie",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/baijunjie/PhotoClip/issues"
+  "main": "dist/PhotoClip.js",
+  "module": "src/index.js",
+  "files": [
+    "src",
+    "dist",
+    "!.DS_Store"
+  ],
+  "scripts": {
+    "dev": "USER_CONFIG=mod.config.js webpack-dev-server --config node_modules/@module-factory/service/webpack.config/dev.js",
+    "build": "USER_CONFIG=mod.config.js webpack --config node_modules/@module-factory/service/webpack.config/prod.js"
   },
-  "homepage": "https://github.com/baijunjie/PhotoClip#readme",
   "dependencies": {
     "hammerjs": "^2.0.8",
     "iscroll": "baijunjie/iscroll",
     "lrz": "^4.9.40"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "html-webpack-plugin": "^3.2.0",
-    "webpack": "^4.10.2",
-    "webpack-cli": "^3.0.1",
-    "webpack-dev-server": "^3.1.4",
-    "webpack-merge": "^4.1.2"
+    "@module-factory/service": "latest",
+    "@module-factory/template": "latest",
+    "@module-factory/utils": "latest",
+    "lodash": "latest"
   },
-  "files": [
-    "src",
-    "dist"
-  ]
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baijunjie/PhotoClip.js.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/baijunjie/PhotoClip.js/issues"
+  },
+  "homepage": "https://github.com/baijunjie/PhotoClip.js#readme"
 }

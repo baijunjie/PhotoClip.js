@@ -1,10 +1,10 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.3.8
+ * @version v3.3.9
  * @author baijunjie
  * @license MIT
  * 
- * git - https://github.com/baijunjie/PhotoClip.git
+ * git - https://github.com/baijunjie/PhotoClip.js.git
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -15,7 +15,7 @@
 		exports["PhotoClip"] = factory(require("lrz"), require("iscroll/build/iscroll-zoom"), require("hammerjs"));
 	else
 		root["PhotoClip"] = factory(root["lrz"], root["IScroll"], root["Hammer"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__1__, __WEBPACK_EXTERNAL_MODULE__2__, __WEBPACK_EXTERNAL_MODULE__3__) {
+})(window, function(__WEBPACK_EXTERNAL_MODULE__17__, __WEBPACK_EXTERNAL_MODULE__18__, __WEBPACK_EXTERNAL_MODULE__19__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -99,11 +99,80 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+/**
+ * 让隐藏元素正确执行程序（IE9及以上浏览器）
+ * @param elems  {DOM|Array} DOM元素或者DOM元素组成的数组
+ * @param func   {Function}  需要执行的程序函数
+ * @param target {Object}    执行程序时函数中 this 的指向
+ */
+const defaultDisplayMap = {};
+module.exports = function(elems, func, target) {
+    if (typeof elems !== 'object') {
+        elems = [];
+    }
+
+    if (typeof elems.length === 'undefined') {
+        elems = [elems];
+    }
+
+    const hideElems = [],
+        hideElemsDisplay = [];
+
+    for (let i = 0, elem; elem = elems[i++];) {
+
+        while (elem instanceof HTMLElement) {
+
+            const nodeName = elem.nodeName;
+
+            if (!elem.getClientRects().length) {
+                hideElems.push(elem);
+                hideElemsDisplay.push(elem.style.display);
+
+                let display = defaultDisplayMap[nodeName];
+                if (!display) {
+                    const temp = document.createElement(nodeName);
+                    document.body.appendChild(temp);
+                    display = window.getComputedStyle(temp).display;
+                    temp.parentNode.removeChild(temp);
+
+                    if (display === 'none') display = 'block';
+                    defaultDisplayMap[nodeName] = display;
+                }
+
+                elem.style.display = display;
+            }
+
+            if (nodeName === 'BODY') break;
+            elem = elem.parentNode;
+        }
+    }
+
+    if (typeof(func) === 'function') func.call(target || this);
+
+    let l = hideElems.length;
+    while (l--) {
+        hideElems.pop().style.display = hideElemsDisplay.pop();
+    }
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+// 判断对象是否为数组
+module.exports = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -112,47 +181,19 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.destroy = destroy;
-exports.bind = bind;
 exports.getScale = getScale;
 exports.pointRotate = pointRotate;
 exports.angleToRadian = angleToRadian;
 exports.loaclToLoacl = loaclToLoacl;
 exports.globalToLoacl = globalToLoacl;
-exports.extend = extend;
-exports.proxy = proxy;
-exports.hideAction = hideAction;
 exports.isPercent = isPercent;
-exports.isNumber = isNumber;
-exports.isArray = isArray;
-exports.toArray = toArray;
-exports.createElement = createElement;
-exports.removeElement = removeElement;
-exports.$ = $;
-exports.attr = attr;
-exports.css = css;
 exports.support = support;
-function destroy(context) {
-    // 清除所有属性
-    Object.getOwnPropertyNames(context).forEach(function (prop) {
-        delete context[prop];
-    });
 
-    context.__proto__ = Object.prototype;
-}
+var _hideAction = __webpack_require__(0);
 
-function bind(context) {
-    for (var _len = arguments.length, methods = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        methods[_key - 1] = arguments[_key];
-    }
+var _hideAction2 = _interopRequireDefault(_hideAction);
 
-    methods.forEach(function (method) {
-        context[method] = context[method].bind(context);
-    });
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // 获取最大缩放比例
 function getScale(w1, h1, w2, h2) {
@@ -183,7 +224,7 @@ function loaclToLoacl(layerOne, layerTwo, x, y) {
     y = y || 0;
     var layerOneRect = void 0,
         layerTwoRect = void 0;
-    hideAction([layerOne, layerTwo], function () {
+    (0, _hideAction2.default)([layerOne, layerTwo], function () {
         layerOneRect = layerOne.getBoundingClientRect();
         layerTwoRect = layerTwo.getBoundingClientRect();
     });
@@ -198,7 +239,7 @@ function globalToLoacl(layer, x, y) {
     x = x || 0;
     y = y || 0;
     var layerRect = void 0;
-    hideAction(layer, function () {
+    (0, _hideAction2.default)(layer, function () {
         layerRect = layer.getBoundingClientRect();
     });
     return {
@@ -207,31 +248,222 @@ function globalToLoacl(layer, x, y) {
     };
 }
 
-function extend() {
-    var options = void 0,
-        name = void 0,
-        src = void 0,
-        copy = void 0,
-        copyIsArray = void 0,
+// 判断是否为百分比
+function isPercent(value) {
+    return (/%$/.test(value + '')
+    );
+}
+
+function support(prop) {
+    var testElem = document.documentElement;
+    if (prop in testElem.style) return '';
+
+    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
+        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
+
+    for (var i = 0, prefix; prefix = prefixs[i++];) {
+        if (prefix + testProp in testElem.style) {
+            return '-' + prefix.toLowerCase() + '-';
+        }
+    }
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+// 类似数组对象转数组
+module.exports = function(obj) {
+    return Array.prototype.map.call(obj, function(n) { return n });
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const toArray = __webpack_require__(3);
+
+// 获取元素（IE8及以上浏览器）
+module.exports = function(selector, context) {
+    if (selector instanceof HTMLElement) {
+        return [selector];
+    } else if (typeof selector === 'object' && selector.length) {
+        return toArray(selector);
+    } else if (!selector || typeof selector !== 'string') {
+        return [];
+    }
+
+    if (typeof context === 'string') {
+        context = document.querySelector(context);
+    }
+
+    if (!(context instanceof HTMLElement)) {
+        context = document;
+    }
+
+    return toArray(context.querySelectorAll(selector));
+}
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+// 设置属性
+module.exports = function(elem, prop, value) {
+    if (typeof prop === 'object') {
+        for (let p in prop) {
+            elem[p] = prop[p];
+        }
+        return elem;
+    }
+
+    if (value === undefined) {
+        return elem[prop];
+    } else {
+        elem[prop] = value;
+        return elem;
+    }
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+// 设置样式
+module.exports = function(elem, prop, value) {
+    if (typeof prop === 'object') {
+        for (let p in prop) {
+            value = prop[p];
+            if (typeof value === 'number') value += 'px';
+            elem.style[p] = value;
+        }
+        return elem;
+    }
+
+    if (value === undefined) {
+        return window.getComputedStyle(elem)[prop];
+    } else {
+        if (typeof value === 'number') value += 'px';
+        elem.style[prop] = value;
+        return elem;
+    }
+}
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+// 移除元素
+module.exports = function(elem) {
+    elem.parentNode && elem.parentNode.removeChild(elem);
+}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// 创建元素
+module.exports = function(parentNode, className, id, prop) {
+    let elem = document.createElement('DIV');
+
+    if (typeof className === 'object') {
+        prop = className;
+        className = null;
+    }
+
+    if (typeof id === 'object') {
+        prop = id;
+        id = null;
+    }
+
+    if (typeof prop === 'object') {
+        for (let p in prop) {
+            elem.style[p] = prop[p];
+        }
+    }
+
+    if (className) elem.className = className;
+    if (id) elem.id = id;
+
+    parentNode.appendChild(elem);
+
+    return elem;
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+// 判断是否为数字类型
+module.exports = function(num) {
+    return typeof num === 'number';
+}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+// 判断对象是否为纯粹的对象（通过 "{}" 或者 "new Object" 创建的）
+module.exports = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+// 判断是否为函数
+module.exports = function(func) {
+    return typeof func === 'function';
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+// 判断是否为布尔值
+module.exports = function(bool) {
+    return typeof bool === 'boolean';
+}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+// 判断是否为一个对象
+module.exports = function(obj) {
+    return typeof obj === 'object';
+}
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const isArray = __webpack_require__(1);
+const isObject = __webpack_require__(13);
+const isBoolean = __webpack_require__(12);
+const isFunction = __webpack_require__(11);
+const isPlainObject = __webpack_require__(10);
+
+module.exports = function extend() {
+    let options, name, src, copy, copyIsArray,
         target = arguments[0] || {},
-        targetType = typeof target === 'undefined' ? 'undefined' : _typeof(target),
         toString = Object.prototype.toString,
         i = 1,
         length = arguments.length,
         deep = false;
 
     // 处理深拷贝
-    if (targetType === 'boolean') {
+    if (isBoolean(target)) {
         deep = target;
 
         // Skip the boolean and the target
         target = arguments[i] || {};
-        targetType = typeof target === 'undefined' ? 'undefined' : _typeof(target);
         i++;
     }
 
     // Handle case when target is a string or something (possible in deep copy)
-    if (targetType !== 'object' && targetType !== 'function') {
+    if (!isObject(target) && !isFunction(target)) {
         target = {};
     }
 
@@ -257,18 +489,19 @@ function extend() {
                 }
 
                 // 深拷贝对象或者数组
-                if (deep && copy && ((copyIsArray = toString.call(copy) === '[object Array]') || toString.call(copy) === '[object Object]')) {
+                if (deep && copy &&
+                    ((copyIsArray = isArray(copy)) || isPlainObject(copy))) {
 
                     if (copyIsArray) {
                         copyIsArray = false;
-                        src = src && toString.call(src) === '[object Array]' ? src : [];
+                        src = src && isArray(src) ? src : [];
                     } else {
-                        src = src && toString.call(src) === '[object Object]' ? src : {};
+                        src = src && isPlainObject(src) ? src : {};
                     }
 
                     target[name] = extend(deep, src, copy);
-                } else if (copy !== undefined) {
-                    // 仅忽略未定义的值
+
+                } else if (copy !== undefined) { // 仅忽略未定义的值
                     target[name] = copy;
                 }
             }
@@ -279,234 +512,50 @@ function extend() {
     return target;
 }
 
-// 代理
-var guid = 0;
-function proxy(func, target) {
-    if (typeof target === 'string') {
-        var tmp = func[target];
-        target = func;
-        func = tmp;
-    }
 
-    if (typeof func !== 'function') {
-        return undefined;
-    }
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
 
-    var slice = Array.prototype.slice,
-        args = slice.call(arguments, 2),
-        proxy = function proxy() {
-        return func.apply(target || this, args.concat(slice.call(arguments)));
-    };
+module.exports = function(context) {
+    // 清除所有属性
+    Object.getOwnPropertyNames(context).forEach(prop => {
+        delete context[prop];
+    });
 
-    proxy.guid = func.guid = func.guid || guid++;
-
-    return proxy;
+    context.__proto__ = Object.prototype;
 }
 
-/**
- * 让隐藏元素正确执行程序（IE9及以上浏览器）
- * @param  {DOM|Array} elems  DOM元素或者DOM元素组成的数组
- * @param  {Function}  func   需要执行的程序函数
- * @param  {Object}    target 执行程序时函数中 this 的指向
- */
-var defaultDisplayMap = {};
-function hideAction(elems, func, target) {
-    if ((typeof elems === 'undefined' ? 'undefined' : _typeof(elems)) !== 'object') {
-        elems = [];
-    }
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
 
-    if (typeof elems.length === 'undefined') {
-        elems = [elems];
-    }
-
-    var hideElems = [],
-        hideElemsDisplay = [];
-
-    for (var i = 0, elem; elem = elems[i++];) {
-
-        while (elem instanceof HTMLElement) {
-
-            var nodeName = elem.nodeName;
-
-            if (!elem.getClientRects().length) {
-                hideElems.push(elem);
-                hideElemsDisplay.push(elem.style.display);
-
-                var display = defaultDisplayMap[nodeName];
-                if (!display) {
-                    var temp = document.createElement(nodeName);
-                    document.body.appendChild(temp);
-                    display = window.getComputedStyle(temp).display;
-                    temp.parentNode.removeChild(temp);
-
-                    if (display === 'none') display = 'block';
-                    defaultDisplayMap[nodeName] = display;
-                }
-
-                elem.style.display = display;
-            }
-
-            if (nodeName === 'BODY') break;
-            elem = elem.parentNode;
-        }
-    }
-
-    if (typeof func === 'function') func.call(target || this);
-
-    var l = hideElems.length;
-    while (l--) {
-        hideElems.pop().style.display = hideElemsDisplay.pop();
-    }
-}
-
-// 判断是否为百分比
-function isPercent(value) {
-    return (/%$/.test(value + '')
-    );
-}
-
-// 判断对象是否为数字
-function isNumber(obj) {
-    return typeof obj === 'number';
-}
-
-// 判断对象是否为数组
-function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-}
-
-// 类似数组对象转数组
-function toArray(obj) {
-    return Array.prototype.map.call(obj, function (n) {
-        return n;
+module.exports = function(context, ...methods) {
+    methods.forEach(method => {
+        context[method] = context[method].bind(context);
     });
 }
 
-// 创建元素
-function createElement(parentNode, className, id, prop) {
-    var elem = document.createElement('DIV');
-
-    if ((typeof className === 'undefined' ? 'undefined' : _typeof(className)) === 'object') {
-        prop = className;
-        className = null;
-    }
-
-    if ((typeof id === 'undefined' ? 'undefined' : _typeof(id)) === 'object') {
-        prop = id;
-        id = null;
-    }
-
-    if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) === 'object') {
-        for (var p in prop) {
-            elem.style[p] = prop[p];
-        }
-    }
-
-    if (className) elem.className = className;
-    if (id) elem.id = id;
-
-    parentNode.appendChild(elem);
-
-    return elem;
-}
-
-// 移除元素
-function removeElement(elem) {
-    elem.parentNode && elem.parentNode.removeChild(elem);
-}
-
-// 获取元素（IE8及以上浏览器）
-function $(selector, context) {
-    if (selector instanceof HTMLElement) {
-        return [selector];
-    } else if ((typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' && selector.length) {
-        return toArray(selector);
-    } else if (!selector || typeof selector !== 'string') {
-        return [];
-    }
-
-    if (typeof context === 'string') {
-        context = document.querySelector(context);
-    }
-
-    if (!(context instanceof HTMLElement)) {
-        context = document;
-    }
-
-    return toArray(context.querySelectorAll(selector));
-}
-
-// 设置属性
-function attr(elem, prop, value) {
-    if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) === 'object') {
-        for (var p in prop) {
-            elem[p] = prop[p];
-        }
-        return elem;
-    }
-
-    if (value === undefined) {
-        return elem[prop];
-    } else {
-        elem[prop] = value;
-        return elem;
-    }
-}
-
-// 设置样式
-function css(elem, prop, value) {
-    if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) === 'object') {
-        for (var p in prop) {
-            value = prop[p];
-            if (isNumber(value)) value += 'px';
-            elem.style[p] = value;
-        }
-        return elem;
-    }
-
-    if (value === undefined) {
-        return window.getComputedStyle(elem)[prop];
-    } else {
-        if (isNumber(value)) value += 'px';
-        elem.style[prop] = value;
-        return elem;
-    }
-}
-
-function support(prop) {
-    var testElem = document.documentElement;
-    if (prop in testElem.style) return '';
-
-    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
-        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
-
-    for (var i = 0, prefix; prefix = prefixs[i++];) {
-        if (prefix + testProp in testElem.style) {
-            return '-' + prefix.toLowerCase() + '-';
-        }
-    }
-}
-
 /***/ }),
-/* 1 */
+/* 17 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE__1__;
+module.exports = __WEBPACK_EXTERNAL_MODULE__17__;
 
 /***/ }),
-/* 2 */
+/* 18 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE__2__;
+module.exports = __WEBPACK_EXTERNAL_MODULE__18__;
 
 /***/ }),
-/* 3 */
+/* 19 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE__3__;
+module.exports = __WEBPACK_EXTERNAL_MODULE__19__;
 
 /***/ }),
-/* 4 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,19 +569,63 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _hammerjs = __webpack_require__(3);
+var _hammerjs = __webpack_require__(19);
 
 var _hammerjs2 = _interopRequireDefault(_hammerjs);
 
-var _iscrollZoom = __webpack_require__(2);
+var _iscrollZoom = __webpack_require__(18);
 
 var _iscrollZoom2 = _interopRequireDefault(_iscrollZoom);
 
-var _lrz = __webpack_require__(1);
+var _lrz = __webpack_require__(17);
 
 var _lrz2 = _interopRequireDefault(_lrz);
 
-var _utils = __webpack_require__(0);
+var _bind = __webpack_require__(16);
+
+var _bind2 = _interopRequireDefault(_bind);
+
+var _destroy2 = __webpack_require__(15);
+
+var _destroy3 = _interopRequireDefault(_destroy2);
+
+var _extend = __webpack_require__(14);
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _isNumber = __webpack_require__(9);
+
+var _isNumber2 = _interopRequireDefault(_isNumber);
+
+var _isArray = __webpack_require__(1);
+
+var _isArray2 = _interopRequireDefault(_isArray);
+
+var _createElement = __webpack_require__(8);
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _removeElement = __webpack_require__(7);
+
+var _removeElement2 = _interopRequireDefault(_removeElement);
+
+var _hideAction = __webpack_require__(0);
+
+var _hideAction2 = _interopRequireDefault(_hideAction);
+
+var _css = __webpack_require__(6);
+
+var _css2 = _interopRequireDefault(_css);
+
+var _attr = __webpack_require__(5);
+
+var _attr2 = _interopRequireDefault(_attr);
+
+var _$ = __webpack_require__(4);
+
+var _$2 = _interopRequireDefault(_$);
+
+var _utils = __webpack_require__(2);
 
 var utils = _interopRequireWildcard(_utils);
 
@@ -592,14 +685,14 @@ var PhotoClip = function () {
     function PhotoClip(container, options) {
         _classCallCheck(this, PhotoClip);
 
-        container = utils.$(container); // 获取容器
+        container = (0, _$2.default)(container); // 获取容器
         if (container && container.length) {
             this._$container = container[0];
         } else {
             return;
         }
 
-        this._options = utils.extend(true, {}, defaultOptions, options);
+        this._options = (0, _extend2.default)(true, {}, defaultOptions, options);
 
         if (prefix === undefined) {
             this._options.errorMsg.noSupport && alert(this._options.errorMsg.noSupport);
@@ -616,22 +709,22 @@ var PhotoClip = function () {
             var options = this._options;
 
             // options 预设
-            if (utils.isNumber(options.size)) {
+            if ((0, _isNumber2.default)(options.size)) {
                 options.size = [options.size, options.size];
-            } else if (utils.isArray(options.size)) {
-                if (!utils.isNumber(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
-                if (!utils.isNumber(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
+            } else if ((0, _isArray2.default)(options.size)) {
+                if (!(0, _isNumber2.default)(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
+                if (!(0, _isNumber2.default)(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
             } else {
-                options.size = utils.extend({}, defaultOptions.size);
+                options.size = (0, _extend2.default)({}, defaultOptions.size);
             }
 
-            if (utils.isNumber(options.outputSize)) {
+            if ((0, _isNumber2.default)(options.outputSize)) {
                 options.outputSize = [options.outputSize, 0];
-            } else if (utils.isArray(options.outputSize)) {
-                if (!utils.isNumber(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
-                if (!utils.isNumber(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
+            } else if ((0, _isArray2.default)(options.outputSize)) {
+                if (!(0, _isNumber2.default)(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
+                if (!(0, _isNumber2.default)(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
             } else {
-                options.outputSize = utils.extend({}, defaultOptions.outputSize);
+                options.outputSize = (0, _extend2.default)({}, defaultOptions.outputSize);
             }
 
             if (options.outputType === 'jpg') {
@@ -642,7 +735,7 @@ var PhotoClip = function () {
             }
 
             // 变量初始化
-            if (utils.isArray(options.adaptive)) {
+            if ((0, _isArray2.default)(options.adaptive)) {
                 this._widthIsPercent = options.adaptive[0] && utils.isPercent(options.adaptive[0]) ? options.adaptive[0] : false;
                 this._heightIsPercent = options.adaptive[1] && utils.isPercent(options.adaptive[1]) ? options.adaptive[1] : false;
             }
@@ -688,7 +781,7 @@ var PhotoClip = function () {
             this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
             this._curAngle = 0; // 旋转层的当前角度
 
-            utils.bind(this, '_rotateCW90', '_fileOnChangeHandle', '_clipImg', '_resize', 'size', 'load', 'clear', 'rotate', 'scale', 'clip', 'destroy');
+            (0, _bind2.default)(this, '_rotateCW90', '_fileOnChangeHandle', '_clipImg', '_resize', 'size', 'load', 'clear', 'rotate', 'scale', 'clip', 'destroy');
 
             this._initElements();
             this._initScroll();
@@ -698,7 +791,7 @@ var PhotoClip = function () {
             this._resize();
             window.addEventListener('resize', this._resize);
 
-            if (this._okList = utils.$(options.ok)) {
+            if (this._okList = (0, _$2.default)(options.ok)) {
                 this._okList.forEach(function ($ok) {
                     $ok.addEventListener('click', _this._clipImg);
                 });
@@ -721,27 +814,27 @@ var PhotoClip = function () {
             containerOriginStyle['position'] = style['position'];
             this._containerOriginStyle = containerOriginStyle;
 
-            utils.css($container, {
+            (0, _css2.default)($container, {
                 'user-select': 'none',
                 'overflow': 'hidden'
             });
 
-            if (utils.css($container, 'position') === 'static') {
-                utils.css($container, 'position', 'relative');
+            if ((0, _css2.default)($container, 'position') === 'static') {
+                (0, _css2.default)($container, 'position', 'relative');
             }
 
             // 创建裁剪层
-            this._$clipLayer = utils.createElement($container, 'photo-clip-layer', {
+            this._$clipLayer = (0, _createElement2.default)($container, 'photo-clip-layer', {
                 'position': 'absolute',
                 'left': '50%',
                 'top': '50%'
             });
 
-            this._$moveLayer = utils.createElement(this._$clipLayer, 'photo-clip-move-layer');
-            this._$rotationLayer = utils.createElement(this._$moveLayer, 'photo-clip-rotation-layer');
+            this._$moveLayer = (0, _createElement2.default)(this._$clipLayer, 'photo-clip-move-layer');
+            this._$rotationLayer = (0, _createElement2.default)(this._$moveLayer, 'photo-clip-rotation-layer');
 
             // 创建遮罩
-            var $mask = this._$mask = utils.createElement($container, 'photo-clip-mask', {
+            var $mask = this._$mask = (0, _createElement2.default)($container, 'photo-clip-mask', {
                 'position': 'absolute',
                 'left': 0,
                 'top': 0,
@@ -754,7 +847,7 @@ var PhotoClip = function () {
                 maskColor = options.style.maskColor,
                 maskBorder = options.style.maskBorder;
 
-            this._$mask_left = utils.createElement($mask, 'photo-clip-mask-left', {
+            this._$mask_left = (0, _createElement2.default)($mask, 'photo-clip-mask-left', {
                 'position': 'absolute',
                 'left': 0,
                 'right': '50%',
@@ -763,7 +856,7 @@ var PhotoClip = function () {
                 'width': 'auto',
                 'background-color': maskColor
             });
-            this._$mask_right = utils.createElement($mask, 'photo-clip-mask-right', {
+            this._$mask_right = (0, _createElement2.default)($mask, 'photo-clip-mask-right', {
                 'position': 'absolute',
                 'left': '50%',
                 'right': 0,
@@ -771,7 +864,7 @@ var PhotoClip = function () {
                 'bottom': '50%',
                 'background-color': maskColor
             });
-            this._$mask_top = utils.createElement($mask, 'photo-clip-mask-top', {
+            this._$mask_top = (0, _createElement2.default)($mask, 'photo-clip-mask-top', {
                 'position': 'absolute',
                 'left': 0,
                 'right': 0,
@@ -779,7 +872,7 @@ var PhotoClip = function () {
                 'bottom': '50%',
                 'background-color': maskColor
             });
-            this._$mask_bottom = utils.createElement($mask, 'photo-clip-mask-bottom', {
+            this._$mask_bottom = (0, _createElement2.default)($mask, 'photo-clip-mask-bottom', {
                 'position': 'absolute',
                 'left': 0,
                 'right': 0,
@@ -789,7 +882,7 @@ var PhotoClip = function () {
             });
 
             // 创建截取框
-            this._$clip_frame = utils.createElement($mask, 'photo-clip-area', {
+            this._$clip_frame = (0, _createElement2.default)($mask, 'photo-clip-area', {
                 'border': maskBorder,
                 'position': 'absolute',
                 'left': '50%',
@@ -797,7 +890,7 @@ var PhotoClip = function () {
             });
 
             // 初始化视图容器
-            this._viewList = utils.$(options.view);
+            this._viewList = (0, _$2.default)(options.view);
             if (this._viewList) {
                 var viewOriginStyleList = [];
                 this._viewList.forEach(function ($view, i) {
@@ -808,7 +901,7 @@ var PhotoClip = function () {
                     viewOriginStyle['background-size'] = style['background-size'];
                     viewOriginStyleList[i] = viewOriginStyle;
 
-                    utils.css($view, {
+                    (0, _css2.default)($view, {
                         'background-repeat': 'no-repeat',
                         'background-position': 'center',
                         'background-size': 'contain'
@@ -857,7 +950,7 @@ var PhotoClip = function () {
                 iScrollOptions.startZoom = 1;
             }
 
-            utils.css(this._$moveLayer, {
+            (0, _css2.default)(this._$moveLayer, {
                 'width': width,
                 'height': height
             });
@@ -887,7 +980,7 @@ var PhotoClip = function () {
             this._curAngle = 0;
             setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
 
-            utils.css(this._$rotationLayer, {
+            (0, _css2.default)(this._$rotationLayer, {
                 'width': width,
                 'height': height
             });
@@ -1102,7 +1195,7 @@ var PhotoClip = function () {
             iScroll.startX += offset.x;
             iScroll.startY += offset.y;
 
-            if (angle !== this._curAngle && duration && utils.isNumber(duration) && supportTransition !== undefined) {
+            if (angle !== this._curAngle && duration && (0, _isNumber2.default)(duration) && supportTransition !== undefined) {
                 // 计算旋转层参考点，设为零位前后的偏移量
                 offset = {
                     x: (rectByOrigin0.left - rect.left) / scale,
@@ -1138,11 +1231,11 @@ var PhotoClip = function () {
 
             var options = this._options;
 
-            if (this._fileList = utils.$(options.file)) {
+            if (this._fileList = (0, _$2.default)(options.file)) {
                 this._fileList.forEach(function ($file) {
                     // 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
                     if (!is_mobile) {
-                        utils.attr($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
+                        (0, _attr2.default)($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
                     }
 
                     $file.addEventListener('change', _this4._fileOnChangeHandle);
@@ -1196,7 +1289,7 @@ var PhotoClip = function () {
             // 删除旧的图片以释放内存，防止IOS设备的 webview 崩溃
             this._$img.onload = null;
             this._$img.onerror = null;
-            utils.removeElement(this._$img);
+            (0, _removeElement2.default)(this._$img);
             this._$img = null;
             this._imgLoaded = false;
         }
@@ -1210,7 +1303,7 @@ var PhotoClip = function () {
 
             this._$img = new Image();
 
-            utils.css(this._$img, {
+            (0, _css2.default)(this._$img, {
                 'user-select': 'none',
                 'pointer-events': 'none'
             });
@@ -1222,7 +1315,7 @@ var PhotoClip = function () {
 
                 _this6._$rotationLayer.appendChild(img);
 
-                utils.hideAction([img, _this6._$moveLayer], function () {
+                (0, _hideAction2.default)([img, _this6._$moveLayer], function () {
                     _this6._resetScroll(img.naturalWidth, img.naturalHeight);
                 });
             };
@@ -1231,7 +1324,7 @@ var PhotoClip = function () {
                 options.loadError.call(_this6, errorMsg.imgLoadError, e);
             };
 
-            utils.attr(this._$img, 'src', src);
+            (0, _attr2.default)(this._$img, 'src', src);
         }
     }, {
         key: '_clipImg',
@@ -1277,7 +1370,7 @@ var PhotoClip = function () {
                 var dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
                 if (this._viewList) {
                     this._viewList.forEach(function ($view) {
-                        utils.css($view, 'background-image', 'url(' + dataURL + ')');
+                        (0, _css2.default)($view, 'background-image', 'url(' + dataURL + ')');
                     });
                 }
 
@@ -1292,7 +1385,7 @@ var PhotoClip = function () {
     }, {
         key: '_resize',
         value: function _resize(width, height) {
-            utils.hideAction(this._$container, function () {
+            (0, _hideAction2.default)(this._$container, function () {
                 this._containerWidth = this._$container.offsetWidth;
                 this._containerHeight = this._$container.offsetHeight;
             }, this);
@@ -1301,8 +1394,8 @@ var PhotoClip = function () {
                 oldClipWidth = this._clipWidth,
                 oldClipHeight = this._clipHeight;
 
-            if (utils.isNumber(width)) size[0] = width;
-            if (utils.isNumber(height)) size[1] = height;
+            if ((0, _isNumber2.default)(width)) size[0] = width;
+            if ((0, _isNumber2.default)(height)) size[1] = height;
 
             if (this._widthIsPercent || this._heightIsPercent) {
                 var ratio = size[0] / size[1];
@@ -1338,33 +1431,33 @@ var PhotoClip = function () {
                 this._outputWidth = this._outputHeight * this._clipSizeRatio;
             }
 
-            utils.css(this._$clipLayer, {
+            (0, _css2.default)(this._$clipLayer, {
                 'width': clipWidth,
                 'height': clipHeight,
                 'margin-left': -clipWidth / 2,
                 'margin-top': -clipHeight / 2
             });
-            utils.css(this._$mask_left, {
+            (0, _css2.default)(this._$mask_left, {
                 'margin-right': clipWidth / 2,
                 'margin-top': -clipHeight / 2,
                 'margin-bottom': -clipHeight / 2
             });
-            utils.css(this._$mask_right, {
+            (0, _css2.default)(this._$mask_right, {
                 'margin-left': clipWidth / 2,
                 'margin-top': -clipHeight / 2,
                 'margin-bottom': -clipHeight / 2
             });
-            utils.css(this._$mask_top, {
+            (0, _css2.default)(this._$mask_top, {
                 'margin-bottom': clipHeight / 2
             });
-            utils.css(this._$mask_bottom, {
+            (0, _css2.default)(this._$mask_bottom, {
                 'margin-top': clipHeight / 2
             });
-            utils.css(this._$clip_frame, {
+            (0, _css2.default)(this._$clip_frame, {
                 'width': clipWidth,
                 'height': clipHeight
             });
-            utils.css(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
+            (0, _css2.default)(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
 
             if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
                 this._refreshScroll();
@@ -1484,7 +1577,7 @@ var PhotoClip = function () {
             this._$container.removeChild(this._$clipLayer);
             this._$container.removeChild(this._$mask);
 
-            utils.css(this._$container, this._containerOriginStyle);
+            (0, _css2.default)(this._$container, this._containerOriginStyle);
 
             if (this._iScroll) {
                 this._iScroll.destroy();
@@ -1505,7 +1598,7 @@ var PhotoClip = function () {
 
             if (this._viewList) {
                 this._viewList.forEach(function ($view, i) {
-                    utils.css($view, _this7._viewOriginStyleList[i]);
+                    (0, _css2.default)($view, _this7._viewOriginStyleList[i]);
                 });
             }
 
@@ -1522,7 +1615,7 @@ var PhotoClip = function () {
                 });
             }
 
-            utils.destroy(this);
+            (0, _destroy3.default)(this);
         }
     }]);
 
@@ -1536,7 +1629,7 @@ exports.default = PhotoClip;
 function setOrigin($obj, originX, originY) {
     originX = (originX || 0).toFixed(2);
     originY = (originY || 0).toFixed(2);
-    utils.css($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
+    (0, _css2.default)($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
 }
 
 // 设置变换坐标与旋转角度
@@ -1547,7 +1640,7 @@ function setTransform($obj, x, y, angle) {
     y = y.toFixed(2);
     angle = angle.toFixed(2);
 
-    utils.css($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
+    (0, _css2.default)($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
 }
 
 // 设置变换动画
@@ -1555,13 +1648,13 @@ function setTransition($obj, x, y, angle, dur, fn) {
     // 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
     // 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
     // 这样就会导致之前设置的位移也被应用到动画中
-    utils.css($obj, prefix + 'transform');
+    (0, _css2.default)($obj, prefix + 'transform');
     // 这里应用的缓动与 iScroll 的默认缓动相同
-    utils.css($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
+    (0, _css2.default)($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
     setTransform($obj, x, y, angle);
 
     setTimeout(function () {
-        utils.css($obj, prefix + 'transition', '');
+        (0, _css2.default)($obj, prefix + 'transition', '');
         fn();
     }, dur);
 }
