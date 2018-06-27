@@ -1,6 +1,6 @@
 {
   "name": "photoclip",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "一款手势驱动的裁图插件",
   "author": "baijunjie",
   "license": "MIT",
@@ -21,16 +21,14 @@
     "lrz": "^4.9.40"
   },
   "devDependencies": {
-    "@module-factory/service": "latest",
-    "@module-factory/template": "latest",
-    "@module-factory/utils": "latest",
-    "lodash": "latest"
+    "@module-factory/service": "0.1.5",
+    "@module-factory/template": "0.1.5",
+    "@module-factory/utils": "0.1.5"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/baijunjie/PhotoClip.js.git"
   },
-
   "bugs": {
     "url": "https://github.com/baijunjie/PhotoClip.js/issues"
   },

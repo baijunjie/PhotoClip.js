@@ -1,4 +1,4 @@
-import hideAction from 'utils/hideAction';
+import hideAction from '@module-factory/utils/hideAction';
 
 // 获取最大缩放比例
 export function getScale(w1, h1, w2, h2) {

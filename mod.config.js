@@ -4,11 +4,6 @@ module.exports = {
     entry: {
       PhotoClip: './src/index.js'
     },
-    resolve: {
-      alias: {
-        'utils': '@module-factory/utils'
-      }
-    },
     externals: {
       'hammerjs': {
         commonjs: 'hammerjs',
