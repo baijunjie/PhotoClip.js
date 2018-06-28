@@ -1,6 +1,6 @@
 {
   "name": "photoclip",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "一款手势驱动的裁图插件",
   "author": "baijunjie",
   "license": "MIT",
@@ -16,14 +16,14 @@
     "build": "USER_CONFIG=mod.config.js webpack --config node_modules/@module-factory/service/webpack.config/prod.js"
   },
   "dependencies": {
+    "@module-factory/utils": "0.1.5",
     "hammerjs": "^2.0.8",
     "iscroll": "baijunjie/iscroll",
     "lrz": "^4.9.40"
   },
   "devDependencies": {
     "@module-factory/service": "0.1.5",
-    "@module-factory/template": "0.1.5",
-    "@module-factory/utils": "0.1.5"
+    "@module-factory/template": "0.1.5"
   },
   "repository": {
     "type": "git",
