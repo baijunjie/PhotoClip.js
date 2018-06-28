@@ -17,9 +17,9 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
-"@module-factory/service@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@module-factory/service/-/service-0.1.5.tgz#a58bd193ae88fdad2521417aac3f9dcec3a31cfd"
+"@module-factory/service@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@module-factory/service/-/service-0.1.8.tgz#299cf13e73a3c0415a02aa4860c6669b18cd5eed"
   dependencies:
     babel-core "^6.26.3"
     babel-loader "^7.1.4"
@@ -48,9 +48,9 @@
     resolve "^1.8.0"
     semver "^5.5.0"
 
-"@module-factory/template@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@module-factory/template/-/template-0.1.5.tgz#d5b5ab716f61ec995f33a12def8ed9bd93046f11"
+"@module-factory/template@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@module-factory/template/-/template-0.1.8.tgz#96fe21b6e8624a30cbde9ee8ae74fcaa0c39b005"
   dependencies:
     "@module-factory/shared-utils" latest
     "@module-factory/utils" latest
@@ -60,7 +60,11 @@
     inquirer "^6.0.0"
     isbinaryfile "^3.0.2"
 
-"@module-factory/utils@0.1.5", "@module-factory/utils@latest":
+"@module-factory/utils@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@module-factory/utils/-/utils-0.1.8.tgz#7963d52d06b23444ed0a46ac45dc17114845524c"
+
+"@module-factory/utils@latest":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@module-factory/utils/-/utils-0.1.5.tgz#842056ad0c3fece7eb40a83154bdcb2b0c5cc4f9"
 
