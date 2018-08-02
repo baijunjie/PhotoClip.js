@@ -8,14 +8,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("lrz"), require("iscroll/build/iscroll-zoom"), require("hammerjs"));
+		module.exports = factory(require("hammerjs"), require("iscroll/build/iscroll-zoom"), require("lrz"));
 	else if(typeof define === 'function' && define.amd)
-		define(["lrz", "iscroll", "hammerjs"], factory);
+		define(["hammerjs", "iscroll", "lrz"], factory);
 	else if(typeof exports === 'object')
-		exports["PhotoClip"] = factory(require("lrz"), require("iscroll/build/iscroll-zoom"), require("hammerjs"));
+		exports["PhotoClip"] = factory(require("hammerjs"), require("iscroll/build/iscroll-zoom"), require("lrz"));
 	else
-		root["PhotoClip"] = factory(root["lrz"], root["IScroll"], root["Hammer"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__17__, __WEBPACK_EXTERNAL_MODULE__18__, __WEBPACK_EXTERNAL_MODULE__19__) {
+		root["PhotoClip"] = factory(root["Hammer"], root["IScroll"], root["lrz"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE__5__, __WEBPACK_EXTERNAL_MODULE__6__, __WEBPACK_EXTERNAL_MODULE__7__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -99,12 +99,55 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 判断对象是否为数组
+module.exports = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+// 判断是否为一个对象
+module.exports = function (obj) {
+    return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 判断是否为数字类型
+module.exports = function (num) {
+    return typeof num === 'number';
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * 让隐藏元素正确执行程序（IE9及以上浏览器）
@@ -112,9 +155,9 @@ return /******/ (function(modules) { // webpackBootstrap
  * @param func   {Function}  需要执行的程序函数
  * @param target {Object}    执行程序时函数中 this 的指向
  */
-const defaultDisplayMap = {};
-module.exports = function(elems, func, target) {
-    if (typeof elems !== 'object') {
+var defaultDisplayMap = {};
+module.exports = function (elems, func, target) {
+    if ((typeof elems === 'undefined' ? 'undefined' : _typeof(elems)) !== 'object') {
         elems = [];
     }
 
@@ -122,22 +165,22 @@ module.exports = function(elems, func, target) {
         elems = [elems];
     }
 
-    const hideElems = [],
+    var hideElems = [],
         hideElemsDisplay = [];
 
-    for (let i = 0, elem; elem = elems[i++];) {
+    for (var i = 0, elem; elem = elems[i++];) {
 
         while (elem instanceof HTMLElement) {
 
-            const nodeName = elem.nodeName;
+            var nodeName = elem.nodeName;
 
             if (!elem.getClientRects().length) {
                 hideElems.push(elem);
                 hideElemsDisplay.push(elem.style.display);
 
-                let display = defaultDisplayMap[nodeName];
+                var display = defaultDisplayMap[nodeName];
                 if (!display) {
-                    const temp = document.createElement(nodeName);
+                    var temp = document.createElement(nodeName);
                     document.body.appendChild(temp);
                     display = window.getComputedStyle(temp).display;
                     temp.parentNode.removeChild(temp);
@@ -154,408 +197,16 @@ module.exports = function(elems, func, target) {
         }
     }
 
-    if (typeof(func) === 'function') func.call(target || this);
+    if (typeof func === 'function') func.call(target || this);
 
-    let l = hideElems.length;
+    var l = hideElems.length;
     while (l--) {
         hideElems.pop().style.display = hideElemsDisplay.pop();
     }
-}
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-// 判断对象是否为数组
-module.exports = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.getScale = getScale;
-exports.pointRotate = pointRotate;
-exports.angleToRadian = angleToRadian;
-exports.loaclToLoacl = loaclToLoacl;
-exports.globalToLoacl = globalToLoacl;
-exports.isPercent = isPercent;
-exports.support = support;
-
-var _hideAction = __webpack_require__(0);
-
-var _hideAction2 = _interopRequireDefault(_hideAction);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// 获取最大缩放比例
-function getScale(w1, h1, w2, h2) {
-    var sx = w1 / w2;
-    var sy = h1 / h2;
-    return sx > sy ? sx : sy;
-}
-
-// 计算一个点绕原点旋转后的新坐标
-function pointRotate(point, angle) {
-    var radian = angleToRadian(angle),
-        sin = Math.sin(radian),
-        cos = Math.cos(radian);
-    return {
-        x: cos * point.x - sin * point.y,
-        y: cos * point.y + sin * point.x
-    };
-}
-
-// 角度转弧度
-function angleToRadian(angle) {
-    return angle / 180 * Math.PI;
-}
-
-// 计算layerTwo上的x、y坐标在layerOne上的坐标
-function loaclToLoacl(layerOne, layerTwo, x, y) {
-    x = x || 0;
-    y = y || 0;
-    var layerOneRect = void 0,
-        layerTwoRect = void 0;
-    (0, _hideAction2.default)([layerOne, layerTwo], function () {
-        layerOneRect = layerOne.getBoundingClientRect();
-        layerTwoRect = layerTwo.getBoundingClientRect();
-    });
-    return {
-        x: layerTwoRect.left - layerOneRect.left + x,
-        y: layerTwoRect.top - layerOneRect.top + y
-    };
-}
-
-// 计算相对于窗口的x、y坐标在layer上的坐标
-function globalToLoacl(layer, x, y) {
-    x = x || 0;
-    y = y || 0;
-    var layerRect = void 0;
-    (0, _hideAction2.default)(layer, function () {
-        layerRect = layer.getBoundingClientRect();
-    });
-    return {
-        x: x - layerRect.left,
-        y: y - layerRect.top
-    };
-}
-
-// 判断是否为百分比
-function isPercent(value) {
-    return (/%$/.test(value + '')
-    );
-}
-
-function support(prop) {
-    var testElem = document.documentElement;
-    if (prop in testElem.style) return '';
-
-    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
-        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
-
-    for (var i = 0, prefix; prefix = prefixs[i++];) {
-        if (prefix + testProp in testElem.style) {
-            return '-' + prefix.toLowerCase() + '-';
-        }
-    }
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-// 类似数组对象转数组
-module.exports = function(obj) {
-    return Array.prototype.map.call(obj, function(n) { return n });
-}
+};
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const toArray = __webpack_require__(3);
-
-// 获取元素（IE8及以上浏览器）
-module.exports = function(selector, context) {
-    if (selector instanceof HTMLElement) {
-        return [selector];
-    } else if (typeof selector === 'object' && selector.length) {
-        return toArray(selector);
-    } else if (!selector || typeof selector !== 'string') {
-        return [];
-    }
-
-    if (typeof context === 'string') {
-        context = document.querySelector(context);
-    }
-
-    if (!(context instanceof HTMLElement)) {
-        context = document;
-    }
-
-    return toArray(context.querySelectorAll(selector));
-}
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-// 设置属性
-module.exports = function(elem, prop, value) {
-    if (typeof prop === 'object') {
-        for (let p in prop) {
-            elem[p] = prop[p];
-        }
-        return elem;
-    }
-
-    if (value === undefined) {
-        return elem[prop];
-    } else {
-        elem[prop] = value;
-        return elem;
-    }
-}
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-// 设置样式
-module.exports = function(elem, prop, value) {
-    if (typeof prop === 'object') {
-        for (let p in prop) {
-            value = prop[p];
-            if (typeof value === 'number') value += 'px';
-            elem.style[p] = value;
-        }
-        return elem;
-    }
-
-    if (value === undefined) {
-        return window.getComputedStyle(elem)[prop];
-    } else {
-        if (typeof value === 'number') value += 'px';
-        elem.style[prop] = value;
-        return elem;
-    }
-}
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-// 移除元素
-module.exports = function(elem) {
-    elem.parentNode && elem.parentNode.removeChild(elem);
-}
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-// 创建元素
-module.exports = function(parentNode, className, id, prop) {
-    let elem = document.createElement('DIV');
-
-    if (typeof className === 'object') {
-        prop = className;
-        className = null;
-    }
-
-    if (typeof id === 'object') {
-        prop = id;
-        id = null;
-    }
-
-    if (typeof prop === 'object') {
-        for (let p in prop) {
-            elem.style[p] = prop[p];
-        }
-    }
-
-    if (className) elem.className = className;
-    if (id) elem.id = id;
-
-    parentNode.appendChild(elem);
-
-    return elem;
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-// 判断是否为数字类型
-module.exports = function(num) {
-    return typeof num === 'number';
-}
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-// 判断对象是否为纯粹的对象（通过 "{}" 或者 "new Object" 创建的）
-module.exports = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
-}
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-// 判断是否为函数
-module.exports = function(func) {
-    return typeof func === 'function';
-}
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-// 判断是否为布尔值
-module.exports = function(bool) {
-    return typeof bool === 'boolean';
-}
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-// 判断是否为一个对象
-module.exports = function(obj) {
-    return typeof obj === 'object';
-}
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const isArray = __webpack_require__(1);
-const isObject = __webpack_require__(13);
-const isBoolean = __webpack_require__(12);
-const isFunction = __webpack_require__(11);
-const isPlainObject = __webpack_require__(10);
-
-module.exports = function extend() {
-    let options, name, src, copy, copyIsArray,
-        target = arguments[0] || {},
-        toString = Object.prototype.toString,
-        i = 1,
-        length = arguments.length,
-        deep = false;
-
-    // 处理深拷贝
-    if (isBoolean(target)) {
-        deep = target;
-
-        // Skip the boolean and the target
-        target = arguments[i] || {};
-        i++;
-    }
-
-    // Handle case when target is a string or something (possible in deep copy)
-    if (!isObject(target) && !isFunction(target)) {
-        target = {};
-    }
-
-    // 如果没有合并的对象，则表示 target 为合并对象，将 target 合并给当前函数的持有者
-    if (i === length) {
-        target = this;
-        i--;
-    }
-
-    for (; i < length; i++) {
-
-        // Only deal with non-null/undefined values
-        if ((options = arguments[i]) != null) {
-
-            // Extend the base object
-            for (name in options) {
-                src = target[name];
-                copy = options[name];
-
-                // 防止死循环
-                if (target === copy) {
-                    continue;
-                }
-
-                // 深拷贝对象或者数组
-                if (deep && copy &&
-                    ((copyIsArray = isArray(copy)) || isPlainObject(copy))) {
-
-                    if (copyIsArray) {
-                        copyIsArray = false;
-                        src = src && isArray(src) ? src : [];
-                    } else {
-                        src = src && isPlainObject(src) ? src : {};
-                    }
-
-                    target[name] = extend(deep, src, copy);
-
-                } else if (copy !== undefined) { // 仅忽略未定义的值
-                    target[name] = copy;
-                }
-            }
-        }
-    }
-
-    // Return the modified object
-    return target;
-}
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = function(context) {
-    // 清除所有属性
-    Object.getOwnPropertyNames(context).forEach(prop => {
-        delete context[prop];
-    });
-
-    context.__proto__ = Object.prototype;
-}
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-module.exports = function(context, ...methods) {
-    methods.forEach(method => {
-        context[method] = context[method].bind(context);
-    });
-}
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__17__;
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__18__;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__19__;
-
-/***/ }),
-/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -569,63 +220,63 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _hammerjs = __webpack_require__(19);
+var _hammerjs = __webpack_require__(5);
 
 var _hammerjs2 = _interopRequireDefault(_hammerjs);
 
-var _iscrollZoom = __webpack_require__(18);
+var _iscrollZoom = __webpack_require__(6);
 
 var _iscrollZoom2 = _interopRequireDefault(_iscrollZoom);
 
-var _lrz = __webpack_require__(17);
+var _lrz = __webpack_require__(7);
 
 var _lrz2 = _interopRequireDefault(_lrz);
 
-var _bind = __webpack_require__(16);
+var _bind = __webpack_require__(8);
 
 var _bind2 = _interopRequireDefault(_bind);
 
-var _destroy2 = __webpack_require__(15);
+var _destroy2 = __webpack_require__(9);
 
 var _destroy3 = _interopRequireDefault(_destroy2);
 
-var _extend = __webpack_require__(14);
+var _extend = __webpack_require__(10);
 
 var _extend2 = _interopRequireDefault(_extend);
 
-var _isNumber = __webpack_require__(9);
+var _isNumber = __webpack_require__(2);
 
 var _isNumber2 = _interopRequireDefault(_isNumber);
 
-var _isArray = __webpack_require__(1);
+var _isArray = __webpack_require__(0);
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
-var _createElement = __webpack_require__(8);
+var _createElement = __webpack_require__(14);
 
 var _createElement2 = _interopRequireDefault(_createElement);
 
-var _removeElement = __webpack_require__(7);
+var _removeElement = __webpack_require__(15);
 
 var _removeElement2 = _interopRequireDefault(_removeElement);
 
-var _hideAction = __webpack_require__(0);
+var _hideAction = __webpack_require__(3);
 
 var _hideAction2 = _interopRequireDefault(_hideAction);
 
-var _css = __webpack_require__(6);
+var _css = __webpack_require__(16);
 
 var _css2 = _interopRequireDefault(_css);
 
-var _attr = __webpack_require__(5);
+var _attr = __webpack_require__(17);
 
 var _attr2 = _interopRequireDefault(_attr);
 
-var _$ = __webpack_require__(4);
+var _$ = __webpack_require__(18);
 
 var _$2 = _interopRequireDefault(_$);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(20);
 
 var utils = _interopRequireWildcard(_utils);
 
@@ -1659,6 +1310,440 @@ function setTransition($obj, x, y, angle, dur, fn) {
     }, dur);
 }
 module.exports = exports['default'];
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__5__;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__6__;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__7__;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (context) {
+    for (var _len = arguments.length, methods = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        methods[_key - 1] = arguments[_key];
+    }
+
+    methods.forEach(function (method) {
+        context[method] = context[method].bind(context);
+    });
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (context) {
+    // 清除所有属性
+    Object.getOwnPropertyNames(context).forEach(function (prop) {
+        delete context[prop];
+    });
+
+    context.__proto__ = Object.prototype;
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isArray = __webpack_require__(0);
+var isObject = __webpack_require__(1);
+var isBoolean = __webpack_require__(11);
+var isFunction = __webpack_require__(12);
+var isPlainObject = __webpack_require__(13);
+
+module.exports = function extend() {
+    var options = void 0,
+        name = void 0,
+        src = void 0,
+        copy = void 0,
+        copyIsArray = void 0,
+        target = arguments[0] || {},
+        toString = Object.prototype.toString,
+        i = 1,
+        length = arguments.length,
+        deep = false;
+
+    // 处理深拷贝
+    if (isBoolean(target)) {
+        deep = target;
+
+        // Skip the boolean and the target
+        target = arguments[i] || {};
+        i++;
+    }
+
+    // Handle case when target is a string or something (possible in deep copy)
+    if (!isObject(target) && !isFunction(target)) {
+        target = {};
+    }
+
+    // 如果没有合并的对象，则表示 target 为合并对象，将 target 合并给当前函数的持有者
+    if (i === length) {
+        target = this;
+        i--;
+    }
+
+    for (; i < length; i++) {
+
+        // Only deal with non-null/undefined values
+        if ((options = arguments[i]) != null) {
+
+            // Extend the base object
+            for (name in options) {
+                src = target[name];
+                copy = options[name];
+
+                // 防止死循环
+                if (target === copy) {
+                    continue;
+                }
+
+                // 深拷贝对象或者数组
+                if (deep && copy && ((copyIsArray = isArray(copy)) || isPlainObject(copy))) {
+
+                    if (copyIsArray) {
+                        copyIsArray = false;
+                        src = src && isArray(src) ? src : [];
+                    } else {
+                        src = src && isPlainObject(src) ? src : {};
+                    }
+
+                    target[name] = extend(deep, src, copy);
+                } else if (copy !== undefined) {
+                    // 仅忽略未定义的值
+                    target[name] = copy;
+                }
+            }
+        }
+    }
+
+    // Return the modified object
+    return target;
+};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 判断是否为布尔值
+module.exports = function (bool) {
+    return typeof bool === 'boolean';
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 判断是否为函数
+module.exports = function (func) {
+    return typeof func === 'function';
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 判断对象是否为纯粹的对象（通过 "{}" 或者 "new Object" 创建的）
+module.exports = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+// 创建元素
+module.exports = function (parentNode, className, id, prop) {
+    var elem = document.createElement('DIV');
+
+    if ((typeof className === 'undefined' ? 'undefined' : _typeof(className)) === 'object') {
+        prop = className;
+        className = null;
+    }
+
+    if ((typeof id === 'undefined' ? 'undefined' : _typeof(id)) === 'object') {
+        prop = id;
+        id = null;
+    }
+
+    if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) === 'object') {
+        for (var p in prop) {
+            elem.style[p] = prop[p];
+        }
+    }
+
+    if (className) elem.className = className;
+    if (id) elem.id = id;
+
+    parentNode.appendChild(elem);
+
+    return elem;
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 移除元素
+module.exports = function (elem) {
+    elem.parentNode && elem.parentNode.removeChild(elem);
+};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 设置样式
+var isObject = __webpack_require__(1);
+var isNumber = __webpack_require__(2);
+
+var cssNumber = {
+    'animationIterationCount': true,
+    'columnCount': true,
+    'fillOpacity': true,
+    'flexGrow': true,
+    'flexShrink': true,
+    'fontWeight': true,
+    'lineHeight': true,
+    'opacity': true,
+    'order': true,
+    'orphans': true,
+    'widows': true,
+    'zIndex': true,
+    'zoom': true
+};
+
+module.exports = function (elem, prop, value) {
+    if (isObject(prop)) {
+        for (var p in prop) {
+            value = prop[p];
+            if (isNumber(value) && !cssNumber[prop]) value += 'px';
+            elem.style[p] = value;
+        }
+        return elem;
+    }
+
+    if (value === undefined) {
+        return window.getComputedStyle(elem)[prop];
+    } else {
+        if (isNumber(value) && !cssNumber[prop]) value += 'px';
+        elem.style[prop] = value;
+        return elem;
+    }
+};
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+// 设置属性
+module.exports = function (elem, prop, value) {
+    if ((typeof prop === 'undefined' ? 'undefined' : _typeof(prop)) === 'object') {
+        for (var p in prop) {
+            elem[p] = prop[p];
+        }
+        return elem;
+    }
+
+    if (value === undefined) {
+        return elem[prop];
+    } else {
+        elem[prop] = value;
+        return elem;
+    }
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var toArray = __webpack_require__(19);
+
+// 获取元素（IE8及以上浏览器）
+module.exports = function (selector, context) {
+    if (selector instanceof HTMLElement) {
+        return [selector];
+    } else if ((typeof selector === 'undefined' ? 'undefined' : _typeof(selector)) === 'object' && selector.length) {
+        return toArray(selector);
+    } else if (!selector || typeof selector !== 'string') {
+        return [];
+    }
+
+    if (typeof context === 'string') {
+        context = document.querySelector(context);
+    }
+
+    if (!(context instanceof HTMLElement)) {
+        context = document;
+    }
+
+    return toArray(context.querySelectorAll(selector));
+};
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 类似数组对象转数组
+module.exports = function (obj) {
+    return Array.prototype.map.call(obj, function (n) {
+        return n;
+    });
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getScale = getScale;
+exports.pointRotate = pointRotate;
+exports.angleToRadian = angleToRadian;
+exports.loaclToLoacl = loaclToLoacl;
+exports.globalToLoacl = globalToLoacl;
+exports.isPercent = isPercent;
+exports.support = support;
+
+var _hideAction = __webpack_require__(3);
+
+var _hideAction2 = _interopRequireDefault(_hideAction);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// 获取最大缩放比例
+function getScale(w1, h1, w2, h2) {
+    var sx = w1 / w2;
+    var sy = h1 / h2;
+    return sx > sy ? sx : sy;
+}
+
+// 计算一个点绕原点旋转后的新坐标
+function pointRotate(point, angle) {
+    var radian = angleToRadian(angle),
+        sin = Math.sin(radian),
+        cos = Math.cos(radian);
+    return {
+        x: cos * point.x - sin * point.y,
+        y: cos * point.y + sin * point.x
+    };
+}
+
+// 角度转弧度
+function angleToRadian(angle) {
+    return angle / 180 * Math.PI;
+}
+
+// 计算layerTwo上的x、y坐标在layerOne上的坐标
+function loaclToLoacl(layerOne, layerTwo, x, y) {
+    x = x || 0;
+    y = y || 0;
+    var layerOneRect = void 0,
+        layerTwoRect = void 0;
+    (0, _hideAction2.default)([layerOne, layerTwo], function () {
+        layerOneRect = layerOne.getBoundingClientRect();
+        layerTwoRect = layerTwo.getBoundingClientRect();
+    });
+    return {
+        x: layerTwoRect.left - layerOneRect.left + x,
+        y: layerTwoRect.top - layerOneRect.top + y
+    };
+}
+
+// 计算相对于窗口的x、y坐标在layer上的坐标
+function globalToLoacl(layer, x, y) {
+    x = x || 0;
+    y = y || 0;
+    var layerRect = void 0;
+    (0, _hideAction2.default)(layer, function () {
+        layerRect = layer.getBoundingClientRect();
+    });
+    return {
+        x: x - layerRect.left,
+        y: y - layerRect.top
+    };
+}
+
+// 判断是否为百分比
+function isPercent(value) {
+    return (/%$/.test(value + '')
+    );
+}
+
+function support(prop) {
+    var testElem = document.documentElement;
+    if (prop in testElem.style) return '';
+
+    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
+        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
+
+    for (var i = 0, prefix; prefix = prefixs[i++];) {
+        if (prefix + testProp in testElem.style) {
+            return '-' + prefix.toLowerCase() + '-';
+        }
+    }
+}
 
 /***/ })
 /******/ ]);
