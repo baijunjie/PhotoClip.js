@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.4.3
+ * @version v3.4.4
  * @author baijunjie
  * @license MIT
  * 
