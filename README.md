@@ -1,4 +1,4 @@
-# PhotoClip.js v3
+# PhotoClip.js v3 [![npm version](https://badge.fury.io/js/photoclip.svg)](https://badge.fury.io/js/photoclip)
 一款手势驱动的裁图插件，**移动端照片裁剪的简洁化解决方案！**
 
 - 在移动设备上双指捏合为缩放，双指转动为旋转
