@@ -52,21 +52,3 @@ export function globalToLoacl(layer, x, y) {
     };
 }
 
-// 判断是否为百分比
-export function isPercent(value) {
-    return /%$/.test(value + '');
-}
-
-export function support(prop) {
-    const testElem = document.documentElement;
-    if (prop in testElem.style) return '';
-
-    const testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
-        prefixs = [ 'Webkit', 'Moz', 'ms', 'O' ];
-
-    for (let i = 0, prefix; prefix = prefixs[i++];) {
-        if ((prefix + testProp) in testElem.style) {
-            return '-' + prefix.toLowerCase() + '-';
-        }
-    }
-}

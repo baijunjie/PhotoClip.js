@@ -6,9 +6,11 @@ import destroy from '@module-factory/utils/destroy';
 import extend from '@module-factory/utils/extend';
 import isNumber from '@module-factory/utils/isNumber';
 import isArray from '@module-factory/utils/isArray';
+import isPercent from '@module-factory/utils/isPercent';
 import createElement from '@module-factory/utils/createElement';
 import removeElement from '@module-factory/utils/removeElement';
 import hideAction from '@module-factory/utils/hideAction';
+import support from '@module-factory/utils/support';
 import css from '@module-factory/utils/css';
 import attr from '@module-factory/utils/attr';
 import $ from '@module-factory/utils/$';
@@ -18,8 +20,8 @@ const is_mobile = !!navigator.userAgent.match(/mobile/i),
     is_android = !!navigator.userAgent.match(/android/i),
 
     // 测试浏览器是否支持 Transition 动画，以及支持的前缀
-    supportTransition = utils.support('transition'),
-    prefix = utils.support('transform'),
+    supportTransition = support('transition'),
+    prefix = support('transform'),
 
     noop = function() {};
 
@@ -108,8 +110,8 @@ export default class PhotoClip {
 
         // 变量初始化
         if (isArray(options.adaptive)) {
-            this._widthIsPercent = options.adaptive[0] && utils.isPercent(options.adaptive[0]) ? options.adaptive[0] : false;
-            this._heightIsPercent = options.adaptive[1] && utils.isPercent(options.adaptive[1]) ? options.adaptive[1] : false;
+            this._widthIsPercent = options.adaptive[0] && isPercent(options.adaptive[0]) ? options.adaptive[0] : false;
+            this._heightIsPercent = options.adaptive[1] && isPercent(options.adaptive[1]) ? options.adaptive[1] : false;
         }
 
         this._outputWidth = options.outputSize[0];

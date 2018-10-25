@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.4.4
+ * @version v3.4.5
  * @author baijunjie
  * @license MIT
  * 
@@ -252,11 +252,15 @@ var _isArray = __webpack_require__(0);
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
-var _createElement = __webpack_require__(14);
+var _isPercent = __webpack_require__(14);
+
+var _isPercent2 = _interopRequireDefault(_isPercent);
+
+var _createElement = __webpack_require__(15);
 
 var _createElement2 = _interopRequireDefault(_createElement);
 
-var _removeElement = __webpack_require__(15);
+var _removeElement = __webpack_require__(16);
 
 var _removeElement2 = _interopRequireDefault(_removeElement);
 
@@ -264,19 +268,23 @@ var _hideAction = __webpack_require__(3);
 
 var _hideAction2 = _interopRequireDefault(_hideAction);
 
-var _css = __webpack_require__(16);
+var _support = __webpack_require__(17);
+
+var _support2 = _interopRequireDefault(_support);
+
+var _css = __webpack_require__(18);
 
 var _css2 = _interopRequireDefault(_css);
 
-var _attr = __webpack_require__(17);
+var _attr = __webpack_require__(19);
 
 var _attr2 = _interopRequireDefault(_attr);
 
-var _$ = __webpack_require__(18);
+var _$ = __webpack_require__(20);
 
 var _$2 = _interopRequireDefault(_$);
 
-var _utils = __webpack_require__(20);
+var _utils = __webpack_require__(22);
 
 var utils = _interopRequireWildcard(_utils);
 
@@ -291,8 +299,8 @@ var is_mobile = !!navigator.userAgent.match(/mobile/i),
 
 
 // 测试浏览器是否支持 Transition 动画，以及支持的前缀
-supportTransition = utils.support('transition'),
-    prefix = utils.support('transform'),
+supportTransition = (0, _support2.default)('transition'),
+    prefix = (0, _support2.default)('transform'),
     noop = function noop() {};
 
 var defaultOptions = {
@@ -387,8 +395,8 @@ var PhotoClip = function () {
 
             // 变量初始化
             if ((0, _isArray2.default)(options.adaptive)) {
-                this._widthIsPercent = options.adaptive[0] && utils.isPercent(options.adaptive[0]) ? options.adaptive[0] : false;
-                this._heightIsPercent = options.adaptive[1] && utils.isPercent(options.adaptive[1]) ? options.adaptive[1] : false;
+                this._widthIsPercent = options.adaptive[0] && (0, _isPercent2.default)(options.adaptive[0]) ? options.adaptive[0] : false;
+                this._heightIsPercent = options.adaptive[1] && (0, _isPercent2.default)(options.adaptive[1]) ? options.adaptive[1] : false;
             }
 
             this._outputWidth = options.outputSize[0];
@@ -1488,6 +1496,19 @@ module.exports = function (obj) {
 "use strict";
 
 
+// 判断是否为百分比
+module.exports = function (value) {
+    return (/%$/.test(value + '')
+    );
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 // 创建元素
@@ -1519,7 +1540,7 @@ module.exports = function (parentNode, className, id, prop) {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1531,7 +1552,34 @@ module.exports = function (elem) {
 };
 
 /***/ }),
-/* 16 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// 返回指定属性在当前浏览器中的兼容前缀
+// 如果无需兼容前缀，则返回一个空字符串
+// all 是一个布尔值，如果为 true，则会返回包含前缀的属性名
+module.exports = function (prop, all) {
+    var returnProp = all ? prop : '';
+    var testElem = document.documentElement;
+    if (prop in testElem.style) return returnProp;
+
+    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
+        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
+
+    for (var i = 0, prefix; prefix = prefixs[i++];) {
+        if (prefix + testProp in testElem.style) {
+            return '-' + prefix.toLowerCase() + '-' + returnProp;
+        }
+    }
+
+    return returnProp;
+};
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1577,7 +1625,7 @@ module.exports = function (elem, prop, value) {
 };
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1603,7 +1651,7 @@ module.exports = function (elem, prop, value) {
 };
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1611,7 +1659,7 @@ module.exports = function (elem, prop, value) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var toArray = __webpack_require__(19);
+var toArray = __webpack_require__(21);
 
 // 获取元素（IE8及以上浏览器）
 module.exports = function (selector, context) {
@@ -1635,7 +1683,7 @@ module.exports = function (selector, context) {
 };
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1649,7 +1697,7 @@ module.exports = function (obj) {
 };
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1663,8 +1711,6 @@ exports.pointRotate = pointRotate;
 exports.angleToRadian = angleToRadian;
 exports.loaclToLoacl = loaclToLoacl;
 exports.globalToLoacl = globalToLoacl;
-exports.isPercent = isPercent;
-exports.support = support;
 
 var _hideAction = __webpack_require__(3);
 
@@ -1723,26 +1769,6 @@ function globalToLoacl(layer, x, y) {
         x: x - layerRect.left,
         y: y - layerRect.top
     };
-}
-
-// 判断是否为百分比
-function isPercent(value) {
-    return (/%$/.test(value + '')
-    );
-}
-
-function support(prop) {
-    var testElem = document.documentElement;
-    if (prop in testElem.style) return '';
-
-    var testProp = prop.charAt(0).toUpperCase() + prop.substr(1),
-        prefixs = ['Webkit', 'Moz', 'ms', 'O'];
-
-    for (var i = 0, prefix; prefix = prefixs[i++];) {
-        if (prefix + testProp in testElem.style) {
-            return '-' + prefix.toLowerCase() + '-';
-        }
-    }
 }
 
 /***/ })

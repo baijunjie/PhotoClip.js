@@ -60,9 +60,9 @@
     inquirer "^6.0.0"
     isbinaryfile "^3.0.2"
 
-"@module-factory/utils@^0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@module-factory/utils/-/utils-0.1.10.tgz#e4abfcb9df8edf2126b078fcdee4b48d1651eb77"
+"@module-factory/utils@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@module-factory/utils/-/utils-0.1.12.tgz#24a86da16d45214663b60ebd0efdecbbdd797b24"
 
 "@module-factory/utils@latest":
   version "0.1.9"
