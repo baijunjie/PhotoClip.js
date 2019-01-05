@@ -25,7 +25,7 @@ module.exports = {
     // https://webpack.js.org/configuration/dev-server/
     devServer: {
       host: 'localhost',
-      port: 9000
+      port: 3000
     }
   },
 

@@ -131,10 +131,6 @@ export default class PhotoClip {
         this._containerWidth = 0;
         this._containerHeight = 0;
 
-        this._$clipLayer = null; // 裁剪层，包含移动层
-        this._$moveLayer = null; // 移动层，包含旋转层
-        this._$rotationLayer = null; // 旋转层
-
         this._viewList = null; // 最终截图后呈现的视图容器的DOM数组
         this._fileList = null; // file 控件的DOM数组
         this._okList = null; // 截图按钮的DOM数组
@@ -146,17 +142,27 @@ export default class PhotoClip {
         this._$mask_bottom = null;
         this._$clip_frame = null;
 
+        this._$clipLayer = null; // 裁剪层，包含移动层
+        this._$moveLayer = null; // 移动层，包含旋转层
+        this._$rotateLayer = null; // 旋转层
+
+        this._moveLayerWidth = 0; // 移动层的宽度(不跟随scale发生变化)
+        this._moveLayerHeight = 0; // 移动层的高度(不跟随scale发生变化)
+        this._moveLayerPaddingLeft = 0; // 当图片宽度小于裁剪框宽度时，移动层的补偿左边距(不跟随scale发生变化)
+        this._moveLayerPaddingTop = 0; // 当图片高度小于裁剪框高度时，移动层的补偿顶边距(不跟随scale发生变化)
+
         this._atRotation = false; // 旋转层是否正在旋转中
-        this._rotationLayerWidth = 0; // 旋转层的宽度
-        this._rotationLayerHeight = 0; // 旋转层的高度
-        this._rotationLayerX = 0; // 旋转层的当前X坐标
-        this._rotationLayerY = 0; // 旋转层的当前Y坐标
-        this._rotationLayerOriginX = 0; // 旋转层的旋转参考点X
-        this._rotationLayerOriginY = 0; // 旋转层的旋转参考点Y
+        this._rotateLayerWidth = 0; // 旋转层所呈现矩形的宽度(不跟随scale发生变化)
+        this._rotateLayerHeight = 0; // 旋转层所呈现矩形的高度(不跟随scale发生变化)
+        this._rotateLayerX = 0; // 旋转层的当前X坐标(不跟随scale发生变化)
+        this._rotateLayerY = 0; // 旋转层的当前Y坐标(不跟随scale发生变化)
+        this._rotateLayerOriginX = 0; // 旋转层的旋转参考点X(不跟随scale发生变化)
+        this._rotateLayerOriginY = 0; // 旋转层的旋转参考点Y(不跟随scale发生变化)
         this._curAngle = 0; // 旋转层的当前角度
 
         bind(
             this,
+            '_resetScroll',
             '_rotateCW90',
             '_fileOnChangeHandle',
             '_clipImg',
@@ -217,7 +223,7 @@ export default class PhotoClip {
         });
 
         this._$moveLayer = createElement(this._$clipLayer, 'photo-clip-move-layer');
-        this._$rotationLayer = createElement(this._$moveLayer, 'photo-clip-rotation-layer');
+        this._$rotateLayer = createElement(this._$moveLayer, 'photo-clip-rotate-layer');
 
         // 创建遮罩
         const $mask = this._$mask = createElement($container, 'photo-clip-mask', {
@@ -310,6 +316,43 @@ export default class PhotoClip {
             wheelAction: 'zoom',
             bounceTime: 300
         });
+
+        this._iScroll.on('zoomEnd', () => {
+            this._calcScale();
+            this._resizeMoveLayer();
+            this._refreshScroll();
+        });
+    }
+
+    // 重置 iScroll
+    _resetScroll() {
+        const iScroll = this._iScroll;
+
+        this._calcScale();
+
+        const scale = iScroll.scale = iScroll.options.startZoom;
+
+        this._resizeMoveLayer();
+
+        // 重置旋转层
+        this._rotateLayerX = 0;
+        this._rotateLayerY = 0;
+        this._curAngle = 0;
+
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            this._curAngle
+        );
+
+        // 初始化居中
+        iScroll.scrollTo(
+            (this._clipWidth - this._moveLayerWidth * scale) * .5,
+            (this._clipHeight - this._moveLayerHeight * scale) * .5
+        );
+
+        this._refreshScroll();
     }
 
     // 刷新 iScroll
@@ -317,20 +360,65 @@ export default class PhotoClip {
     _refreshScroll(duration) {
         duration = duration || 0;
 
-        const iScrollOptions = this._iScroll.options,
-            maxZoom = this._options.maxZoom,
-            width = this._rotationLayerWidth,
-            height = this._rotationLayerHeight;
+        const iScroll = this._iScroll,
+            scale = iScroll.scale,
+            iScrollOptions = iScroll.options;
 
-        if (width && height) {
-            iScrollOptions.zoomMin = utils.getScale(this._clipWidth, this._clipHeight, width, height);
-            iScrollOptions.zoomMax = Math.max(maxZoom, iScrollOptions.zoomMin);
-            iScrollOptions.startZoom = Math.min(iScrollOptions.zoomMax, utils.getScale(this._containerWidth, this._containerHeight, width, height));
-        } else {
-            iScrollOptions.zoomMin = 1;
-            iScrollOptions.zoomMax = maxZoom;
-            iScrollOptions.startZoom = 1;
+        const lastScale = Math.max(iScrollOptions.zoomMin, Math.min(iScrollOptions.zoomMax, scale));
+        if (lastScale !== scale) {
+            iScroll.zoom(lastScale, undefined, undefined, duration);
         }
+
+        iScroll.refresh(duration);
+    }
+
+    // 调整移动层
+    _resizeMoveLayer() {
+        const iScroll = this._iScroll,
+            iScrollOptions = iScroll.options,
+            scale = Math.max(iScrollOptions.zoomMin, Math.min(iScrollOptions.zoomMax, iScroll.scale));
+
+        let width = this._rotateLayerWidth,
+            height = this._rotateLayerHeight,
+            clipWidth = this._clipWidth / scale,
+            clipHeight = this._clipHeight / scale,
+            ltClipArea = false;
+
+        if (clipWidth > width) {
+            ltClipArea = true;
+            const offset = clipWidth - width;
+            width += offset * 2;
+            iScroll.x += (this._moveLayerPaddingLeft - offset) * scale;
+            this._moveLayerPaddingLeft = offset;
+        } else {
+            this._moveLayerPaddingLeft = 0;
+        }
+
+        if (clipHeight > height) {
+            ltClipArea = true;
+            const offset = clipHeight - height;
+            height += offset * 2;
+            iScroll.y += (this._moveLayerPaddingTop - offset) * scale;
+            this._moveLayerPaddingTop = offset;
+        } else {
+            this._moveLayerPaddingTop = 0;
+        }
+
+        if (ltClipArea) {
+            setTransform(
+                this._$rotateLayer,
+                this._rotateLayerX + this._moveLayerPaddingLeft,
+                this._rotateLayerY + this._moveLayerPaddingTop,
+                this._curAngle
+            );
+            iScroll.scrollTo(iScroll.x, iScroll.y);
+        }
+
+        if (this._moveLayerWidth === width &&
+            this._moveLayerHeight === height) return;
+
+        this._moveLayerWidth = width;
+        this._moveLayerHeight = height;
 
         css(this._$moveLayer, {
             'width': width,
@@ -342,37 +430,28 @@ export default class PhotoClip {
         // iscroll 在刷新方法中正是使用了 offsetWidth/offsetHeight 来获取scroller元素($moveLayer)的宽高
         // 因此需要手动将元素重新添加进文档，迫使浏览器强制更新元素的宽高
         this._$clipLayer.appendChild(this._$moveLayer);
-
-        this._iScroll.refresh(duration);
     }
 
-    // 重置 iScroll
-    _resetScroll(width, height) {
-        width = width || 0;
-        height = height || 0;
-
-        // 重置旋转层
-        this._rotationLayerWidth = width;
-        this._rotationLayerHeight = height;
-        this._rotationLayerX = 0;
-        this._rotationLayerY = 0;
-        this._curAngle = 0;
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
-
-        css(this._$rotationLayer, {
-            'width': width,
-            'height': height
-        });
-
-        this._refreshScroll();
-
+    _calcScale() {
         const iScroll = this._iScroll,
-            scale = iScroll.scale,
-            posX = (this._clipWidth - width * scale) * .5,
-            posY = (this._clipHeight - height * scale) * .5;
+            iScrollOptions = iScroll.options,
+            width = this._rotateLayerWidth,
+            height = this._rotateLayerHeight,
+            maxZoom = this._options.maxZoom;
 
-        iScroll.scrollTo(posX, posY);
-        iScroll.zoom(iScroll.options.startZoom, undefined, undefined, 0);
+        if (width && height) {
+            iScrollOptions.zoomMin = Math.min(1, utils.getScale(this._clipWidth, this._clipHeight, width, height));
+            iScrollOptions.zoomMax = maxZoom;
+            iScrollOptions.startZoom = Math.min(maxZoom, utils.getScale(this._containerWidth, this._containerHeight, width, height));
+        } else {
+            iScrollOptions.zoomMin = 1;
+            iScrollOptions.zoomMax = 1;
+            iScrollOptions.startZoom = 1;
+        }
+
+        // console.log('zoomMin', iScrollOptions.zoomMin);
+        // console.log('zoomMax', iScrollOptions.zoomMax);
+        // console.log('startZoom', iScrollOptions.startZoom);
     }
 
     _initRotationEvent() {
@@ -393,7 +472,7 @@ export default class PhotoClip {
 
                 if (rotateFree) {
                     startAngle = (e.rotation - this._curAngle) % 360;
-                    this._rotationLayerRotateReady(e.center);
+                    this._rotateLayerRotateReady(e.center);
                 } else {
                     startAngle = e.rotation;
                 }
@@ -402,7 +481,7 @@ export default class PhotoClip {
             this._hammerManager.on('rotatemove', e => {
                 if (!startTouch) return;
                 curAngle = e.rotation - startAngle;
-                rotateFree && this._rotationLayerRotate(curAngle);
+                rotateFree && this._rotateLayerRotate(curAngle);
             });
 
             this._hammerManager.on('rotateend rotatecancel', e => {
@@ -438,7 +517,7 @@ export default class PhotoClip {
                     curAngle += 360 - angle;
                 }
 
-                this._rotationLayerRotateFinish(curAngle, bounceTime);
+                this._rotateLayerRotateFinish(curAngle, bounceTime);
             });
         } else {
             this._$moveLayer.addEventListener('dblclick', this._rotateCW90);
@@ -456,21 +535,21 @@ export default class PhotoClip {
     _rotateTo(angle, duration, center) {
         if (this._atRotation) return;
 
-        this._rotationLayerRotateReady(center);
+        this._rotateLayerRotateReady(center);
 
         // 旋转层旋转结束
-        this._rotationLayerRotateFinish(angle, duration);
+        this._rotateLayerRotateFinish(angle, duration);
     }
 
     // 旋转层旋转准备
-    _rotationLayerRotateReady(center) {
+    _rotateLayerRotateReady(center) {
         const scale = this._iScroll.scale;
         let coord; // 旋转参考点在移动层中的坐标
 
         if (!center) {
-            coord = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer, this._clipWidth * .5, this._clipHeight * .5);
+            coord = utils.loaclToLoacl(this._$moveLayer, this._$clipLayer, this._clipWidth * .5, this._clipHeight * .5);
         } else {
-            coord = utils.globalToLoacl(this._$rotationLayer, center.x, center.y);
+            coord = utils.globalToLoacl(this._$moveLayer, center.x, center.y);
         }
 
         // 由于得到的坐标是在缩放后坐标系上的坐标，因此需要除以缩放比例
@@ -479,85 +558,116 @@ export default class PhotoClip {
 
         // 旋转参考点相对于旋转层零位（旋转层旋转前左上角）的坐标
         const coordBy0 = {
-            x: coord.x - this._rotationLayerX,
-            y: coord.y - this._rotationLayerY
+            x: coord.x - (this._rotateLayerX + this._moveLayerPaddingLeft),
+            y: coord.y - (this._rotateLayerY + this._moveLayerPaddingTop)
         };
 
         // 求出旋转层旋转前的旋转参考点
         // 这个参考点就是旋转中心点映射在旋转层图片上的坐标
         // 这个位置表示旋转层旋转前，该点所对应的坐标
         const origin = utils.pointRotate(coordBy0, -this._curAngle);
-        this._rotationLayerOriginX = origin.x;
-        this._rotationLayerOriginY = origin.y;
+        this._rotateLayerOriginX = origin.x;
+        this._rotateLayerOriginY = origin.y;
 
         // 设置参考点，算出新参考点作用下的旋转层位移，然后进行补差
-        const rect = this._$rotationLayer.getBoundingClientRect();
-        setOrigin(this._$rotationLayer, this._rotationLayerOriginX, this._rotationLayerOriginY);
-        const newRect = this._$rotationLayer.getBoundingClientRect();
-        this._rotationLayerX += (rect.left - newRect.left) / scale;
-        this._rotationLayerY += (rect.top - newRect.top) / scale;
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle);
+        const rect = this._$rotateLayer.getBoundingClientRect();
+        setOrigin(
+            this._$rotateLayer,
+            this._rotateLayerOriginX,
+            this._rotateLayerOriginY
+        );
+        const newRect = this._$rotateLayer.getBoundingClientRect();
+        this._rotateLayerX += (rect.left - newRect.left) / scale;
+        this._rotateLayerY += (rect.top - newRect.top) / scale;
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            this._curAngle
+        );
     }
 
     // 旋转层旋转
-    _rotationLayerRotate(angle) {
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
+    _rotateLayerRotate(angle) {
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            angle
+        );
         this._curAngle = angle;
     }
 
     // 旋转层旋转结束
-    _rotationLayerRotateFinish(angle, duration) {
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, angle);
+    _rotateLayerRotateFinish(angle, duration) {
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            angle
+        );
+
+        const iScroll = this._iScroll,
+            scale = iScroll.scale,
+            iScrollOptions = iScroll.options;
 
         // 获取旋转后的矩形
-        const rect = this._$rotationLayer.getBoundingClientRect();
+        const rect = this._$rotateLayer.getBoundingClientRect();
+
+        // 更新旋转层当前所呈现矩形的宽高
+        this._rotateLayerWidth = rect.width / scale;
+        this._rotateLayerHeight = rect.height / scale;
 
         // 当参考点为零时，获取位移后的矩形
-        setOrigin(this._$rotationLayer, 0, 0);
-        const rectByOrigin0 = this._$rotationLayer.getBoundingClientRect();
+        setOrigin(this._$rotateLayer, 0, 0);
+        const rectByOrigin0 = this._$rotateLayer.getBoundingClientRect();
 
         // 获取旋转前（零度）的矩形
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, 0);
-        const rectByAngle0 = this._$rotationLayer.getBoundingClientRect(),
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            0
+        );
+        const rectByAngle0 = this._$rotateLayer.getBoundingClientRect();
 
-            // 获取移动层的矩形
-            moveLayerRect = this._$moveLayer.getBoundingClientRect(),
+        // 当参考点为零时，旋转层旋转后，在形成的新矩形中，旋转层零位（旋转层旋转前左上角）的新坐标
+        this._rotateLayerX = (rectByAngle0.left - rectByOrigin0.left) / scale;
+        this._rotateLayerY = (rectByAngle0.top - rectByOrigin0.top) / scale;
 
-            iScroll = this._iScroll,
-            scale = iScroll.scale;
+        this._calcScale();
+        this._resizeMoveLayer();
+
+        // 获取移动层的矩形
+        const moveLayerRect = this._$moveLayer.getBoundingClientRect();
 
         // 求出移动层与旋转层之间的位置偏移
         // 由于直接应用在移动层，因此不需要根据缩放换算
         // 注意，这里的偏移有可能还包含缩放过量时多出来的偏移
         let offset = {
-            x: rect.left - moveLayerRect.left,
-            y: rect.top - moveLayerRect.top
+            x: rect.left - (this._moveLayerPaddingLeft * scale) - moveLayerRect.left,
+            y: rect.top - (this._moveLayerPaddingTop * scale) - moveLayerRect.top
         };
-
-        // 更新旋转层当前所呈现矩形的宽高
-        this._rotationLayerWidth = rect.width / scale;
-        this._rotationLayerHeight = rect.height / scale;
-        // 当参考点为零时，旋转层旋转后，在形成的新矩形中，旋转层零位（旋转层旋转前左上角）的新坐标
-        this._rotationLayerX = (rectByAngle0.left - rectByOrigin0.left) / scale;
-        this._rotationLayerY = (rectByAngle0.top - rectByOrigin0.top) / scale;
 
         iScroll.scrollTo(
             iScroll.x + offset.x,
             iScroll.y + offset.y
         );
+
         this._refreshScroll(iScroll.options.bounceTime);
 
-        // 由于双指旋转时也伴随着缩放，因此这里代码执行完后，将会执行 iscroll 的 _zoomEnd
-        // 而该方法会基于 touchstart 时记录的位置重新计算 x、y，这将导致手指离开屏幕后，移动层又会向回移动一段距离
-        // 所以这里也要将 startX、startY 这两个值进行补差，而这个差值必须是最终的正常比例对应的值
         // 由于 offset 可能还包含缩放过量时多出来的偏移
         // 因此，这里判断是否缩放过量
-        const lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
+        const lastScale = Math.max(iScrollOptions.zoomMin, Math.min(iScrollOptions.zoomMax, scale));
         if (lastScale !== scale) {
             // 当缩放过量时，将 offset 换算为最终的正常比例对应的值
             offset.x = offset.x / scale * lastScale;
             offset.y = offset.y / scale * lastScale;
         }
+
+        // 由于双指旋转时也伴随着缩放，因此这里代码执行完后，将会执行 iscroll 的 _zoomEnd
+        // 而该方法会基于 touchstart 时记录的位置重新计算 x、y，这将导致手指离开屏幕后，移动层又会向回移动一段距离
+        // 所以这里也要将 startX、startY 这两个值进行补差，而这个差值必须是最终的正常比例对应的值
         iScroll.startX += offset.x;
         iScroll.startY += offset.y;
 
@@ -568,15 +678,35 @@ export default class PhotoClip {
                 y: (rectByOrigin0.top - rect.top) / scale
             };
             // 将旋转参考点设回前值，同时调整偏移量，保证视图位置不变，准备开始动画
-            setOrigin(this._$rotationLayer, this._rotationLayerOriginX, this._rotationLayerOriginY);
-            setTransform(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, this._curAngle);
+            setOrigin(
+                this._$rotateLayer,
+                this._rotateLayerOriginX,
+                this._rotateLayerOriginY
+            );
+
+            const targetX = this._rotateLayerX + this._moveLayerPaddingLeft + offset.x,
+                targetY = this._rotateLayerY + this._moveLayerPaddingTop + offset.y;
+
+            setTransform(
+                this._$rotateLayer,
+                targetX,
+                targetY,
+                this._curAngle
+            );
 
             // 开始旋转
             this._atRotation = true;
-            setTransition(this._$rotationLayer, this._rotationLayerX + offset.x, this._rotationLayerY + offset.y, angle, duration, () => {
-                this._atRotation = false;
-                this._rotateFinishUpdataElem(angle);
-            });
+            setTransition(
+                this._$rotateLayer,
+                targetX,
+                targetY,
+                angle,
+                duration,
+                () => {
+                    this._atRotation = false;
+                    this._rotateFinishUpdataElem(angle);
+                }
+            );
         } else {
             this._rotateFinishUpdataElem(angle);
         }
@@ -584,8 +714,17 @@ export default class PhotoClip {
 
     // 旋转结束更新相关元素
     _rotateFinishUpdataElem(angle) {
-        setOrigin(this._$rotationLayer, this._rotationLayerOriginX = 0, this._rotationLayerOriginY = 0);
-        setTransform(this._$rotationLayer, this._rotationLayerX, this._rotationLayerY, this._curAngle = angle % 360);
+        setOrigin(
+            this._$rotateLayer,
+            this._rotateLayerOriginX = 0,
+            this._rotateLayerOriginY = 0
+        );
+        setTransform(
+            this._$rotateLayer,
+            this._rotateLayerX + this._moveLayerPaddingLeft,
+            this._rotateLayerY + this._moveLayerPaddingTop,
+            this._curAngle = angle % 360
+        );
     }
 
     _initFile() {
@@ -658,6 +797,7 @@ export default class PhotoClip {
         this._$img = new Image();
 
         css(this._$img, {
+            'display': 'block',
             'user-select': 'none',
             'pointer-events': 'none'
         });
@@ -665,13 +805,18 @@ export default class PhotoClip {
         this._$img.onload = e => {
             const img = e.target;
             this._imgLoaded = true;
+
             options.loadComplete.call(this, img);
 
-            this._$rotationLayer.appendChild(img);
-
-            hideAction([img, this._$moveLayer], () => {
-                this._resetScroll(img.naturalWidth, img.naturalHeight);
+            this._$rotateLayer.appendChild(img);
+            this._rotateLayerWidth = img.naturalWidth;
+            this._rotateLayerHeight = img.naturalHeight;
+            css(this._$rotateLayer, {
+                'width': this._rotateLayerWidth,
+                'height': this._rotateLayerHeight
             });
+
+            hideAction([img, this._$moveLayer], this._resetScroll);
         };
 
         this._$img.onerror = e => {
@@ -690,7 +835,7 @@ export default class PhotoClip {
             return;
         }
 
-        const local = utils.loaclToLoacl(this._$rotationLayer, this._$clipLayer),
+        const local = utils.loaclToLoacl(this._$moveLayer, this._$clipLayer),
             scale = this._iScroll.scale,
             ctx = this._canvas.getContext('2d');
 
@@ -708,12 +853,15 @@ export default class PhotoClip {
         }
 
         ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-        ctx.fillStyle = options.style.jpgFillColor;
+        ctx.fillStyle = options.outputType === 'image/png' ? 'transparent' : options.style.jpgFillColor;
         ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
         ctx.save();
 
         ctx.scale(scaleX, scaleY);
-        ctx.translate(this._rotationLayerX - local.x / scale, this._rotationLayerY - local.y / scale);
+        ctx.translate(
+            this._rotateLayerX + this._moveLayerPaddingLeft - local.x / scale,
+            this._rotateLayerY + this._moveLayerPaddingTop - local.y / scale
+        );
         ctx.rotate(this._curAngle * Math.PI / 180);
 
         ctx.drawImage(this._$img, 0, 0);
@@ -723,7 +871,7 @@ export default class PhotoClip {
             const dataURL = this._canvas.toDataURL(options.outputType, options.outputQuality);
             if (this._viewList) {
                 this._viewList.forEach($view => {
-                    css($view, 'background-image', 'url('+ dataURL +')');
+                    css($view, 'background-image', `url(${dataURL})`);
                 });
             }
 
@@ -813,6 +961,8 @@ export default class PhotoClip {
         css(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
 
         if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
+            this._calcScale();
+            this._resizeMoveLayer();
             this._refreshScroll();
 
             const iScroll = this._iScroll,
@@ -820,11 +970,6 @@ export default class PhotoClip {
                 offsetX = (clipWidth - oldClipWidth) * .5 * scale,
                 offsetY = (clipHeight - oldClipHeight) * .5 * scale;
             iScroll.scrollBy(offsetX, offsetY);
-
-            const lastScale = Math.max(iScroll.options.zoomMin, Math.min(iScroll.options.zoomMax, scale));
-            if (lastScale !== scale) {
-                iScroll.zoom(lastScale, undefined, undefined, 0);
-            }
         }
     }
 
