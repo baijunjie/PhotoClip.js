@@ -1,6 +1,6 @@
 /*!
  * PhotoClip - 一款手势驱动的裁图插件
- * @version v3.4.6
+ * @version v3.4.7
  * @author baijunjie
  * @license MIT
  * 
@@ -15,7 +15,7 @@
 		exports["PhotoClip"] = factory(require("hammerjs"), require("iscroll/build/iscroll-zoom"), require("lrz"));
 	else
 		root["PhotoClip"] = factory(root["Hammer"], root["IScroll"], root["lrz"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__5__, __WEBPACK_EXTERNAL_MODULE__6__, __WEBPACK_EXTERNAL_MODULE__7__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE__5__, __WEBPACK_EXTERNAL_MODULE__6__, __WEBPACK_EXTERNAL_MODULE__7__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -252,7 +252,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.default = void 0;
+  _exports["default"] = void 0;
   _hammerjs = _interopRequireDefault(_hammerjs);
   _iscrollZoom = _interopRequireDefault(_iscrollZoom);
   _lrz = _interopRequireDefault(_lrz);
@@ -271,9 +271,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   _$ = _interopRequireDefault(_$);
   utils = _interopRequireWildcard(utils);
 
-  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
 
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
   function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -286,8 +286,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var is_mobile = !!navigator.userAgent.match(/mobile/i),
       is_android = !!navigator.userAgent.match(/android/i),
       // 测试浏览器是否支持 Transition 动画，以及支持的前缀
-  supportTransition = (0, _support.default)('transition'),
-      prefix = (0, _support.default)('transform'),
+  supportTransition = (0, _support["default"])('transition'),
+      prefix = (0, _support["default"])('transform'),
       noop = function noop() {};
 
   var defaultOptions = {
@@ -333,7 +333,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function PhotoClip(container, options) {
       _classCallCheck(this, PhotoClip);
 
-      container = (0, _$.default)(container); // 获取容器
+      container = (0, _$["default"])(container); // 获取容器
 
       if (container && container.length) {
         this._$container = container[0];
@@ -341,7 +341,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      this._options = (0, _extend.default)(true, {}, defaultOptions, options);
+      this._options = (0, _extend["default"])(true, {}, defaultOptions, options);
 
       if (prefix === undefined) {
         this._options.errorMsg.noSupport && alert(this._options.errorMsg.noSupport);
@@ -357,22 +357,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var options = this._options; // options 预设
 
-        if ((0, _isNumber.default)(options.size)) {
+        if ((0, _isNumber["default"])(options.size)) {
           options.size = [options.size, options.size];
-        } else if ((0, _isArray.default)(options.size)) {
-          if (!(0, _isNumber.default)(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
-          if (!(0, _isNumber.default)(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
+        } else if ((0, _isArray["default"])(options.size)) {
+          if (!(0, _isNumber["default"])(options.size[0]) || options.size[0] <= 0) options.size[0] = defaultOptions.size[0];
+          if (!(0, _isNumber["default"])(options.size[1]) || options.size[1] <= 0) options.size[1] = defaultOptions.size[1];
         } else {
-          options.size = (0, _extend.default)({}, defaultOptions.size);
+          options.size = (0, _extend["default"])({}, defaultOptions.size);
         }
 
-        if ((0, _isNumber.default)(options.outputSize)) {
+        if ((0, _isNumber["default"])(options.outputSize)) {
           options.outputSize = [options.outputSize, 0];
-        } else if ((0, _isArray.default)(options.outputSize)) {
-          if (!(0, _isNumber.default)(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
-          if (!(0, _isNumber.default)(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
+        } else if ((0, _isArray["default"])(options.outputSize)) {
+          if (!(0, _isNumber["default"])(options.outputSize[0]) || options.outputSize[0] < 0) options.outputSize[0] = defaultOptions.outputSize[0];
+          if (!(0, _isNumber["default"])(options.outputSize[1]) || options.outputSize[1] < 0) options.outputSize[1] = defaultOptions.outputSize[1];
         } else {
-          options.outputSize = (0, _extend.default)({}, defaultOptions.outputSize);
+          options.outputSize = (0, _extend["default"])({}, defaultOptions.outputSize);
         }
 
         if (options.outputType === 'jpg') {
@@ -383,9 +383,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } // 变量初始化
 
 
-        if ((0, _isArray.default)(options.adaptive)) {
-          this._widthIsPercent = options.adaptive[0] && (0, _isPercent.default)(options.adaptive[0]) ? options.adaptive[0] : false;
-          this._heightIsPercent = options.adaptive[1] && (0, _isPercent.default)(options.adaptive[1]) ? options.adaptive[1] : false;
+        if ((0, _isArray["default"])(options.adaptive)) {
+          this._widthIsPercent = options.adaptive[0] && (0, _isPercent["default"])(options.adaptive[0]) ? options.adaptive[0] : false;
+          this._heightIsPercent = options.adaptive[1] && (0, _isPercent["default"])(options.adaptive[1]) ? options.adaptive[1] : false;
         }
 
         this._outputWidth = options.outputSize[0];
@@ -448,7 +448,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this._curAngle = 0; // 旋转层的当前角度
 
-        (0, _bind.default)(this, '_resetScroll', '_rotateCW90', '_fileOnChangeHandle', '_clipImg', '_resize', 'size', 'load', 'clear', 'rotate', 'scale', 'clip', 'destroy');
+        (0, _bind["default"])(this, '_resetScroll', '_rotateCW90', '_fileOnChangeHandle', '_clipImg', '_resize', 'size', 'load', 'clear', 'rotate', 'scale', 'clip', 'destroy');
 
         this._initElements();
 
@@ -462,7 +462,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         window.addEventListener('resize', this._resize);
 
-        if (this._okList = (0, _$.default)(options.ok)) {
+        if (this._okList = (0, _$["default"])(options.ok)) {
           this._okList.forEach(function ($ok) {
             $ok.addEventListener('click', _this._clipImg);
           });
@@ -483,25 +483,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         containerOriginStyle['overflow'] = style['overflow'];
         containerOriginStyle['position'] = style['position'];
         this._containerOriginStyle = containerOriginStyle;
-        (0, _css.default)($container, {
+        (0, _css["default"])($container, {
           'user-select': 'none',
           'overflow': 'hidden'
         });
 
-        if ((0, _css.default)($container, 'position') === 'static') {
-          (0, _css.default)($container, 'position', 'relative');
+        if ((0, _css["default"])($container, 'position') === 'static') {
+          (0, _css["default"])($container, 'position', 'relative');
         } // 创建裁剪层
 
 
-        this._$clipLayer = (0, _createElement.default)($container, 'photo-clip-layer', {
+        this._$clipLayer = (0, _createElement["default"])($container, 'photo-clip-layer', {
           'position': 'absolute',
           'left': '50%',
           'top': '50%'
         });
-        this._$moveLayer = (0, _createElement.default)(this._$clipLayer, 'photo-clip-move-layer');
-        this._$rotateLayer = (0, _createElement.default)(this._$moveLayer, 'photo-clip-rotate-layer'); // 创建遮罩
+        this._$moveLayer = (0, _createElement["default"])(this._$clipLayer, 'photo-clip-move-layer');
+        this._$rotateLayer = (0, _createElement["default"])(this._$moveLayer, 'photo-clip-rotate-layer'); // 创建遮罩
 
-        var $mask = this._$mask = (0, _createElement.default)($container, 'photo-clip-mask', {
+        var $mask = this._$mask = (0, _createElement["default"])($container, 'photo-clip-mask', {
           'position': 'absolute',
           'left': 0,
           'top': 0,
@@ -512,7 +512,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var options = this._options,
             maskColor = options.style.maskColor,
             maskBorder = options.style.maskBorder;
-        this._$mask_left = (0, _createElement.default)($mask, 'photo-clip-mask-left', {
+        this._$mask_left = (0, _createElement["default"])($mask, 'photo-clip-mask-left', {
           'position': 'absolute',
           'left': 0,
           'right': '50%',
@@ -521,7 +521,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           'width': 'auto',
           'background-color': maskColor
         });
-        this._$mask_right = (0, _createElement.default)($mask, 'photo-clip-mask-right', {
+        this._$mask_right = (0, _createElement["default"])($mask, 'photo-clip-mask-right', {
           'position': 'absolute',
           'left': '50%',
           'right': 0,
@@ -529,7 +529,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           'bottom': '50%',
           'background-color': maskColor
         });
-        this._$mask_top = (0, _createElement.default)($mask, 'photo-clip-mask-top', {
+        this._$mask_top = (0, _createElement["default"])($mask, 'photo-clip-mask-top', {
           'position': 'absolute',
           'left': 0,
           'right': 0,
@@ -537,7 +537,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           'bottom': '50%',
           'background-color': maskColor
         });
-        this._$mask_bottom = (0, _createElement.default)($mask, 'photo-clip-mask-bottom', {
+        this._$mask_bottom = (0, _createElement["default"])($mask, 'photo-clip-mask-bottom', {
           'position': 'absolute',
           'left': 0,
           'right': 0,
@@ -546,14 +546,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           'background-color': maskColor
         }); // 创建截取框
 
-        this._$clip_frame = (0, _createElement.default)($mask, 'photo-clip-area', {
+        this._$clip_frame = (0, _createElement["default"])($mask, 'photo-clip-area', {
           'border': maskBorder,
           'position': 'absolute',
           'left': '50%',
           'top': '50%'
         }); // 初始化视图容器
 
-        this._viewList = (0, _$.default)(options.view);
+        this._viewList = (0, _$["default"])(options.view);
 
         if (this._viewList) {
           var viewOriginStyleList = [];
@@ -565,7 +565,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             viewOriginStyle['background-position'] = style['background-position'];
             viewOriginStyle['background-size'] = style['background-size'];
             viewOriginStyleList[i] = viewOriginStyle;
-            (0, _css.default)($view, {
+            (0, _css["default"])($view, {
               'background-repeat': 'no-repeat',
               'background-position': 'center',
               'background-size': 'contain'
@@ -580,7 +580,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function _initScroll() {
         var _this2 = this;
 
-        this._iScroll = new _iscrollZoom.default(this._$clipLayer, {
+        this._iScroll = new _iscrollZoom["default"](this._$clipLayer, {
           zoom: true,
           scrollX: true,
           scrollY: true,
@@ -686,7 +686,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (this._moveLayerWidth === width && this._moveLayerHeight === height) return;
         this._moveLayerWidth = width;
         this._moveLayerHeight = height;
-        (0, _css.default)(this._$moveLayer, {
+        (0, _css["default"])(this._$moveLayer, {
           'width': width,
           'height': height
         }); // 在移动设备上，尤其是Android设备，当为一个元素重置了宽高时
@@ -724,9 +724,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var _this3 = this;
 
         if (is_mobile) {
-          this._hammerManager = new _hammerjs.default.Manager(this._$moveLayer);
+          this._hammerManager = new _hammerjs["default"].Manager(this._$moveLayer);
 
-          this._hammerManager.add(new _hammerjs.default.Rotate());
+          this._hammerManager.add(new _hammerjs["default"].Rotate());
 
           var rotateFree = this._options.rotateFree,
               bounceTime = this._iScroll.options.bounceTime;
@@ -922,7 +922,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         iScroll.startX += offset.x;
         iScroll.startY += offset.y;
 
-        if (angle !== this._curAngle && duration && (0, _isNumber.default)(duration) && supportTransition !== undefined) {
+        if (angle !== this._curAngle && duration && (0, _isNumber["default"])(duration) && supportTransition !== undefined) {
           // 计算旋转层参考点，设为零位前后的偏移量
           offset = {
             x: (rectByOrigin0.left - rect.left) / scale,
@@ -958,11 +958,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var options = this._options;
 
-        if (this._fileList = (0, _$.default)(options.file)) {
+        if (this._fileList = (0, _$["default"])(options.file)) {
           this._fileList.forEach(function ($file) {
             // 移动端如果设置 'accept'，会使相册打开缓慢，因此这里只为非移动端设置
             if (!is_mobile) {
-              (0, _attr.default)($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
+              (0, _attr["default"])($file, 'accept', 'image/jpeg, image/x-png, image/png, image/gif');
             }
 
             $file.addEventListener('change', _this5._fileOnChangeHandle);
@@ -995,12 +995,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         options.loadStart.call(this, src);
 
         try {
-          (0, _lrz.default)(src, options.lrzOption).then(function (rst) {
+          (0, _lrz["default"])(src, options.lrzOption).then(function (rst) {
             // 处理成功会执行
             _this6._clearImg();
 
             _this6._createImg(rst.base64);
-          }).catch(function (err) {
+          })["catch"](function (err) {
             // 处理失败会执行
             options.loadError.call(_this6, errorMsg.imgHandleError, err);
           });
@@ -1016,7 +1016,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this._$img.onload = null;
         this._$img.onerror = null;
-        (0, _removeElement.default)(this._$img);
+        (0, _removeElement["default"])(this._$img);
         this._$img = null;
         this._imgLoaded = false;
       }
@@ -1028,7 +1028,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var options = this._options,
             errorMsg = options.errorMsg;
         this._$img = new Image();
-        (0, _css.default)(this._$img, {
+        (0, _css["default"])(this._$img, {
           'display': 'block',
           'user-select': 'none',
           'pointer-events': 'none'
@@ -1043,18 +1043,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           _this7._rotateLayerWidth = img.naturalWidth;
           _this7._rotateLayerHeight = img.naturalHeight;
-          (0, _css.default)(_this7._$rotateLayer, {
+          (0, _css["default"])(_this7._$rotateLayer, {
             'width': _this7._rotateLayerWidth,
             'height': _this7._rotateLayerHeight
           });
-          (0, _hideAction.default)([img, _this7._$moveLayer], _this7._resetScroll);
+          (0, _hideAction["default"])([img, _this7._$moveLayer], _this7._resetScroll);
         };
 
         this._$img.onerror = function (e) {
           options.loadError.call(_this7, errorMsg.imgLoadError, e);
         };
 
-        (0, _attr.default)(this._$img, 'src', src);
+        (0, _attr["default"])(this._$img, 'src', src);
       }
     }, {
       key: "_clipImg",
@@ -1099,7 +1099,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           if (this._viewList) {
             this._viewList.forEach(function ($view) {
-              (0, _css.default)($view, 'background-image', "url(".concat(dataURL, ")"));
+              (0, _css["default"])($view, 'background-image', "url(".concat(dataURL, ")"));
             });
           }
 
@@ -1113,15 +1113,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "_resize",
       value: function _resize(width, height) {
-        (0, _hideAction.default)(this._$container, function () {
+        (0, _hideAction["default"])(this._$container, function () {
           this._containerWidth = this._$container.offsetWidth;
           this._containerHeight = this._$container.offsetHeight;
         }, this);
         var size = this._options.size,
             oldClipWidth = this._clipWidth,
             oldClipHeight = this._clipHeight;
-        if ((0, _isNumber.default)(width)) size[0] = width;
-        if ((0, _isNumber.default)(height)) size[1] = height;
+        if ((0, _isNumber["default"])(width)) size[0] = width;
+        if ((0, _isNumber["default"])(height)) size[1] = height;
 
         if (this._widthIsPercent || this._heightIsPercent) {
           var ratio = size[0] / size[1];
@@ -1158,33 +1158,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this._outputWidth = this._outputHeight * this._clipSizeRatio;
         }
 
-        (0, _css.default)(this._$clipLayer, {
+        (0, _css["default"])(this._$clipLayer, {
           'width': clipWidth,
           'height': clipHeight,
           'margin-left': -clipWidth / 2,
           'margin-top': -clipHeight / 2
         });
-        (0, _css.default)(this._$mask_left, {
+        (0, _css["default"])(this._$mask_left, {
           'margin-right': clipWidth / 2,
           'margin-top': -clipHeight / 2,
           'margin-bottom': -clipHeight / 2
         });
-        (0, _css.default)(this._$mask_right, {
+        (0, _css["default"])(this._$mask_right, {
           'margin-left': clipWidth / 2,
           'margin-top': -clipHeight / 2,
           'margin-bottom': -clipHeight / 2
         });
-        (0, _css.default)(this._$mask_top, {
+        (0, _css["default"])(this._$mask_top, {
           'margin-bottom': clipHeight / 2
         });
-        (0, _css.default)(this._$mask_bottom, {
+        (0, _css["default"])(this._$mask_bottom, {
           'margin-top': clipHeight / 2
         });
-        (0, _css.default)(this._$clip_frame, {
+        (0, _css["default"])(this._$clip_frame, {
           'width': clipWidth,
           'height': clipHeight
         });
-        (0, _css.default)(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
+        (0, _css["default"])(this._$clip_frame, prefix + 'transform', 'translate(-50%, -50%)');
 
         if (clipWidth !== oldClipWidth || clipHeight !== oldClipHeight) {
           this._calcScale();
@@ -1306,7 +1306,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this._$container.removeChild(this._$mask);
 
-        (0, _css.default)(this._$container, this._containerOriginStyle);
+        (0, _css["default"])(this._$container, this._containerOriginStyle);
 
         if (this._iScroll) {
           this._iScroll.destroy();
@@ -1329,7 +1329,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this._viewList) {
           this._viewList.forEach(function ($view, i) {
-            (0, _css.default)($view, _this8._viewOriginStyleList[i]);
+            (0, _css["default"])($view, _this8._viewOriginStyleList[i]);
           });
         }
 
@@ -1346,20 +1346,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           });
         }
 
-        (0, _destroy2.default)(this);
+        (0, _destroy2["default"])(this);
       }
     }]);
 
     return PhotoClip;
   }();
 
-  _exports.default = PhotoClip;
+  _exports["default"] = PhotoClip;
   ; // 设置变换注册点
 
   function setOrigin($obj, originX, originY) {
     originX = (originX || 0).toFixed(2);
     originY = (originY || 0).toFixed(2);
-    (0, _css.default)($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
+    (0, _css["default"])($obj, prefix + 'transform-origin', originX + 'px ' + originY + 'px');
   } // 设置变换坐标与旋转角度
 
 
@@ -1369,7 +1369,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     x = x.toFixed(2);
     y = y.toFixed(2);
     angle = angle.toFixed(2);
-    (0, _css.default)($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
+    (0, _css["default"])($obj, prefix + 'transform', 'translateZ(0) translate(' + x + 'px,' + y + 'px) rotate(' + angle + 'deg)');
   } // 设置变换动画
 
 
@@ -1377,12 +1377,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // 这里需要先读取之前设置好的transform样式，强制浏览器将该样式值渲染到元素
     // 否则浏览器可能出于性能考虑，将暂缓样式渲染，等到之后所有样式设置完成后再统一渲染
     // 这样就会导致之前设置的位移也被应用到动画中
-    (0, _css.default)($obj, prefix + 'transform'); // 这里应用的缓动与 iScroll 的默认缓动相同
+    (0, _css["default"])($obj, prefix + 'transform'); // 这里应用的缓动与 iScroll 的默认缓动相同
 
-    (0, _css.default)($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
+    (0, _css["default"])($obj, prefix + 'transition', prefix + 'transform ' + dur + 'ms cubic-bezier(0.1, 0.57, 0.1, 1)');
     setTransform($obj, x, y, angle);
     setTimeout(function () {
-      (0, _css.default)($obj, prefix + 'transition', '');
+      (0, _css["default"])($obj, prefix + 'transition', '');
       fn();
     }, dur);
   }
@@ -1899,7 +1899,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   _exports.globalToLoacl = globalToLoacl;
   _hideAction = _interopRequireDefault(_hideAction);
 
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
   // 获取最大缩放比例
   function getScale(w1, h1, w2, h2) {
@@ -1929,7 +1929,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     x = x || 0;
     y = y || 0;
     var layerOneRect, layerTwoRect;
-    (0, _hideAction.default)([layerOne, layerTwo], function () {
+    (0, _hideAction["default"])([layerOne, layerTwo], function () {
       layerOneRect = layerOne.getBoundingClientRect();
       layerTwoRect = layerTwo.getBoundingClientRect();
     });
@@ -1944,7 +1944,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     x = x || 0;
     y = y || 0;
     var layerRect;
-    (0, _hideAction.default)(layer, function () {
+    (0, _hideAction["default"])(layer, function () {
       layerRect = layer.getBoundingClientRect();
     });
     return {
