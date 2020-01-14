@@ -1,11 +1,10 @@
 {
   "name": "photoclip",
-  "version": "3.4.7",
+  "version": "3.4.8",
   "description": "一款手势驱动的裁图插件",
   "author": "baijunjie",
   "license": "MIT",
   "main": "dist/PhotoClip.js",
-  "module": "src/index.js",
   "files": [
     "src",
     "dist",
